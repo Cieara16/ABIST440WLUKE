@@ -1,0 +1,7 @@
+#This file is used for testing purposes
+#Created by Justin
+
+name = input("Enter your name: ")
+print(name)
+
+#feel free to use this file for any testing
