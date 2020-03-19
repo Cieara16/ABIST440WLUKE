@@ -101,7 +101,8 @@ class Stepmotor:
         self.turn(round(count * 512 / 360, 0))
 class AutoBrew():
     currentTemp = 0
-    waterWeight = 0
+    waterByWeight = 0
+    waterTemp = 0
     maltTypes = []
     maltWeights = []
     hopTypes = []
@@ -113,10 +114,12 @@ class AutoBrew():
     hopBackAdditives = []
     hopBackAmounts = []
     hopBackDuration = 0
+    hopBackTemp = 0
     fermentationTemp = 0
     desiredABV = 0
-    def __init__(self, waterByWeight, maltType, maltWeight, hopTypes, hopWeight, mashTemp, mashDuration, boilTemp, boilDuration, hopBackAdditives, hopBackAmounts, hopBackDuration, fermentationTemp, desiredABV):
-        self.waterWeight = waterWeight
+    def __init__(self, waterByWeight, waterTemp, maltType, maltWeight, hopTypes, hopWeight, mashTemp, mashDuration, boilTemp, boilDuration, hopBackAdditives, hopBackAmounts, hopBackDuration, hopBackTemp, fermentationTemp, desiredABV):
+        self.waterByWeight = waterByWeight
+        self.waterTemp = waterTemp
         self.maltType = maltType
         self.maltWeight = maltWeight
         self.hopType = hopType
@@ -128,11 +131,28 @@ class AutoBrew():
         self.hopBackAdditives = hopBackAdditives
         self.hopBackAmounts = hopBackAmounts
         self.hopBackDuration = hopBackDuration
+        self.hopBackTemp = hopBackTemp
         self.fermentationTemp = fermentationTemp
         self.desiredABV = desiredABV
 
     def main(self):
-        newRecipe = AutoBrew(input("Enter the amount of water to be used: "), input("Enter the malt type: "), input("Enter the malt weight: "), input("Enter the hop  separated with commas").split(',').trim(" "), input("Enter the desired amount of hops by weight: "), input("Enter the mashing temp"), input("Enter the mash duration"), input("Enter the boiling temp"), input("Enter the boil duration: "), input("Enter the additives: ").split(',').trim(' '), input("Enter the additive amounts: ").split(',').trim(' '), input("Enter the hopback duration: "), input("Enter the fermentation temp: "), input("Enter the desired abv: "))
+        newRecipe = AutoBrew(input("Enter the amount of water to be used: "), input("Enter the initial water temperateure: "), input("Enter the malt type: "), input("Enter the malt weight: "), input("Enter the hop  separated with commas").split(',').trim(" "), input("Enter the desired amount of hops by weight: "), input("Enter the mashing temp"), input("Enter the mash duration"), input("Enter the boiling temp"), input("Enter the boil duration: "), input("Enter the additives: ").split(',').trim(' '), input("Enter the additive amounts: ").split(',').trim(' '), input("Enter the hopback duration: "), input("Enter the hopback temperature: "), input("Enter the fermentation temp: "), input("Enter the desired abv: "))
+        newRecipe.prep(boilTemp, boilDuration)
+        newRecipe.pump_along()
+        newRecipe.add_ingredient(maltBucket)
+        newRecipe.mash(mashTemp, mashDuration)
+        newRecipe.pump_along()
+        newRecipe.add_ingredient(hopBucket)
+        newRecipe.boil(boilTemp, boilDuration)
+        newRecipe.pump_along()
+        newRecipe.add_ingredient(additivesBucket)
+        newRecipe.hopBack(hopBackDuration, hopBackTemp)
+        newRecipe.pump_along()
+        newRecipe.exchange_heat(goalTemp)
+        newRecipe.ferment(fermentationTemp, desiredABV)
+        newRecipe.bottle()
+        newRecipe.print_label()
+
     def maintain_temp(self, container, minTemp, maxTemp): #logic to keep temperatures within a specific range using the dht11 sensor. That sensor only reads values every 2 seconds and is not waterproof, so it's not ideal. Explore other sensors.
         # set type of the sensor
         sensor = 11
