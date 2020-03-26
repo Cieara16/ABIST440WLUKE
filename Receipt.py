@@ -20,7 +20,7 @@ total=0.0
 while(not finished):
     prompt = "Enter price for Item #" + str(itemNum + 1) + ": $"
     price = float(input(prompt))
-    if (price == 0):
+    if (price == 0): #Zero will end the code and print
         finished = True
     else:
         subtotal += price
