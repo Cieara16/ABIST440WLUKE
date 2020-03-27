@@ -1,10 +1,8 @@
-
 #Begin Brew class
 class Brew():
     temperature = 0
     boilTime = 0
-    
-    
+
     #function to initialize local variables
     def __init__(self, boilTemp, boilTempRange, boilDuration, maxTemp, minTemp, temperature):
         self.boilTemp = boilTemp
@@ -44,12 +42,3 @@ def maintainTemp(self):
 def main(self):
     Brew()
     #work in progress
-
-    #new change is being made
-
-
-#testing with Nay
-
-#Testing with Mat
-
-#nay is a QT 3.14
