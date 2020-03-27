@@ -1,10 +1,8 @@
-
 #Begin Brew class
 class Brew():
     temperature = 0
     boilTime = 0
-    
-    
+
     #function to initialize local variables
     def __init__(self, boilTemp, boilTempRange, boilDuration, maxTemp, minTemp, temperature):
         self.boilTemp = boilTemp
@@ -29,7 +27,7 @@ def maintainTemp(self):
     #method for maintaining temperature
     #for i in range[minTemperature]:
     #temperature -= temperature
-
+        
 
     def maxTemperature(self, maxTemp):
         maxTemp = 350
@@ -41,11 +39,7 @@ def maintainTemp(self):
         minTemp = 100
         return minTemp
 
-
-
 def main(self):
     Brew()
     #work in progress
-
-    #new change is being made
-#testing dad
+    #new
