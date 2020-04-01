@@ -1,5 +1,6 @@
 #Begin Brew class
 import time
+import requests
 
 class Brew():
     temperature = 0
@@ -22,16 +23,14 @@ class Brew():
         result = float((self.temperature - 32) * 5 / 9)
         return result
 
-
+def postTest(self):
+    pass
 
 def boil(self):
         #method for maintaining temperature
         #Work in progress
 
 def maintainTemp(self):
-    #method for maintaining temperature
-    #for i in range[minTemperature]:
-    #temperature -= temperature
 
     maxTemp = 110
     minTemp = 100
@@ -43,25 +42,40 @@ def maintainTemp(self):
         return self
     elif self.temperature > maxTemp:
         self.temperature -= 10
-        print('Too hot, reducing heat...')
+        print("That's an awfully hot coffee pot")
         return self.temperature
     else:
         return self.temperature
 
-"""
-    def maxTemperature(self, maxTemp):
-        maxTemp = 110
-        #if boil.temperature >= maxTemp:
-        #print('Too hot, reducing heat...')
-        #maintainTemp()
-        return maxTemp
-    def minTemperature(self, minTemp):
-        minTemp = 100
-        return minTemp
-"""
+def Get(self):
+    # Set the request parameters
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_boil?sysparm_limit=1'
+
+    # Eg. User name="admin", Password="admin" for this code sample.
+    user = 'kasper440'
+    pwd = 'kasper440'
+
+    # Set proper headers
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+
+    # Do the HTTP request
+    response = requests.get(url, auth=(user, pwd), headers=headers)
+
+    # Check for HTTP codes other than 200
+    if response.status_code != 200:
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+        exit()
+
+    # Decode the JSON response into a dictionary and use the data
+    data = response.json()
+    print(data)
+
+
+
 
 def main(self):
-    Brew()
+    Get()
+    postTest()
 
 Sec = 0
 timeLoop = True
@@ -70,6 +84,6 @@ timeLoop = True
 while timeLoop:
     Sec += 1
     time.sleep(1)
-    if Sec == 3600:
-        #I suppose code to execute and control temp with boiling will go here?
+    maintainTemp()
+    if Sec == 60:
         exit()
