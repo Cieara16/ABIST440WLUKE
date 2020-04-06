@@ -40,14 +40,9 @@ def __init__(self, boilTemp, boilTempRange, boilDuration, maxTemp, minTemp, temp
 
 
 def Get():
-    # Need to install requests package for python
-    # easy_install requests
-    import requests
-
     # Set the request parameters
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_boil?sysparm_limit=1'
 
-    # Eg. User name="admin", Password="admin" for this code sample.
     user = 'kasper440'
     pwd = 'kasper440'
 
@@ -107,7 +102,6 @@ def Post():
     # Set the request parameters
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_boil'
 
-    # Eg. User name="admin", Password="admin" for this code sample.
     user = 'kasper440'
     pwd = 'kasper440'
 
@@ -126,22 +120,18 @@ def Post():
     data = response.json()
     print(data)
 
-
-    # We could just do the conversion once within the output statement rather that having a function. But I'm a dumbass so lemme know..
-    def convertToFahrenheit(self):
-        result = float((9 * self.temperature) / 5 + 32)
-        return result
-    def convertToCelcius(self):
-        result = float((self.temperature - 32) * 5 / 9)
-        return result
-
-
+#def convertToFahrenheit(self):
+    # result = float((9 * self.temperature) / 5 + 32)
+    # return result
+#def convertToCelcius(self):
+    # result = float((self.temperature - 32) * 5 / 9)
+    # return result
 
 def maintainTemp(self):
 
     maxTemp = 110
     minTemp = 100
-
+    #this should be updated from the GET request from Servicenow
     #assuming temp is recorded as celsius would this work with the pi? Could we set this in the while loop timer below having it constantly record and check temp?
     if self.temperature < minTemp:
         self.temperature += 10
@@ -153,7 +143,6 @@ def maintainTemp(self):
         return self.temperature
     else:
         return self.temperature
-
 
 
 def main():
