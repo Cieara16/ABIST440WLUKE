@@ -25,8 +25,9 @@ tempPin = 4
 # setting vairables for buzzer
 buzzerPin = 18
 
+#recipie table
 class RecipieTable:
-    def RecipieGetCRUD(self):
+    def RecipieGetCRUD():
         # Set the request parameters
         url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_recipe?sysparm_limit=100'
 
@@ -49,7 +50,7 @@ class RecipieTable:
         data = response.json()
         print(data)
 
-    def RecipiePostCRUD(self):
+    def RecipiePostCRUD():
         # Set the request parameters
         url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_recipe'
 
@@ -72,7 +73,7 @@ class RecipieTable:
         data = response.json()
         print(data)
 
-    def RecipieUpdateCRUD(self):
+    def RecipieUpdateCRUD():
         # Set the request parameters
         url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_recipe?sysparm_display_value=ed7e0aea1b67c850befe0d88cc4bcbab'
 
@@ -95,7 +96,7 @@ class RecipieTable:
         data = response.json()
         print(data)
 
-    def RecepieDeleteCRUD(self):
+    def RecepieDeleteCRUD():
         # Set the request parameters
         url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_recipe/2cb47fe61b6bc850befe0d88cc4bcbc2'
 
@@ -118,7 +119,7 @@ class RecipieTable:
         data = response.json()
         print(data)
 
-    def RecipieMongoCRUD(self):
+    def RecipieMongoCRUD():
         client = MongoClient('localhost', 27017)
         db = client['recipes_db']
         recipes = db['recipes']
@@ -173,6 +174,50 @@ class RecipieTable:
                 # skip document because it already exists in the local db collection
                 continue
 
+#lkbretasks table
+class LKBrewTasks():
+    def LKGetCRUD():
+        # Need to install requests package for python
+        # easy_install requests
+        import requests
+        # Set the request parameters
+        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_limit=1'
+        # Eg. User name="admin", Password="admin" for this code sample.
+        user = 'admin'
+        pwd = 'admin'
+        # Set proper headers
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        # Do the HTTP request
+        response = requests.get(url, auth=(user, pwd), headers=headers)
+        # Check for HTTP codes other than 200
+        if response.status_code != 200:
+            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+            exit()
+        # Decode the JSON response into a dictionary and use the data
+        data = response.json()
+        print(data)
+
+    def LKPostCRUD():
+        # Need to install requests package for python
+        # easy_install requests
+        import requests
+        # Set the request parameters
+        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask'
+        # Eg. User name="admin", Password="admin" for this code sample.
+        user = 'admin'
+        pwd = 'admin'
+        # Set proper headers
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        # Do the HTTP request
+        response = requests.post(url, auth=(user, pwd), headers=headers)
+        # Check for HTTP codes other than 200
+        if response.status_code != 200:
+            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+            exit()
+        # Decode the JSON response into a dictionary and use the data
+        data = response.json()
+        print(data)
+
 
 # function to display temp n humidity
 def TempAndHumidityLCD(lcdColumns, lcdRows, tempSensor, tempPin):
@@ -220,9 +265,16 @@ def BuzzerDone(buzzerPin):
 def Main():
     print(TempAndHumidityLCD(lcdColumns, lcdRows, tempSensor, tempPin))
     print(BuzzerDone(buzzerPin))
-    print(RecipieTable.RecipieGetCRUD)
-    print(RecipieTable.RecipiePostCRUD)
-    print(RecipieTable.RecipieUpdateCRUD)
-    print(RecipieTable.RecepieDeleteCRUD)
 
-print(Main())
+    #recipie table
+    RecipieTable.RecipieGetCRUD()
+    RecipieTable.RecipiePostCRUD()
+    RecipieTable.RecipieUpdateCRUD()
+    RecipieTable.RecepieDeleteCRUD()
+
+    #LK brew tasks table
+    LKBrewTasks.LKGetCRUD()
+    LKBrewTasks.LKPostCRUD()
+
+#run all the stuff
+Main()
