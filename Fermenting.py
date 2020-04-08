@@ -1,331 +1,228 @@
-# fermenting team - Michaela Fox
-# imports
+#Team Ferment - James Bee, Virginia Hoffman, Michaela Fox, and Samantha Scheer
+#IST 440 - Luke Kasper
+
+#imports
 import AutoBrew
 import RPi.GPIO as GPIO
 import time
 import requests
 import Adafruit_DHT
+import Adafruit_CharLCD as LCD
 import os
 import sys, subprocess
+import requests
+#from pymongo import MongoClient
+#import pymongo
 
-# a lot of this is a palceolder for the time being to check functionality
-
-# some list of ingrediants (going to print from service now though)
-fermentingIngredients = ["hops"]
-pickedIngredients = []
-
-# setting variables (temp)
-currentTempC = 0
-currentTempF = 0
-
-# (ingrediants)
-yeastAmount = 0
-fermentType = ""
-secondFerment = ""
+#setting variables for lcdScreen
+lcdColumns = 16
+lcdRows    = 2
 
 # setting variables (temp)
 tempSensor = Adafruit_DHT.DHT11
 tempPin = 4
 
+# setting vairables for buzzer
+buzzerPin = 18
 
-# function to et temp reading
-def TempReading(tempSensor, tempPin):
-    temperature = Adafruit_DHT.read(tempSensor, tempPin)
-    return temperature
+class RecipieTable:
+    def RecipieGetCRUD(self):
+        # Set the request parameters
+        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_recipe?sysparm_limit=100'
+
+        # Eg. User name="admin", Password="admin" for this code sample.
+        user = 'kasper440'
+        pwd = 'kasper440'
+
+        # Set proper headers
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+
+        # Do the HTTP request
+        response = requests.get(url, auth=(user, pwd), headers=headers, data="{\"recipe_name\":\"Peanut Butter\"}")
+
+        # Check for HTTP codes other than 200
+        if response.status_code != 200:
+            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+            exit()
+
+        # Decode the JSON response into a dictionary and use the data
+        data = response.json()
+        print(data)
+
+    def RecipiePostCRUD(self):
+        # Set the request parameters
+        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_recipe'
+
+        # Eg. User name="admin", Password="admin" for this code sample.
+        user = 'kasper440'
+        pwd = 'kasper440'
+
+        # Set proper headers
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+
+        # Do the HTTP request
+        response = requests.post(url, auth=(user, pwd), headers=headers, data="{\"recipe_name\":\"Umm\"}")
+
+        # Check for HTTP codes other than 200
+        if response.status_code != 200:
+            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+            exit()
+
+        # Decode the JSON response into a dictionary and use the data
+        data = response.json()
+        print(data)
+
+    def RecipieUpdateCRUD(self):
+        # Set the request parameters
+        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_recipe?sysparm_display_value=ed7e0aea1b67c850befe0d88cc4bcbab'
+
+        # Eg. User name="admin", Password="admin" for this code sample.
+        user = 'sls1058'
+        pwd = 'Ummidk123!'
+
+        # Set proper headers
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+
+        # Do the HTTP request
+        response = requests.post(url, auth=(user, pwd), headers=headers, data="{\"recipe_name\":\"Ale\"}")
+
+        # Check for HTTP codes other than 200
+        if response.status_code != 200:
+            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+            exit()
+
+        # Decode the JSON response into a dictionary and use the data
+        data = response.json()
+        print(data)
+
+    def RecepieDeleteCRUD(self):
+        # Set the request parameters
+        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_recipe/2cb47fe61b6bc850befe0d88cc4bcbc2'
+
+        # Eg. User name="admin", Password="admin" for this code sample.
+        user = 'kasper440'
+        pwd = 'kasper440'
+
+        # Set proper headers
+        headers = {"Content-Type":"application/json","Accept":"application/json"}
+
+        # Do the HTTP request
+        response = requests.delete(url, auth=(user, pwd), headers=headers )
+
+        # Check for HTTP codes other than 200
+        if response.status_code != 200:
+            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
+            exit()
+
+        # Decode the JSON response into a dictionary and use the data
+        data = response.json()
+        print(data)
+
+    def RecipieMongoCRUD(self):
+        client = MongoClient('localhost', 27017)
+        db = client['recipes_db']
+        recipes = db['recipes']
+
+        # Set the request parameters
+        '''
+        Use sysparm_fields=field_name => field_name is the field you want to read
+        separate fields using commas in case you want to read more than one field from a table
+        '''
+
+        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_recipe?sysparm_limit=1'
+
+        # Use IST440 for both user and pwd
+        user = 'kasper440'
+        pwd = 'kasper440'
+
+        # Set proper headers
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+
+        # Do the HTTP request
+        # GET is the request to read data
+        response = requests.get(url, auth=(user, pwd), headers=headers)
+
+        # Decode the JSON response into a dictionary and use the data
+        data = response.json()
+        print(type(data))
+        print()
+        print("This is a json dictionary: ", data, "Type: ", type(data))
+
+        # Now we need to get the list of key value pairs from our dict
+        print()
+        recipe_names_pairs = data['result']
+        print("This is a list: ", recipe_names_pairs)
+        print()
+
+        # Check type
+        print("Recipe_names_pairs is of the list type and can now be used to create documents in mongddb: ",
+              type(recipe_names_pairs))
+        print()
+        # db.collection_recipe.insert(recipe_names_pairs)
+
+        # For loop to iterate through the key value pairs obtained from the json response
+        # and check if any has previously been inserted in the collection
+
+        for doc in recipe_names_pairs:
+            try:
+                # insert into db collection
+                # print("Inserting ",  doc, " into db...")
+                message = "Inserting  into db..."
+                db.recipes.insert_one(doc)
+            except pymongo.errors.DuplicateKeyError:
+                # skip document because it already exists in the local db collection
+                continue
+
+
+# function to display temp n humidity
+def TempAndHumidityLCD(lcdColumns, lcdRows, tempSensor, tempPin):
+    # Initialize the LCD using the pins
+    lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
+
+    temperature, humidity = Adafruit_DHT.read(tempSensor, tempPin)
     time.sleep(1)
+    GPIO.cleanup()
 
-# temp as a subprocess to run in background
-# currentTemp = subprocess.Popen(TempReading(tempSensor, tempPin), shell=True)
+    temperature = temperature * 9 / 5.0 + 32
 
-secondFerment = ""
+    temperatureStr = str(temperature)
+    humidityStr = str(humidity)
 
-# function to pick ingredieants for fermenting
-def PickedIngredients(fermentingIngredients, pickedIngredients):
-    print()
-    print(fermentingIngredients)
-    userIngredient = str(input("Select an ingredient or 'exit' if you changed your mind: "))
-    userIngredient = userIngredient.casefold()
+    # print temp
+    lcd.set_backlight(0)
+    lcd.message("Current temp \n" + temperatureStr + " F")
+    time.sleep(5.0)
+    lcd.clear()
 
-    # add something
-    if (userIngredient in fermentingIngredients) & (userIngredient not in pickedIngredients):
-        pickedIngredients.append(userIngredient)
-        print(userIngredient + "has been added to the list.")
-        print(pickedIngredients)
-
-    # user changed mind
-    elif (userIngredient == 'exit'):
-        return None
-
-    # item not in the list
-    elif (userIngredient not in fermentingIngredients):
-        print("That ingredient is not in the list.")
-        PickedIngredients(fermentingIngredients, pickedIngredients)
-
-    # ingreidnt already in list
-    elif (userIngredient in pickedIngredients):
-        userIngredient = str(
-            input("That ingredient is already picked. Would you like to pick another one? 'yes' or 'no': "))
-        userIngredient = userIngredient.casefold()
-        if (userIngredient == 'yes'):
-            PickedIngredients(fermentingIngredients, pickedIngredients)
-        elif (userIngredient == 'no'):
-            return None
-        else:
-            userIngredient = str(input("That was not an option. 'yes' or 'no': "))
-            userIngredient = userIngredient.casefold()
-
-    # pass cuze nothing was selected
-    else:
-        return None
-
-    # add another item to the list
-    userIngredient = str(input("Would you like to add another ingredient? 'yes' or 'no': "))
-    userIngredient = userIngredient.casefold()
-    if (userIngredient == 'yes'):
-        PickedIngredients(fermentingIngredients, pickedIngredients)
-    elif (userIngredient == 'no'):
-        return None
-    else:
-        userIngredient = str(input("That was not an option. Would you like to add another ingredient? 'yes' or 'no': "))
-        userIngredient = userIngredient.casefold()
+    # print humidity
+    lcd.set_backlight(0)
+    lcd.message("Current humidity \n" + humidityStr + " %")
+    time.sleep(5.0)
+    lcd.clear()
+    GPIO.cleanup()
 
 
-# function to remove ingrediants
-def RemovedIngredients(fermentingIngredients, pickedIngredients):
-    # nothing to remove
-    if (not pickedIngredients):
-        print("There are not ingredients to remove.")
-        return None
+# function to buzz wghen fermenting is done
+def BuzzerDone(buzzerPin):
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(buzzerPin, GPIO.OUT)
 
-    print()
-    print(fermentingIngredients)
-    userIngredient = str(input("Select an ingredient or 'exit' if you changed your mind: "))
-    userIngredient = userIngredient.casefold()
+    # Make buzzer sound
+    GPIO.output(buzzerPin, GPIO.HIGH)
+    time.sleep(0.5)
 
-    # remove something
-    if (userIngredient in pickedIngredients):
-        pickedIngredients.remove(userIngredient)
-        print(userIngredient + "has been removed to the list.")
-        print(pickedIngredients)
+    # Stop buzzer sound
+    GPIO.output(buzzerPin, GPIO.LOW)
 
-    # user changed mind
-    elif (userIngredient == 'exit'):
-        return None
+    GPIO.cleanup()
 
-    # item not in the list
-    elif (userIngredient not in pickedIngredients):
-        print("That ingredient is not in the list.")
-        RemovedIngredients(fermentingIngredients, pickedIngredients)
+#runs all other code
+def Main():
+    print(TempAndHumidityLCD(lcdColumns, lcdRows, tempSensor, tempPin))
+    print(BuzzerDone(buzzerPin))
+    print(RecipieTable.RecipieGetCRUD)
+    print(RecipieTable.RecipiePostCRUD)
+    print(RecipieTable.RecipieUpdateCRUD)
+    print(RecipieTable.RecepieDeleteCRUD)
 
-    # ingreidnt already in list
-    elif (userIngredient in pickedIngredients):
-        userIngredient = str(input("That ingredient is already removed. Would you like to remove another one? 'yes' or 'no': "))
-        userIngredient = userIngredient.casefold()
-        if (userIngredient == 'yes'):
-            RemovedIngredients(fermentingIngredients, pickedIngredients)
-        elif (userIngredient == 'no'):
-            return None
-        else:
-            userIngredient = str(input("That was not an option. 'yes' or 'no': "))
-            userIngredient = userIngredient.casefold()
-
-    # pass cuze nothing happened
-    else:
-        pass
-
-    # aremove another item to the list
-    userIngredient = str(input("Would you like to remove another ingredient? 'yes' or 'no': "))
-    userIngredient = userIngredient.casefold()
-    if (userIngredient == 'yes'):
-        RemovedIngredients(fermentingIngredients, pickedIngredients)
-    else:
-        return None
-
-
-# function to add yeast
-def AddYeast(yeastAmount):
-    print()
-
-    # adding yeast
-    yeastAmount = float(input("How much yeast would you like to add or 'exit' if you changed your mind: "))
-    print(yeastAmount, "Will be added.")
-    correctYeastAmount = str(input("Is this correct? 'yes' or 'no: "))
-    correctYeastAmount = correctYeastAmount.casefold()
-    # amount is correct
-    if (correctYeastAmount == 'yes'):
-        return None
-
-    # amount is not correct
-    elif (correctYeastAmount == 'no'):
-        AddYeast(yeastAmount)
-
-    #user changed mind
-    elif (yeastAmount == 'exit'):
-        return None
-
-    # not a valid option
-    else:
-        correctYeastAmount = str(input("That is not a valid option."))
-        correctYeastAmount = correctYeastAmount.casefold()
-
-#class for snd fermenting types
-class FermentingTypes():
-
-    #function for krausening
-    def Krausening(secondFerment):
-        print("Adding the fermenting wart and fresh carbon dioxide.")
-        print("Moved to the conditioning tank.")
-        print("Sending off to be bottled.")
-
-    #function for laggering
-    def Laggering(secondFerment):
-        storageTime = int(input("How many months would you like it to be stored for? 1 - 6 Months: "))
-        if (storageTime > 0 & storageTime < 7):
-            for storageTime in 1, 7:
-                print(storageTime, "months was selected.")
-                print("Storage time complete.")
-        elif storageTime < 1 & storageTime > 6:
-            while (storageTime < 1 | storageTime > 6):
-                storageTime = int(input("That is not a valid option. 1 - 6 Months: "))
-        print("Sending off to bottle.")
-
-    #function for secondary
-    def SecondaryFermentation(secondFerment):
-        print("Refermenting.")
-        print("Sending off to bottle.")
-
-    #function for bottle
-    def Bottle(secondFerment):
-        addSugar = str(input("Would you like to add more sugar? 'yes' or 'no': "))
-        addSugar = addSugar.casefold()
-
-        #add suagr
-        if (addSugar == 'yes'):
-            sugarAmount = input("How much would you like to add or 'exit': ")
-            sugarAmount = sugarAmount.casefold()
-            if (sugarAmount == 'exit'):
-                pass
-            else:
-                print(sugarAmount, "will be added.")
-                print("Sugar has been added.")
-
-        addWart = str(input("Would you like to add more wart? 'yes' or 'no': "))
-        addWart = addSugar.casefold()
-        # add wart
-        if (addWart == 'yes'):
-            wartAmount = input("How much would you like to add or 'exit': ")
-            wartAmount = wartAmount.casefold()
-            if (wartAmount == 'exit'):
-                pass
-            else:
-                print(wartAmount, "will be added.")
-                print("Wart has been added.")
-
-        print("Sending to bottle.")
-
-    #function of cask
-    def CackConditioning(secondFerment):
-        print("Putting into cask.")
-        print("Fermenting.")
-        print("Sending off to bottle.")
-
-    #function for barrel
-    def BarrelAging(secondFerment):
-        print("Putting into barrel.")
-        print("Fermenting.")
-        print("Sending to bottle")
-
-#temp reading beofre start of anything
-print("Current temperature and humidity: ")
-print(TempReading(tempSensor, tempPin))
-
-print("This is going to be cylindraconal fermenting.")
-print("This is going to be an open fermentation.")
-
-# pick from list to add
-print(fermentingIngredients)
-addIngredients = str(input("Would you like to add any ingredients? 'yes' or 'no': "))
-addIngredients = addIngredients.casefold()
-if (addIngredients == 'yes'):
-    PickedIngredients(fermentingIngredients, pickedIngredients)
-elif (addIngredients == 'no'):
-    pass
-else:
-    addIngredients = str(input("That is not an option. 'yes' or 'no': "))
-    addIngredients = addIngredients.casefold()
-
-# pick from list to remove
-removeIngredients = str(input("Would you like to remove any ingredients? 'yes' or 'no': "))
-removeIngredients = removeIngredients.casefold()
-if (removeIngredients == 'yes'):
-    RemovedIngredients(fermentingIngredients, pickedIngredients)
-elif (removeIngredients == 'no'):
-    pass
-else:
-    removeIngredients = str(input("That is not an option. 'yes' or 'no': "))
-    removeIngredients = removeIngredients.casefold()
-
-# adding yeast
-addYeast = str(input("Would you like to add yeast: 'yes' or 'no': "))
-addYeast = addYeast.casefold()
-if (addYeast == 'yes'):
-    AddYeast(yeastAmount)
-elif (addYeast == 'no'):
-    pass
-else:
-    addYeast = str(input("That is not an option. 'yes' or 'no': "))
-    addYeast = addYeast.casefold()
-
-print()
-print("Test: ")
-print("These are the ingredients that could be picked: \n", fermentingIngredients)
-print("These are the items that will be used in the fermenting stage: \n", pickedIngredients)
-print("This is the amount of yeast that will be used: \n", yeastAmount)
-print()
-
-# asking for 2nd fermenting and which kind
-print("The types of secondary fermenting that area available are: \n'"
-          "(1)Krausening', '(2)Laggering', '(3)Secondary Ferment', '(4)Bottle', (5)'Cask Conditioning', and '(6)Barrel Aging'\n")
-secondFerment = str(input("Which type of secondary fermenting type would you like to pick or 'exit' to send to bottle: "))
-secondFerment = secondFerment.casefold()
-
-if (secondFerment == '1'):
-    print("Current temperature and humidity: ")
-    print(TempReading(tempSensor, tempPin))
-    FermentingTypes.Krausening(secondFerment)
-
-elif (secondFerment == '2'):
-    print("Current temperature and humidity: ")
-    print(TempReading(tempSensor, tempPin))
-    FermentingTypes.Laggering(secondFerment)
-
-elif (secondFerment == '3'):
-    print("Current temperature and humidity: ")
-    print(TempReading(tempSensor, tempPin))
-    FermentingTypes.SecondaryFermentation(secondFerment)
-
-elif (secondFerment == '4'):
-    FermentingTypes.Bottle(secondFerment)
-    print("Current temperature and humidity: ")
-    print(TempReading(tempSensor, tempPin))
-
-
-elif(secondFerment == '5'):
-    print("Current temperature and humidity: ")
-    print(TempReading(tempSensor, tempPin))
-    FermentingTypes.CackConditioning(secondFerment)
-
-elif (secondFerment == '6'):
-    print("Current temperature and humidity: ")
-    print(TempReading(tempSensor, tempPin))
-    FermentingTypes.BarrelAging(secondFerment)
-
-elif (secondFerment == 'exit'):
-    print("Current temperature and humidity: ")
-    print(TempReading(tempSensor, tempPin))
-    print("Sending to bottle.")
-    pass
-else:
-    secondFerment = str(input("That was not an option. 'yes' or 'no': "))
-    secondFerment = secondFerment.casefold()
-
+print(Main())
