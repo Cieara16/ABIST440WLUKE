@@ -13,6 +13,11 @@ pin = 4
 lcd_columns = 16
 lcd_rows = 2
 
+# Local Variables
+maxTemp = str(0)
+minTemp = str(0)
+boil_duration = str(0)
+
 # Try to grab a sensor reading.  Use the read_retry method which will retry up
 # to 15 times to get a sensor reading (waiting 2 seconds between each retry).
 humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
@@ -41,8 +46,9 @@ def __init__(self, boilTemp, boilTempRange, boilDuration, maxTemp, minTemp, temp
 
 def Get():
     # Set the request parameters
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_boil?sysparm_limit=1'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_boil?sysparm_query=boil_durationANYTHING%5EmaxtempANYTHING%5EmintempANYTHING&sysparm_limit=1'
 
+    # Eg. User name="admin", Password="admin" for this code sample.
     user = 'kasper440'
     pwd = 'kasper440'
 
@@ -58,8 +64,13 @@ def Get():
         exit()
 
     # Decode the JSON response into a dictionary and use the data
-    data = response.json()
-    print(data)
+    data1 = response.json()['result'][0]['maxtemp']
+    data2 = response.json()['result'][0]['mintemp']
+    data3 = response.json()['result'][0]['boil_duration']
+
+    maxTemp = data1
+    minTemp = data2
+    boil_duration = data3
 
 
 def systemCheck():
