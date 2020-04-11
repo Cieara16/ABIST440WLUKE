@@ -1,3 +1,5 @@
+#"Alccontent.py" code below ----------------------------------------------------------------------------------------------
+
 alcohol_input = float (input ("Enter alcohol percentage: "))
 doubleChecking = input("Are you sure you want to enter "+str(alcohol_input)+"? (Y or N)").upper()
 if doubleChecking == "Y":
@@ -11,7 +13,7 @@ if doubleChecking == "N":
     print(alcohol_input)
     
 
-#POST CODE BELOW ---------------------------------------------------------------------------------------------------   
+#"post.py" code below ---------------------------------------------------------------------------------------------------   
     
 #Need to install requests package for python
 #easy_install requests
