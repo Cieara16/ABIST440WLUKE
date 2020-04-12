@@ -123,6 +123,7 @@ def tempDisplay():
             lcd.clear()
             lcd.set_backlight(1)
 
+
     while temperature >= 150 and timeloop:
         try:
 
