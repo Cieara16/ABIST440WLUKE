@@ -116,10 +116,6 @@ def tempDisplay():
             if humidity is not None and temperature is not None:
                 lcd.message('Temp={0:0.1f}*\nHumidity={1:0.1f}%\n'.format(temperature, humidity))
                 Post()
-            #                 sec += 1
-            #                 time.sleep(1.0)
-            #                 if (sec == 60):
-            #                     exit()
             else:
                 lcd.message('Failed to get reading. Try again!')
         except KeyboardInterrupt:
