@@ -181,3 +181,64 @@ def main():
 
 if __name__ == "__main__":
     main()
+.....................................
+(Qualitycheck)
+
+import time
+import Adafruit_DHT
+import Adafruit_CharLCD as LCD
+import RPi.GPIO as GPIO
+
+# configure down button for 5 gallon and assign gpio
+button_QC_right = 19
+# define LED pin
+led_pin = 8
+# Used Motion gpio
+motion_pin = 23
+# set GPIO as GPIO.BOARD
+GPIO.setmode(GPIO.BCM)
+# set puin as input
+GPIO.setup(led_pin, GPIO.OUT)
+# set motion pin as output
+GPIO.setup(motion_pin, GPIO.IN)
+# Setup button pin asBu input and power pins
+GPIO.setup(button_QC_right, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+# Initialize the LCD using the pins
+lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
+# Turn backlight on
+lcd.set_backlight(0)
+# QC
+
+# Motion detect keg
+QC1 = "Quality Check is Completed"
+QC2 = "Requested for Quality Check"
+point = True
+
+
+def quality_check(button_QC_right,led_pin,motion_pin,lcd,QC1,QC2,point):
+    # When motion sensor detect keg
+    while GPIO.input(motion_pin) == 1 and point:
+        quality_check = False
+        # When keg arrived at stage 2
+        if (GPIO.input(button_QC_right) == 1) and quality_check == False:
+            # turn on LED
+            print(QC2)
+            lcd.message('Requested for Quality Check')
+            GPIO.output(led_pin, GPIO.HIGH)
+            print('Hit right button')
+            GPIO.wait_for_edge(button_QC_right, GPIO.FALLING)
+            time.sleep(10)
+            # after Quality check complete employee press button for QC Completed
+            if GPIO.input(button_QC_right) == 1:
+                # turn off LED
+                GPIO.output(led_pin, GPIO.LOW)
+                print(QC1)
+                lcd.message('Quality Check is Completed')
+                # Wait half a second
+                time.sleep(10)
+                point = True
+
+    GPIO.cleanup()
+
+
+quality_check(quality_check)
