@@ -1,3 +1,6 @@
+#Team Keg: Riken, Eduard, Muhammad, Wilmer
+
+
 import time
 import Adafruit_DHT
 import Adafruit_CharLCD as LCD
