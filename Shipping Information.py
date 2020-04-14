@@ -3,7 +3,8 @@
 #Course: IST 440W
 #Authors: Deja Vasquez & Aliya Abney
 #Date Developed: 03/25/2020
-#Last Date Changed: 04/08/2020
+#Last Date Changed: 04/14/2020
+
 
 def main():
     print('This program will calculate shipping, handling and taxes on your purchase.')
@@ -37,12 +38,12 @@ def calcHandling(subtotal, shippingCost):
         print('Yay! Your order is more than $100.00, there is no handling fee.')
     calcTax(subtotal, shippingCost, handlingFee)
 
-
+#Calculates tax based on the subtotal and other fees
 def calcTax(subtotal, shippingCost, handlingFee):
-    tax = subtotal * .08
+    tax = subtotal * .10
     calcTotal(subtotal, shippingCost, handlingFee, tax)
 
-#Calculates all totals with tax
+#Calculates and prints all totals with tax
 def calcTotal(subtotal, shippingCost, handlingFee, tax):
     print('\nProduct Total Information')
     print('\tSubtotal: ${}'.format(subtotal))

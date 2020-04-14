@@ -3,7 +3,10 @@
 #Course: IST 440W
 #Author: Deja Vasquez
 #Date Developed: 03/24/2020
-#Last Date Changed: 04/13/2020
+#Last Date Changed: 04/14/2020
+
+#This program will calulate the cost, taxes, and fees of the
+#number of iems purchased and print out a customer receipt
 
 print("=======================")
 print(" Balrog Brewing ")
