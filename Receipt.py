@@ -1,7 +1,7 @@
 #Project: Brewing
 #Project Details: Brew Receipt
 #Course: IST 440W
-#Author: Deja Vasquez
+#Author: Deja Vasquez & Aliya Abney
 #Date Developed: 03/24/2020
 #Last Date Changed: 04/14/2020
 
