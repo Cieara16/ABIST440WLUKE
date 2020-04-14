@@ -10,7 +10,7 @@
 
 print("=======================")
 print(" Balrog Brewing ")
-print("Customer Receipt")
+print(" Customer Receipt ")
 print("=======================")
 
 #list of variables
