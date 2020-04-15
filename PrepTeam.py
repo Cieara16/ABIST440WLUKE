@@ -83,7 +83,7 @@ url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_l
 
 # Eg. User name="admin", Password="admin" for this code sample.
 user = 'jbk5490'
-pwd = 'Limewild1234'
+pwd = ''
 
 # Set proper headers
 headers = {"Content-Type":"application/json","Accept":"application/json"}
@@ -107,7 +107,7 @@ url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_l
 
 # Eg. User name="admin", Password="admin" for this code sample.
 user = 'jbk5490'
-pwd = 'Limewild1234'
+pwd = ''
 
 # Set proper headers
 headers = {"Content-Type":"application/json","Accept":"application/json"}
@@ -131,7 +131,7 @@ url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_l
 
 # Eg. User name="admin", Password="admin" for this code sample.
 user = 'jbk5490'
-pwd = 'Limewild1234'
+pwd = ''
 
 # Set proper headers
 headers = {"Content-Type":"application/json","Accept":"application/json"}
@@ -155,7 +155,7 @@ url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_l
 
 # Eg. User name="admin", Password="admin" for this code sample.
 user = 'jbk5490'
-pwd = 'Limewild1234'
+pwd = ''
 
 # Set proper headers
 headers = {"Content-Type":"application/json","Accept":"application/json"}
@@ -416,7 +416,7 @@ if __name__ == "__main__":
 
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'jbk5490'
-    pwd = 'Limewild1234'
+    pwd = ''
 
     # Set proper headers
     headers = {"Content-Type":"application/json","Accept":"application/json"}
@@ -468,7 +468,7 @@ url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_l
 
 # Eg. User name="admin", Password="admin" for this code sample.
 user = 'jbk5490'
-pwd = 'Limewild1234'
+pwd = ''
 
 # Set proper headers
 headers = {"Content-Type":"application/json","Accept":"application/json"}
@@ -553,7 +553,7 @@ if __name__ == "__main__":
 
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'jbk5490'
-    pwd = 'Limewild1234'
+    pwd = ''
 
     # Set proper headers
     headers = {"Content-Type":"application/json","Accept":"application/json"}
@@ -577,7 +577,7 @@ url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_l
 
 # Eg. User name="admin", Password="admin" for this code sample.
 user = 'jbk5490'
-pwd = 'Limewild1234'
+pwd = ''
 
 # Set proper headers
 headers = {"Content-Type":"application/json","Accept":"application/json"}
