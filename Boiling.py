@@ -34,10 +34,6 @@ def readTemperature(sensor, pin):
     return temperature, humidity
     time.sleep(1)
 
-
-a
-
-
 # function to initialize local variables
 def __init__(self, temperature, humidity):
     self.humidity = humidity
