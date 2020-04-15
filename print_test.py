@@ -1,3 +1,3 @@
 import subprocess
 
-lprString = subprocess.Popen(["/usr/bin/lpr", "./beer_label.png"])
+lprString = subprocess.Popen(["/usr/bin/lp", "-d HP_DeskJet_2130_series beer_label.png"])

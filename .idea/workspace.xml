@@ -2,10 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f4a4f702-7cb1-48ec-83c5-e5946928d9cf" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/ClosePi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/AutoBrew.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AutoBrew.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/print_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/print_test.py" afterDir="false" />
     </list>
@@ -151,7 +147,21 @@
       <option name="project" value="LOCAL" />
       <updated>1586981798559</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="print testing">
+      <created>1586982430301</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1586982430301</updated>
+    </task>
+    <task id="LOCAL-00004" summary="print testing">
+      <created>1586982512638</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1586982512638</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -163,10 +173,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="print testing" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="386" y="14" key="CommitChangelistDialog2" timestamp="1586982429932">
+    <state x="386" y="14" key="CommitChangelistDialog2" timestamp="1586982512237">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="386" y="14" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1586982429932" />
+    <state x="386" y="14" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1586982512237" />
     <state width="1653" height="318" key="GridCell.Tab.0.bottom" timestamp="1585338475733">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
@@ -187,10 +197,10 @@
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state x="1036" y="354" width="1396" height="937" key="SettingsEditor/0.0.2560.1440@0.0.2560.1440" timestamp="1585340361888" />
-    <state x="362" y="152" key="Vcs.Push.Dialog.v2" timestamp="1586982441712">
+    <state x="362" y="152" key="Vcs.Push.Dialog.v2" timestamp="1586982519328">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="362" y="152" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1586982441712" />
+    <state x="362" y="152" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1586982519328" />
     <state x="976" y="476" key="com.intellij.ide.util.TipDialog" timestamp="1585340377140">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
