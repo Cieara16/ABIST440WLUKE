@@ -1,6 +1,6 @@
-#Prep team code
+#Prep team - Jonathan Katz, Ngoc Tran, Elmer Iglesias, Amrish Patel
 #Mostly complete - still adding minor things
-#Jonathan Katz
+#IST 440W - Luke Kasper
 
 
 import RPi.GPIO as GPIO
