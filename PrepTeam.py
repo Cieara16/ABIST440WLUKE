@@ -1,7 +1,6 @@
 #Prep team - Jonathan Katz, Ngoc Tran, Elmer Iglesias, Amrish Patel
 #Mostly complete - still adding minor things
-#IST 440W - Luke Kasper
-
+#IST440W - Luke Kasper
 
 import RPi.GPIO as GPIO
 import Adafruit_CharLCD as LCD
