@@ -1,28 +1,29 @@
-#Team Ferment - James Bee, Virginia Hoffman, Michaela Fox, and Samantha Scheer
-#IST 440 - Luke Kasper
+# Team Ferment - James Bee, Virginia Hoffman, Michaela Fox, and Samantha Scheer
+# IST 440 - Luke Kasper
 
-#imports
-import AutoBrew
+# imports
+#import AutoBrew
 import RPi.GPIO as GPIO
 import time
 import requests
+import json
 import Adafruit_DHT
 import Adafruit_CharLCD as LCD
 import os
 import sys, subprocess
 import math
 
-#clock imports
+# clock imports
 import datetime
 from Adafruit_LED_Backpack import SevenSegment
 
-#service now imports
+# service now imports
 import requests
 
-#from pymongo import MongoClient
-#import pymongo
+# from pymongo import MongoClient
+# import pymongo
 
-#led matrix
+# led matrix
 import re
 from luma.led_matrix.device import max7219
 from luma.core.interface.serial import spi, noop
@@ -31,10 +32,9 @@ from luma.core.virtual import viewport
 from luma.core.legacy import text, show_message
 from luma.core.legacy.font import proportional, CP437_FONT, TINY_FONT, SINCLAIR_FONT, LCD_FONT
 
-
-#setting variables for lcdScreen
+# setting variables for lcdScreen
 lcdColumns = 16
-lcdRows    = 2
+lcdRows = 2
 
 # setting variables (temp)
 tempSensor = Adafruit_DHT.DHT11
@@ -43,15 +43,52 @@ tempPin = 4
 # setting vairables for buzzer
 buzzerPin = 18
 
-#ledMartrix variables
+# ledMartrix variables
 cascaded = 1
 block_orientation = 90
 rotate = 0
 
-#clock veriables
+# clock veriables
 segment = SevenSegment.SevenSegment(address=0x70)
 
-#recipie table Yeast
+
+# class for getting brew task fro boil
+class BrewTask():
+    def BrewTaskGET():
+        # Set the request parameters
+        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=sys_created_onRELATIVEGT%40minute%40ago%401&sysparm_limit=1'
+        # Eg. User name="admin", Password="admin" for this code sample.
+        user = 'mmf5571'
+        pwd = 'Werewolf00'
+
+        # Set proper headers
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+
+        # Do the HTTP request
+        response = requests.get(url, auth=(user, pwd), headers=headers)
+
+        # Check for HTTP codes other than 200
+        if response.status_code != 200:
+            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+            exit()
+
+        # Decode the JSON response into a dictionary and use the data
+        data = response.json()
+        print(data)
+        
+        startTask = response.json()['result'][0]['rpi_to_execute']
+        print(startTask)
+        FermentPi = startTask['FermentPi']
+
+#         if (startTask != 'FermentPi'):
+#             if (startTask != 'FermentPi'):
+#                 continue
+#             elif (startTask == 'FermentPi'):
+#                 print('Brew Task found.')
+#                 break
+
+
+# recipie table Yeast
 class RecipeiTableYeast():
     def YeastGet():
         # Set the request parameters
@@ -75,9 +112,12 @@ class RecipeiTableYeast():
         # Decode the JSON response into a dictionary and use the data
         data = response.json()
         print(data)
+        yeastAmount = data['result'][0]['yeast']
+        print("Yeast Amount: " + st(yeastAmount))
+        
 
     def YeastUpdate():
-       # Set the request parameters
+        # Set the request parameters
         url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2/e674799fdb80d010777efae4e29619bd?sysparm_display_value=yeast%3D'
 
         # Eg. User name="admin", Password="admin" for this code sample.
@@ -122,7 +162,8 @@ class RecipeiTableYeast():
         data = response.json()
         print(data)
 
-#recipie table ABV
+
+# recipie table ABV
 class RecipieTableABV():
     def ABVGet():
         # Set the request parameters
@@ -146,6 +187,8 @@ class RecipieTableABV():
         # Decode the JSON response into a dictionary and use the data
         data = response.json()
         print(data)
+        ABVLevel = data['result'][0]['abv']
+        print("ABV Level: " + str(ABVLevel))
 
     def ABVUpdate():
         # Set the request parameters
@@ -193,7 +236,8 @@ class RecipieTableABV():
         data = response.json()
         print(data)
 
-#recipie table sugar
+
+# recipie table sugar
 class RecipieTableSugar():
     def SugarGet():
         # Set the request parameters
@@ -217,6 +261,8 @@ class RecipieTableSugar():
         # Decode the JSON response into a dictionary and use the data
         data = response.json()
         print(data)
+        sugarAmount = data['result'][0]['sugar']
+        print("Sugar Amount: " + str(sugarAmount))
 
     def SugarUpdate():
         # Set the request parameters
@@ -264,7 +310,8 @@ class RecipieTableSugar():
         data = response.json()
         print(data)
 
-#Log table time stamps
+
+# Log table time stamps
 class FermentingTimeStamps():
     def FermentStartGET():
         # Set the request parameters
@@ -288,6 +335,8 @@ class FermentingTimeStamps():
         # Decode the JSON response into a dictionary and use the data
         data = response.json()
         print(data)
+        #FermentTempStart = data['boil']
+        #print("Max Temp: " + maxTemp)
 
     def FermentStartUodate():
         # Set the request parameters
@@ -404,18 +453,17 @@ class FermentingTimeStamps():
         data = response.json()
         print(data)
 
-#temp log - log table
-class FermentTemps():
-    def tempGet():
+
+# # temp log - log table
+# class FermentTemps():
+#     def tempGet():
+# 
+#     def temoUpdate():
+# 
+#     def tempPost():
 
 
-    def temoUpdate():
-
-
-    def tempPost():
-
-
-#class steralize
+# class steralize
 class FermentClean():
     def CleanGet():
         # Set the request parameters
@@ -486,7 +534,8 @@ class FermentClean():
         data = response.json()
         print(data)
 
-#quality check
+
+# quality check
 class QualityCheck():
     def qualityCheckGet():
         # Set the request parameters
@@ -534,7 +583,6 @@ class QualityCheck():
         data = response.json()
         print(data)
 
-
     def qualityCheckPost():
         # Set the request parameters
         url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table/93ec0a5fdbc0d010777efae4e296198d?sysparm_display_value=ferment_tempature%3D'
@@ -558,7 +606,8 @@ class QualityCheck():
         data = response.json()
         print(data)
 
-#class ferment duration
+
+# class ferment duration
 class FermentDuration():
     def durationGet():
         # Set the request parameters
@@ -641,7 +690,8 @@ class FermentDuration():
         data = response.json()
         print(data)
 
-#class 2nd ferment
+
+# class 2nd ferment
 class SecondFerment():
     def secondFermentGet():
         # Set the request parameters
@@ -665,6 +715,53 @@ class SecondFerment():
         # Decode the JSON response into a dictionary and use the data
         data = response.json()
         print(data)
+        secondFerment = data['result'][0]['secondary_fermentation']
+        print("Secondary Fermentation: " + str(secondFerment))        
+        
+        if (str(secondFerment) == 'Kräusening'):
+            print("Kräusening selected.")
+            print("Sent to conditioning tank.")
+            print("Fermenting.")
+            BuzzerDone(buzzerPin)
+            print("Sent to bottle.")
+
+        elif (str(secondFerment) == 'Bottle'):
+            print("Bottle selected.")
+            print("Fermenting.")
+            BuzzerDone(buzzerPin)
+            print("Sent to bottle.")
+
+        elif (str(secondFerment) == 'Cask_Condistioning'):
+            print("Cask Conditioning selected.")
+            print("Putting into cask.")
+            print("Fermenting.")
+            BuzzerDone(buzzerPin)
+            print("Sent to bottle.")
+
+        elif (str(secondFerment) == 'Lagering'):
+            print("Laggering selected.")
+            print("Storing at celler temperature.")
+            print("Fermenting.")
+            BuzzerDone(buzzerPin)
+            print("Sent to bottle.")
+
+        elif (str(secondFerment) == 'Secondary'):
+            print("Secondary Fermentation selected.")
+            print("Fermenting.")
+            BuzzerDone(buzzerPin)
+            print("Sent to bottle.")
+
+        elif (str(secondFerment) == 'Barrel_Agein'):
+            print("Barrel Aging Selected.")
+            print("Sent to barrel to sour.")
+            print("Fermenting.")
+            BuzzerDone(buzzerPin)
+            print("Sent to bottle.")
+
+        else:
+            print("Fermenting.")
+            BuzzerDone(buzzerPin)
+            print("Sent to bottle.")
 
     def secondFermentUpdate():
         # Set the request parameters
@@ -712,6 +809,7 @@ class SecondFerment():
         data = response.json()
         print(data)
 
+
 # function to display temp n humidity
 def TempAndHumidityLCD(lcdColumns, lcdRows, tempSensor, tempPin):
     # Initialize the LCD using the pins
@@ -739,6 +837,7 @@ def TempAndHumidityLCD(lcdColumns, lcdRows, tempSensor, tempPin):
     lcd.clear()
     GPIO.cleanup()
 
+
 # function to buzz wghen fermenting is done
 def BuzzerDone(buzzerPin):
     GPIO.setmode(GPIO.BCM)
@@ -752,10 +851,10 @@ def BuzzerDone(buzzerPin):
     GPIO.output(buzzerPin, GPIO.LOW)
 
     GPIO.cleanup()
-    
-#led matrix function
+
+
+# led matrix function
 def LEDMatrix(cascaded, block_orientation, rotate, msg):
-    
     # create matrix device
     serial = spi(port=0, device=1, gpio=noop())
     device = max7219(serial, cascaded=cascaded or 1, block_orientation=block_orientation, rotate=rotate or 0)
@@ -766,12 +865,13 @@ def LEDMatrix(cascaded, block_orientation, rotate, msg):
     print("[-] Printing: %s" % msg)
     show_message(device, msg, fill="white", font=proportional(CP437_FONT), scroll_delay=0.1)
     GPIO.cleanup()
-    
-#function for stepmotor
+
+
+# function for stepmotor
 def StepMotor():
     # set GPIO mode
     GPIO.setmode(GPIO.BCM)
-    
+
     # These are the pins which will be used on the Raspberry Pi
     pin_A = 5
     pin_B = 6
@@ -780,23 +880,24 @@ def StepMotor():
     interval = 0.010
 
     # Declare pins as output
-    GPIO.setup(pin_A,GPIO.OUT)
-    GPIO.setup(pin_B,GPIO.OUT)
-    GPIO.setup(pin_C,GPIO.OUT)
-    GPIO.setup(pin_D,GPIO.OUT)
+    GPIO.setup(pin_A, GPIO.OUT)
+    GPIO.setup(pin_B, GPIO.OUT)
+    GPIO.setup(pin_C, GPIO.OUT)
+    GPIO.setup(pin_D, GPIO.OUT)
     GPIO.output(pin_A, False)
     GPIO.output(pin_B, False)
     GPIO.output(pin_C, False)
     GPIO.output(pin_D, False)
-    
-    for i in range (0, 31):
+
+    for i in range(0, 31):
         GPIO.output(pin_D, True)
         time.sleep(interval)
         GPIO.output(pin_D, False)
-        
+
     GPIO.cleanup()
 
-#function for clock
+
+# function for clock
 def Clock():
     now = datetime.datetime.now()
     hour = now.hour
@@ -805,13 +906,13 @@ def Clock():
 
     segment.clear()
     # Set hours
-    segment.set_digit(0, int(hour / 10))     # Tens
-    segment.set_digit(1, hour % 10)          # Ones
+    segment.set_digit(0, int(hour / 10))  # Tens
+    segment.set_digit(1, hour % 10)  # Ones
     # Set minutes
-    segment.set_digit(2, int(minute / 10))   # Tens
-    segment.set_digit(3, minute % 10)        # Ones
+    segment.set_digit(2, int(minute / 10))  # Tens
+    segment.set_digit(3, minute % 10)  # Ones
     # Toggle colon
-    segment.set_colon(second % 2)              # Toggle colon at 1Hz
+    segment.set_colon(second % 2)  # Toggle colon at 1Hz
 
     # Write the display buffer to the hardware.  This must be called to
     # update the actual display LEDs.
@@ -820,83 +921,75 @@ def Clock():
     # Wait a quarter second (less than 1 second to prevent colon blinking getting$
     time.sleep(0.25)
 
-#runs all other code
+
+# runs all other code
 def Main():
-    QualityCheck.qualityCheckGet()
-    QualityCheck.qauqlityCheckUpdate()
-    QualityCheck.qualityCheckPost()
-
-    today = datetime.date.today()
-    FermentingTimeStamps.FermentStartUodate()
-
-    FermentingTimeStamps.FermentStartPost()
-
+    BrewTask.BrewTaskGET()
+    RecipeiTableYeast.YeastGet()
 
     segment = SevenSegment.SevenSegment(address=0x70)
     # Initialize the display. Must be called once before using the display.
     segment.begin()
 
-    #initialize ledmatrix
+    # initialize ledmatrix
     msg = ""
     LEDMatrix(cascaded, block_orientation, rotate, msg)
-    
-    #initialize LCD screen
+
+    # initialize LCD screen
     TempAndHumidityLCD(lcdColumns, lcdRows, tempSensor, tempPin)
     lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
-    
+
     msg = "."
 
     temperature, humidity = Adafruit_DHT.read(tempSensor, tempPin)
     time.sleep(1)
     GPIO.cleanup()
 
-    #get incoming temp from boil
+    # get incoming temp from boil
     FermentingTimeStamps.FermentEndGet()
-    temperature = response.json()['result']
-    outgoingTemp = temperature['maxtemp']
+    
     FermentingTimeStamps.FermentEndUpdate()
-
 
     temperature = temperature * 9 / 5.0 + 32
     lcd.set_backlight(0)
-    lcd.message("Current temp\n" + temperature) #pulled from mother brew
+    lcd.message("Current temp\n" + temperature)  # pulled from mother brew
     time.sleep(3.0)
     lcd.clear()
     GPIO.cleanup()
 
-    #checking temp
-    for i in range (0, 6):
-        #temp too low
+    # checking temp
+    for i in range(0, 6):
+        # temp too low
         if (temperature < 68):
             lcd.set_backlight(0)
-            lcd.message("Temperature is\n" + "too low: "+ str(temperature) + " F")
+            lcd.message("Temperature is\n" + "too low: " + str(temperature) + " F")
             time.sleep(3.0)
             lcd.clear()
             GPIO.cleanup()
-            
-        #temp too high
+
+        # temp too high
         elif (temperature > 78):
             lcd.set_backlight(0)
             lcd.message("Temperature is\n" + "too high: " + str(temperature) + " F")
             time.sleep(3.0)
             lcd.clear()
             GPIO.cleanup()
-        
-        #temp acutally worked
+
+        # temp acutally worked
         elif (temperature == 78):
             break
         i += 1
-    
+
     lcd.set_backlight(0)
     lcd.message("Temperature is:\n" + str(temperature) + " F")
     time.sleep(5.0)
     lcd.clear()
     GPIO.cleanup()
 
-    #update temp log
+    # update temp log
     FermentingTimeStamps.FermentEndPost()
 
-    #pull yeast and sugar to check amounts
+    # pull yeast and sugar to check amounts
     RecipeiTableYeast.YeastGet()
     yeastAmount = response.json()['result']
 
@@ -906,60 +999,47 @@ def Main():
     # if (yeastAmount == #right amount):
     RecipeiTableYeast.YeastUpdate()
     # else:
-        # kill time to update yeast
+    # kill time to update yeast
 
-    #if (suagrAmount == #right amount):
-        RecipieTableSugar.SugarUpdate()
-    #else:
-        #kill time
+    # if (suagrAmount == #right amount):
+    RecipieTableSugar.SugarUpdate()
 
-    outgingYeastAmount = yeast['maxtemp']
+
+    # else:
+    # kill time
+
+    outgingYeastAmount = Yeast['']
     RecipeiTableYeast.YeastPost()
 
     outgoingSugarAmount = Sugar_levels['result']
     RecipieTableSugar.SugarPost()
 
-
-    #update API level and gravity check
+    # update API level and gravity check
     RecipieTableABV.ABVGet()
     abv_level = response.json()['result']
 
     RecipieTableABV.ABVUpdate()
     # if (yeastAmount == #right amount):
-        # do nothing
+    # do nothing
     # else:
-        # kill time to update yeast
+    # kill time to update yeast
 
     RecipieTableABV.ABVPost()
     outgoingABVLevel = ABV['ABV']
+
+    # choose second ferment - if/elif branch
+    SecondFerment.secondFermentGet()
+    secondary_fermentation = response.json()['result']
+
+    today = datetime.date.today()
+    FermentingTimeStamps.FermentStartUodate()
+
+    FermentingTimeStamps.FermentStartPost()
+
+
     
 
-    #choose second ferment - if/elif branch
-    SecondFerment.secondFermentGet()
-    secondary_fermentation= response.json()['result']
-
-    if (secondary_fermentation == 'Kräusening'):
-        BuzzerDone(buzzerPin)
-
-    elif (secondary_fermentation == 'Bottle'):
-        BuzzerDone(buzzerPin)
-
-    elif (secondary_fermentation == 'Cask_Condistioning'):
-        BuzzerDone(buzzerPin)
-
-    elif (secondary_fermentation == 'Lagering'):
-        BuzzerDone(buzzerPin)
-
-    elif (secondary_fermentation == 'Secondary'):
-        BuzzerDone(buzzerPin)
-
-    elif (secondary_fermentation == 'Barrel_Agein'):
-        BuzzerDone(buzzerPin)
-
-    else:
-        BuzzerDone(buzzerPin)
-
-    #end time
+    # end time
     outgoingTemp = datetime.date.today()
     FermentingTimeStamps.FermentEndUpdate()
 
@@ -969,13 +1049,17 @@ def Main():
     FermentDuration.durationUpdate()
     FermentDuration.durationPost()
 
+    QualityCheck.qualityCheckGet()
+    QualityCheck.qauqlityCheckUpdate()
+    QualityCheck.qualityCheckPost()
 
     FermentClean.CleanGet()
+    Stepmotor()
     FermentClean.CLeanUpdate()
     FermentClean.CLeanPost()
 
-    #push to boil
+    # push to boil
 
 
-#run all the stuff
+# run all the stuff
 Main()
