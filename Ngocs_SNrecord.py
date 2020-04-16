@@ -7,7 +7,7 @@ url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_r
 
 # Eg. User name="admin", Password="admin" for this code sample.
 user = 'ndt7'
-pwd = 'Tui@920Tyson!'
+pwd = ''
 
 # Set proper headers
 headers = {"Content-Type":"application/json","Accept":"application/json"}
