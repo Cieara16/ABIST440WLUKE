@@ -59,7 +59,7 @@ class BrewTask():
         url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=sys_created_onRELATIVEGT%40minute%40ago%401&sysparm_limit=1'
         # Eg. User name="admin", Password="admin" for this code sample.
         user = 'mmf5571'
-        pwd = 'Werewolf00'
+        pwd = '***'
 
         # Set proper headers
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -88,7 +88,7 @@ class RecipeiTableYeast():
      
         # Eg. User name="admin", Password="admin" for this code sample. 
         user = 'mmf5571' 
-        pwd = 'Werewolf00' 
+        pwd = '***' 
      
         # Set proper headers 
         headers = {"Content-Type": "application/json", "Accept": "application/json"} 
@@ -113,7 +113,7 @@ class RecipeiTableYeast():
  
         # Eg. User name="admin", Password="admin" for this code sample. 
         user = 'mmf5571' 
-        pwd = 'Werewolf00' 
+        pwd = '***' 
  
         # Set proper headers 
         headers = {"Content-Type": "application/json", "Accept": "application/json"} 
@@ -138,7 +138,7 @@ class RecipeiTableYeast():
  
         # Eg. User name="admin", Password="admin" for this code sample. 
         user = 'mmf5571' 
-        pwd = 'Werewolf00' 
+        pwd = '***' 
  
         # Set proper headers 
         headers = {"Content-Type": "application/json", "Accept": "application/json"} 
@@ -165,7 +165,7 @@ class RecipieTableABV():
 
         # Eg. User name="admin", Password="admin" for this code sample.
         user = 'mmf5571'
-        pwd = 'Werewolf00'
+        pwd = '***'
 
         # Set proper headers
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -192,7 +192,7 @@ class RecipieTableSugar():
 
         # Eg. User name="admin", Password="admin" for this code sample.
         user = 'mmf5571'
-        pwd = 'Werewolf00'
+        pwd = '***'
 
         # Set proper headers
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -219,7 +219,7 @@ class FermentingTimeStamps():
 
         # Eg. User name="admin", Password="admin" for this code sample.
         user = 'mmf5571'
-        pwd = 'Werewolf00'
+        pwd = '***'
 
         # Set proper headers
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -245,7 +245,7 @@ class FermentingTimeStamps():
 
         # Eg. User name="admin", Password="admin" for this code sample.
         user = 'mmf5571'
-        pwd = 'Werewolf00'
+        pwd = '***'
 
         # Set proper headers
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -315,7 +315,7 @@ class FermentClean():
 
         # Eg. User name="admin", Password="admin" for this code sample.
         user = 'mmf5571'
-        pwd = 'Werewolf00'
+        pwd = '***'
 
         # Set proper headers
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -340,7 +340,7 @@ class QualityCheck():
 
         # Eg. User name="admin", Password="admin" for this code sample.
         user = 'mmf5571'
-        pwd = 'Werewolf00'
+        pwd = '***'
 
         # Set proper headers
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -369,7 +369,7 @@ class FermentDuration():
 
         # Eg. User name="admin", Password="admin" for this code sample.
         user = 'mmf5571'
-        pwd = 'Werewolf00'
+        pwd = '***'
 
         # Set proper headers
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -395,7 +395,7 @@ class SecondFerment():
 
         # Eg. User name="admin", Password="admin" for this code sample.
         user = 'mmf5571'
-        pwd = 'Werewolf00'
+        pwd = '***'
 
         # Set proper headers
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
