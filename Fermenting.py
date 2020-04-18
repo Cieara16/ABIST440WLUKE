@@ -80,89 +80,83 @@ class BrewTask():
         print(startTask)
         FermentPi = startTask['FermentPi']
 
-#         if (startTask != 'FermentPi'):
-#             if (startTask != 'FermentPi'):
-#                 continue
-#             elif (startTask == 'FermentPi'):
-#                 print('Brew Task found.')
-#                 break
-
-
 # recipie table Yeast
 class RecipeiTableYeast():
-    def YeastGet():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=yeast%3D&sysparm_limit=1'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.get(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
+    def Yeast1Get():
+        # Set the request parameters 
+        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=yeast_type_1%3D&sysparm_limit=1' 
+     
+        # Eg. User name="admin", Password="admin" for this code sample. 
+        user = 'mmf5571' 
+        pwd = 'Werewolf00' 
+     
+        # Set proper headers 
+        headers = {"Content-Type": "application/json", "Accept": "application/json"} 
+     
+        # Do the HTTP request 
+        response = requests.get(url, auth=(user, pwd), headers=headers) 
+     
+        # Check for HTTP codes other than 200 
+        if response.status_code != 200: 
+            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json()) 
+            exit() 
+     
+        # Decode the JSON response into a dictionary and use the data 
+        data = response.json() 
         print(data)
-        yeastAmount = data['result'][0]['yeast']
-        print("Yeast Amount: " + st(yeastAmount))
-        
-
-    def YeastUpdate():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2/e674799fdb80d010777efae4e29619bd?sysparm_display_value=yeast%3D'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.put(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
+        yeast1 = data['result'][0]['yeast_type_1']
+        print("Yeast type 1: " + str(yeast1))
+ 
+    def Yeast2Get(): 
+        # Set the request parameters 
+        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=yeast_type_2%3D&sysparm_limit=1' 
+ 
+        # Eg. User name="admin", Password="admin" for this code sample. 
+        user = 'mmf5571' 
+        pwd = 'Werewolf00' 
+ 
+        # Set proper headers 
+        headers = {"Content-Type": "application/json", "Accept": "application/json"} 
+ 
+        # Do the HTTP request 
+        response = requests.get(url, auth=(user, pwd), headers=headers) 
+ 
+        # Check for HTTP codes other than 200 
+        if response.status_code != 200: 
+            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json()) 
+            exit() 
+ 
+        # Decode the JSON response into a dictionary and use the data 
+        data = response.json() 
         print(data)
-
-    def YeastPost():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2/e674799fdb80d010777efae4e29619bd?sysparm_display_value=yeast%3D'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.patch(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
+        yeast2 = data['result'][0]['yeast_type_2']
+        print("Yeast type 2: " + str(yeast2))
+ 
+    def Yeast3Get(): 
+        # Set the request parameters 
+        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=yeast_type_3%3D&sysparm_limit=1' 
+ 
+        # Eg. User name="admin", Password="admin" for this code sample. 
+        user = 'mmf5571' 
+        pwd = 'Werewolf00' 
+ 
+        # Set proper headers 
+        headers = {"Content-Type": "application/json", "Accept": "application/json"} 
+ 
+        # Do the HTTP request 
+        response = requests.get(url, auth=(user, pwd), headers=headers) 
+ 
+        # Check for HTTP codes other than 200 
+        if response.status_code != 200: 
+            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json()) 
+            exit() 
+ 
+        # Decode the JSON response into a dictionary and use the data 
+        data = response.json() 
         print(data)
-
-
+        yeast3 = data['result'][0]['yeast_type_3']
+        print("Yeast type 3: " + str(yeast3))
+    
 # recipie table ABV
 class RecipieTableABV():
     def ABVGet():
@@ -190,53 +184,6 @@ class RecipieTableABV():
         ABVLevel = data['result'][0]['abv']
         print("ABV Level: " + str(ABVLevel))
 
-    def ABVUpdate():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2/aae575dfdb80d010777efae4e296198a?sysparm_display_value=abv%3D'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.put(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-
-    def ABVPost():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2/e674799fdb80d010777efae4e29619bd?sysparm_display_value=abv%3D'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.patch(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-
-
 # recipie table sugar
 class RecipieTableSugar():
     def SugarGet():
@@ -261,56 +208,9 @@ class RecipieTableSugar():
         # Decode the JSON response into a dictionary and use the data
         data = response.json()
         print(data)
-        sugarAmount = data['result'][0]['sugar']
+        sugarAmount = data['result'][0]['sugar_levels']
         print("Sugar Amount: " + str(sugarAmount))
-
-    def SugarUpdate():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2/f1d67ddfdb80d010777efae4e2961946?sysparm_display_value=sugar_levels%3D'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.put(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-
-    def SugarPost():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2/f1d67ddfdb80d010777efae4e2961946?sysparm_display_value=sugar_levels%3D'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.patch(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-
-
+        
 # Log table time stamps
 class FermentingTimeStamps():
     def FermentStartGET():
@@ -335,54 +235,9 @@ class FermentingTimeStamps():
         # Decode the JSON response into a dictionary and use the data
         data = response.json()
         print(data)
+        
         #FermentTempStart = data['boil']
         #print("Max Temp: " + maxTemp)
-
-    def FermentStartUodate():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table/0106d14fdb489010777efae4e296191f?sysparm_display_value=fermenting_start_timeONToday%40javascript%3Ags.beginningOfToday()%40javascript%3Ags.endOfToday()'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.put(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-
-    def FermentStartPost():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table/0106d14fdb489010777efae4e296191f?sysparm_display_value=fermenting_start_timeONToday%40javascript%3Ags.beginningOfToday()%40javascript%3Ags.endOfToday()'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.patch(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
 
     def FermentEndGet():
         # Set the request parameters
@@ -407,56 +262,45 @@ class FermentingTimeStamps():
         data = response.json()
         print(data)
 
-    def FermentEndUpdate():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table/3aa65d4fdb489010777efae4e2961981?sysparm_display_value=fermenting_end_timeONToday%40javascript%3Ags.beginningOfToday()%40javascript%3Ags.endOfToday()'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.put(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-
-    def FermentEndPost():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table/3aa65d4fdb489010777efae4e2961981?sysparm_display_value=fermenting_end_timeONToday%40javascript%3Ags.beginningOfToday()%40javascript%3Ags.endOfToday()'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.patch(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-
-
 # # temp log - log table
 # class FermentTemps():
 #     def tempGet():
+# 
+#     TempAndHumidityLCD(lcdColumns, lcdRows, tempSensor, tempPin)
+# 
+#     temperature, humidity = Adafruit_DHT.read(tempSensor, tempPin)
+#     time.sleep(1)
+#     GPIO.cleanup()
+# 
+#     temperature = temperature * 9 / 5.0 + 32
+#     lcd.set_backlight(0)
+#     lcd.message("Current temp\n" + temperature)  # pulled from mother brew
+#     time.sleep(3.0)
+#     lcd.clear()
+#     GPIO.cleanup()
+# 
+#     # checking temp
+#     for i in range(0, 6):
+#         # temp too low
+#         if (temperature < 68):
+#             lcd.set_backlight(0)
+#             lcd.message("Temperature is\n" + "too low: " + str(temperature) + " F")
+#             time.sleep(3.0)
+#             lcd.clear()
+#             GPIO.cleanup()
+# 
+#         # temp too high
+#         elif (temperature > 78):
+#             lcd.set_backlight(0)
+#             lcd.message("Temperature is\n" + "too high: " + str(temperature) + " F")
+#             time.sleep(3.0)
+#             lcd.clear()
+#             GPIO.cleanup()
+# 
+#         # temp acutally worked
+#         elif (temperature == 78):
+#             break
+#         i += 1
 # 
 #     def temoUpdate():
 # 
@@ -488,53 +332,6 @@ class FermentClean():
         data = response.json()
         print(data)
 
-    def CLeanUpdate():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table/f34ec69fdbc0d010777efae4e296195e?sysparm_display_value=ferment_tempature%3D'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.put(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-
-    def CLeanPost():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table/93ec0a5fdbc0d010777efae4e296198d?sysparm_display_value=ferment_tempature%3D'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.patch(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-
-
 # quality check
 class QualityCheck():
     def qualityCheckGet():
@@ -559,54 +356,7 @@ class QualityCheck():
         # Decode the JSON response into a dictionary and use the data
         data = response.json()
         print(data)
-
-    def qauqlityCheckUpdate():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table/93ec0a5fdbc0d010777efae4e296198d?sysparm_display_value=ferment_tempature%3D'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.put(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-
-    def qualityCheckPost():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table/93ec0a5fdbc0d010777efae4e296198d?sysparm_display_value=ferment_tempature%3D'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.patch(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-
-
+        
 # class ferment duration
 class FermentDuration():
     def durationGet():
@@ -634,63 +384,9 @@ class FermentDuration():
 
         # Decode the JSON response into a dictionary and use the data
         data = response.json()
-        print(data)
-
-    def durationUpdate():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table/d03f8e9fdbc0d010777efae4e29619c2?sysparm_display_value=fermenting_duration%3Djavascript%3Ags.getDurationDate('
-        0 % 200 % 3
-        A0 % 3
-        A0
-        ')'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.put(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-
-    def durationPost():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table/d03f8e9fdbc0d010777efae4e29619c2?sysparm_display_value=fermenting_duration%3Djavascript%3Ags.getDurationDate('
-        0 % 200 % 3
-        A0 % 3
-        A0
-        ')'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.patch(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-
-
+        print(data)duration = data['result'][0]['fermentation_duration']
+        print("Fermentation Duration: " + str(duration))
+        
 # class 2nd ferment
 class SecondFerment():
     def secondFermentGet():
@@ -762,54 +458,7 @@ class SecondFerment():
             print("Fermenting.")
             BuzzerDone(buzzerPin)
             print("Sent to bottle.")
-
-    def secondFermentUpdate():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2/e74ebdd3dbc0d010777efae4e29619f3?sysparm_display_value=secondary_fermentation%3D'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.put(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-
-    def secondFermentPost():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2/f39efdd3dbc0d010777efae4e2961951?sysparm_display_value=secondary_fermentation%3D'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = 'Werewolf00'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.patch(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-
-
+            
 # function to display temp n humidity
 def TempAndHumidityLCD(lcdColumns, lcdRows, tempSensor, tempPin):
     # Initialize the LCD using the pins
@@ -945,11 +594,6 @@ def Main():
     time.sleep(1)
     GPIO.cleanup()
 
-    # get incoming temp from boil
-    FermentingTimeStamps.FermentEndGet()
-    
-    FermentingTimeStamps.FermentEndUpdate()
-
     temperature = temperature * 9 / 5.0 + 32
     lcd.set_backlight(0)
     lcd.message("Current temp\n" + temperature)  # pulled from mother brew
@@ -986,80 +630,36 @@ def Main():
     lcd.clear()
     GPIO.cleanup()
 
-    # update temp log
-    FermentingTimeStamps.FermentEndPost()
-
     # pull yeast and sugar to check amounts
-    RecipeiTableYeast.YeastGet()
-    yeastAmount = response.json()['result']
+    RecipeiTableYeast.Yeast1Get()
+    RecipeiTableYeast.Yeast2Get()
+    RecipeiTableYeast.Yeast3Get()
 
     RecipieTableSugar.SugarGet()
-    sugarAmount = response.json()['result']
-
-    # if (yeastAmount == #right amount):
-    RecipeiTableYeast.YeastUpdate()
-    # else:
-    # kill time to update yeast
-
-    # if (suagrAmount == #right amount):
-    RecipieTableSugar.SugarUpdate()
-
-
-    # else:
-    # kill time
-
-    outgingYeastAmount = Yeast['']
-    RecipeiTableYeast.YeastPost()
-
-    outgoingSugarAmount = Sugar_levels['result']
-    RecipieTableSugar.SugarPost()
 
     # update API level and gravity check
     RecipieTableABV.ABVGet()
-    abv_level = response.json()['result']
-
-    RecipieTableABV.ABVUpdate()
-    # if (yeastAmount == #right amount):
-    # do nothing
-    # else:
-    # kill time to update yeast
-
-    RecipieTableABV.ABVPost()
-    outgoingABVLevel = ABV['ABV']
 
     # choose second ferment - if/elif branch
     SecondFerment.secondFermentGet()
-    secondary_fermentation = response.json()['result']
 
     today = datetime.date.today()
-    FermentingTimeStamps.FermentStartUodate()
-
-    FermentingTimeStamps.FermentStartPost()
-
-
-    
-
-    # end time
+ 
+     # end time
     outgoingTemp = datetime.date.today()
-    FermentingTimeStamps.FermentEndUpdate()
-
-    FermentingTimeStamps.FermentEndPost()
 
     FermentDuration.durationGet()
-    FermentDuration.durationUpdate()
-    FermentDuration.durationPost()
+
 
     QualityCheck.qualityCheckGet()
-    QualityCheck.qauqlityCheckUpdate()
-    QualityCheck.qualityCheckPost()
+
 
     FermentClean.CleanGet()
     Stepmotor()
-    FermentClean.CLeanUpdate()
-    FermentClean.CLeanPost()
 
     # push to boil
 
-
+    print("Ferment Completed.")
+    imprt CHeckForRecipie
 # run all the stuff
 Main()
