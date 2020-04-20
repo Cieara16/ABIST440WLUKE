@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f4a4f702-7cb1-48ec-83c5-e5946928d9cf" name="Default Changelist" comment="Removed comments">
-      <change afterPath="$PROJECT_DIR$/GetFromMotherBrew.py" afterDir="false" />
+    <list default="true" id="f4a4f702-7cb1-48ec-83c5-e5946928d9cf" name="Default Changelist" comment="First Push">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -100,7 +99,8 @@
       <workItem from="1586382092046" duration="74000" />
       <workItem from="1586724780281" duration="1467000" />
       <workItem from="1586981940429" duration="2087000" />
-      <workItem from="1587082080431" duration="264000" />
+      <workItem from="1587082080431" duration="929000" />
+      <workItem from="1587151568158" duration="1257000" />
     </task>
     <task id="LOCAL-00001" summary="Removed comments">
       <created>1586034772640</created>
@@ -158,7 +158,21 @@
       <option name="project" value="LOCAL" />
       <updated>1586983364519</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="First Push">
+      <created>1587082362723</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1587082362723</updated>
+    </task>
+    <task id="LOCAL-00010" summary="First Push">
+      <created>1587082404962</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1587082404962</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -172,14 +186,15 @@
     <MESSAGE value="Updates" />
     <MESSAGE value="More and more updates" />
     <MESSAGE value="removed a typo" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed a typo" />
+    <MESSAGE value="First Push" />
+    <option name="LAST_COMMIT_MESSAGE" value="First Push" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="642" y="147" key="CommitChangelistDialog2" timestamp="1586983363816">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="2562" y="147" key="CommitChangelistDialog2" timestamp="1587082404431">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="642" y="147" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586983363816" />
-    <state x="2562" y="147" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1586983210974" />
+    <state x="2562" y="147" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587082404431" />
     <state width="1653" height="318" key="GridCell.Tab.0.bottom" timestamp="1585338475733">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
@@ -196,20 +211,20 @@
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state width="1653" height="318" key="GridCell.Tab.0.right/0.0.2560.1440@0.0.2560.1440" timestamp="1585338475733" />
-    <state x="2620" y="244" key="MultipleFileMergeDialog" timestamp="1586983240137">
+    <state x="2620" y="244" key="MultipleFileMergeDialog" timestamp="1587082376637">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="700" y="244" key="MultipleFileMergeDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586724837761" />
-    <state x="2620" y="244" key="MultipleFileMergeDialog/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1586983240137" />
+    <state x="2620" y="244" key="MultipleFileMergeDialog/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587082376637" />
     <state x="1036" y="354" width="1396" height="937" key="SettingsEditor" timestamp="1585340361888">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state x="1036" y="354" width="1396" height="937" key="SettingsEditor/0.0.2560.1440@0.0.2560.1440" timestamp="1585340361888" />
-    <state x="609" y="286" key="Vcs.Push.Dialog.v2" timestamp="1586983367276">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="2529" y="286" key="Vcs.Push.Dialog.v2" timestamp="1587082406923">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="609" y="286" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586983367276" />
-    <state x="2529" y="286" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1586983215797" />
+    <state x="2529" y="286" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587082406923" />
     <state x="976" y="476" key="com.intellij.ide.util.TipDialog" timestamp="1585340377140">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
