@@ -223,7 +223,7 @@ def Post():
                              data="{\"bottle_start_time\":\"" + str(
                                  start_time) + "\",\"bottle_end_time\":\"" + str(
                                  end_time) + "\",\"abv\":\"" + str(alcohol_input) + "\",\"carbonation\":\"" + str(
-                                 temperature) + "\",\"u_bottle_quality_check\":\"Complete\"}")
+                                 temperature) + "\",\"u_bottle_quality_check\":\"true\"}")
 
     # Check for HTTP codes other than 200
     if response.status_code != 200:

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f4a4f702-7cb1-48ec-83c5-e5946928d9cf" name="Default Changelist" comment="First Push">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="f4a4f702-7cb1-48ec-83c5-e5946928d9cf" name="Default Changelist" comment="First Push" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,9 +26,10 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RunManager" selected="Python.Receipt">
     <configuration name="Receipt" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -101,6 +100,7 @@
       <workItem from="1586981940429" duration="2087000" />
       <workItem from="1587082080431" duration="929000" />
       <workItem from="1587151568158" duration="1257000" />
+      <workItem from="1587441662094" duration="13000" />
     </task>
     <task id="LOCAL-00001" summary="Removed comments">
       <created>1586034772640</created>
@@ -216,10 +216,11 @@
     </state>
     <state x="700" y="244" key="MultipleFileMergeDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586724837761" />
     <state x="2620" y="244" key="MultipleFileMergeDialog/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587082376637" />
-    <state x="1036" y="354" width="1396" height="937" key="SettingsEditor" timestamp="1585340361888">
-      <screen x="0" y="0" width="2560" height="1440" />
+    <state x="540" y="115" width="900" height="722" key="SettingsEditor" timestamp="1587441674445">
+      <screen x="0" y="23" width="1440" height="814" />
     </state>
     <state x="1036" y="354" width="1396" height="937" key="SettingsEditor/0.0.2560.1440@0.0.2560.1440" timestamp="1585340361888" />
+    <state x="540" y="115" width="900" height="722" key="SettingsEditor/0.23.1440.814@0.23.1440.814" timestamp="1587441674445" />
     <state x="2529" y="286" key="Vcs.Push.Dialog.v2" timestamp="1587082406923">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
