@@ -1,6 +1,7 @@
+#DEVELOPMENT PHASE
 #Prep team - Jonathan Katz, Ngoc Tran, Elmer Iglesias, Amrish Patel
-#Mostly complete - still adding minor things
 #IST440W - Luke Kasper
+#April 20 2020
 
 import RPi.GPIO as GPIO
 import Adafruit_CharLCD as LCD
