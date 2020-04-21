@@ -637,7 +637,7 @@ import Adafruit_DHT
 import Adafruit_CharLCD as LCD
 import RPi.GPIO as GPIO
 
-# to get active prep task from service now to excute on crow pi
+# to get active brew tasks from ServiceNow to excute on Crowpi
 def Get_Task_for_CrowPi():
     # Set the request parameters
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=rpi_to_execute%3DPrepPi%5Estate%3D-5%5Eactive%3Dtrue&sysparm_limit=1'
