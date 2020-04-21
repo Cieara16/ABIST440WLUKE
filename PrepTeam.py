@@ -206,22 +206,22 @@ def Post_logtable(start1, end1, qualitycheck):
     print(data)
 
 #quality fuction once employee done with QC brew master sound buzzer to confrim QC
-def QualityCheck():
+#def QualityCheck():
     # button  used as buzzer to check the quality
     # change
-    Qc_empbutton_left = 25
+    #Qc_empbutton_left = 25
     # buzzer
-    buzzerpin = 18
+    #buzzerpin = 18
     # set GPIO as GPIO.BOARD
-    GPIO.setmode(GPIO.BCM)
+    #GPIO.setmode(GPIO.BCM)
     # Setup button pin asBu input and power pins
-    GPIO.setup(Qc_empbutton_left, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    #GPIO.setup(Qc_empbutton_left, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     # buzzer
-    GPIO.setup(buzzerpin, GPIO.OUT)
+    #GPIO.setup(buzzerpin, GPIO.OUT)
     # Initialize the LCD using the pins
-    lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
+    #lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
     # Turn backlight on
-    lcd.set_backlight(0)
+    #lcd.set_backlight(0)
 
     #def quality_check(Qc_empbutton_left, lcd, Prep, buzzerpin):
         # regular quality check using lcd screen
