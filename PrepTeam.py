@@ -8,6 +8,7 @@ import Adafruit_CharLCD as LCD
 import time
 import subprocess
 import sys
+import requests
 lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
 
 
@@ -435,7 +436,7 @@ if __name__ == "__main__":
     print(data)
 
     
-    global grain, grain_weight
+global grain, grain_weight
 
 def get_ingredients():
         #Need to install requests package for python
