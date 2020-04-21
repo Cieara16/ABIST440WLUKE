@@ -725,7 +725,7 @@ if response.status_code != 200:
 def TimeDuration():
 
     start1 = datetime.datetime.now()
-    QualityCheck()
+    #QualityCheck()
     #Task2
     #Task3
     end1 = datetime.datetime.now()
@@ -736,7 +736,7 @@ def main():
     get_ingredients()
     Get_Task_for_CrowPi()
     TimeDuration()
-    QualityCheck()
+    #QualityCheck()
     Post_logtable()
 
 main()    
