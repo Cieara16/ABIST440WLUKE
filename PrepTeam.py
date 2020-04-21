@@ -466,11 +466,6 @@ def get_ingredients():
         print('Grain: ' + grain)
         print('Grain weight: ' + grain_weight)
         return grain, grain_weight
-get()
-    
-    
-    
-    
     
 #gather the grains
 btn = 1
@@ -746,6 +741,7 @@ def TimeDuration():
     print(elapsed1)
 
 def main():
+    get_ingredients()
     Get_Task_for_CrowPi()
     TimeDuration()
     QualityCheck()
