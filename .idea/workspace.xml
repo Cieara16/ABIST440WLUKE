@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f4a4f702-7cb1-48ec-83c5-e5946928d9cf" name="Default Changelist" comment="First Push">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClosePi.py" beforeDir="false" afterPath="$PROJECT_DIR$/ClosePi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/print_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/print_test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,7 +26,6 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
@@ -77,6 +78,10 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.Receipt" />
+      <item itemvalue="Python.Test Scores + letter grades" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.Receipt" />
