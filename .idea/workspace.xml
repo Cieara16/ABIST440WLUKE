@@ -1,25 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="BranchesTreeState">
-    <expand>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-    </expand>
-    <select />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="f4a4f702-7cb1-48ec-83c5-e5946928d9cf" name="Default Changelist" comment="Quality Check Post Issue Resloved">
+    <list default="true" id="f4a4f702-7cb1-48ec-83c5-e5946928d9cf" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -35,11 +17,6 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="PREVIOUS_COMMIT_AUTHORS">
-      <list>
-        <option value="Riken" />
-      </list>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
@@ -47,13 +24,13 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RunManager" selected="Python.Receipt">
     <configuration name="Receipt" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -124,8 +101,7 @@
       <workItem from="1586981940429" duration="2087000" />
       <workItem from="1587082080431" duration="929000" />
       <workItem from="1587151568158" duration="1257000" />
-      <workItem from="1587441662094" duration="524000" />
-      <workItem from="1587508165630" duration="28000" />
+      <workItem from="1587341711146" duration="643000" />
     </task>
     <task id="LOCAL-00001" summary="Removed comments">
       <created>1586034772640</created>
@@ -197,72 +173,18 @@
       <option name="project" value="LOCAL" />
       <updated>1587082404962</updated>
     </task>
-    <task id="LOCAL-00011" summary="Quality Check Post Issue Resloved">
-      <created>1587441791005</created>
+    <task id="LOCAL-00011" summary="Restructured the code">
+      <created>1587341738734</created>
       <option name="number" value="00011" />
       <option name="presentableId" value="LOCAL-00011" />
       <option name="project" value="LOCAL" />
-      <updated>1587441791005</updated>
+      <updated>1587341738734</updated>
     </task>
     <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="1">
-          <value>
-            <State>
-              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="HEAD" />
-                      </list>
-                    </value>
-                  </entry>
-                  <entry key="roots">
-                    <value>
-                      <list>
-                        <option value="$PROJECT_DIR$" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </State>
-          </value>
-        </entry>
-        <entry key="MAIN">
-          <value>
-            <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="master" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </State>
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="OPEN_GENERIC_TABS">
-      <map>
-        <entry key="1" value="TOOL_WINDOW" />
-      </map>
-    </option>
-    <option name="oldMeFiltersMigrated" value="true" />
+    <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Imported code from CrowPi" />
@@ -273,17 +195,15 @@
     <MESSAGE value="More and more updates" />
     <MESSAGE value="removed a typo" />
     <MESSAGE value="First Push" />
-    <MESSAGE value="Quality Check Post Issue Resloved" />
-    <option name="LAST_COMMIT_MESSAGE" value="Quality Check Post Issue Resloved" />
+    <MESSAGE value="Restructured the code" />
+    <option name="LAST_COMMIT_MESSAGE" value="Restructured the code" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="482" y="23" width="854" height="816" key="CommitChangelistDialog2" timestamp="1587442217363">
-      <screen x="0" y="23" width="1440" height="816" />
+    <state x="2562" y="147" key="CommitChangelistDialog2" timestamp="1587341737728">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="642" y="147" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586983363816" />
-    <state x="2562" y="147" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587082404431" />
-    <state x="482" y="23" key="CommitChangelistDialog2/0.23.1440.814@0.23.1440.814" timestamp="1587441790431" />
-    <state x="482" y="23" width="854" height="816" key="CommitChangelistDialog2/0.23.1440.816@0.23.1440.816" timestamp="1587442217363" />
+    <state x="2562" y="147" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587341737728" />
     <state width="1653" height="318" key="GridCell.Tab.0.bottom" timestamp="1585338475733">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
@@ -305,31 +225,24 @@
     </state>
     <state x="700" y="244" key="MultipleFileMergeDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586724837761" />
     <state x="2620" y="244" key="MultipleFileMergeDialog/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587082376637" />
-    <state x="540" y="109" width="900" height="722" key="SettingsEditor" timestamp="1587508191986">
-      <screen x="0" y="23" width="1440" height="808" />
+    <state x="1036" y="354" width="1396" height="937" key="SettingsEditor" timestamp="1585340361888">
+      <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state x="1036" y="354" width="1396" height="937" key="SettingsEditor/0.0.2560.1440@0.0.2560.1440" timestamp="1585340361888" />
-    <state x="540" y="109" width="900" height="722" key="SettingsEditor/0.23.1440.808@0.23.1440.808" timestamp="1587508191986" />
-    <state x="540" y="115" width="900" height="722" key="SettingsEditor/0.23.1440.814@0.23.1440.814" timestamp="1587441674445" />
-    <state x="2529" y="286" key="Vcs.Push.Dialog.v2" timestamp="1587082406923">
+    <state x="2529" y="286" key="Vcs.Push.Dialog.v2" timestamp="1587341741846">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="609" y="286" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586983367276" />
-    <state x="2529" y="286" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587082406923" />
+    <state x="2529" y="286" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587341741846" />
     <state x="976" y="476" key="com.intellij.ide.util.TipDialog" timestamp="1585340377140">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state x="976" y="344" key="com.intellij.ide.util.TipDialog/0.0.2560.1040/-1440.0.1440.860@0.0.2560.1040" timestamp="1584565036501" />
     <state x="976" y="476" key="com.intellij.ide.util.TipDialog/0.0.2560.1440@0.0.2560.1440" timestamp="1585340377140" />
-    <state x="944" y="419" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1587442022538">
-      <screen x="0" y="23" width="1440" height="816" />
+    <state x="1259" y="505" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586027836137">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="1259" y="505" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586027836137" />
     <state x="1678" y="699" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.2560.1440@0.0.2560.1440" timestamp="1585340726976" />
-    <state x="944" y="419" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.23.1440.816@0.23.1440.816" timestamp="1587442022538" />
-    <state x="385" y="163" key="search.everywhere.popup" timestamp="1587442193837">
-      <screen x="0" y="23" width="1440" height="816" />
-    </state>
-    <state x="385" y="163" key="search.everywhere.popup/0.23.1440.816@0.23.1440.816" timestamp="1587442193837" />
   </component>
 </project>
