@@ -2,12 +2,14 @@
 #Prep team - Jonathan Katz, Ngoc Tran, Elmer Iglesias, Amrish Patel
 #IST440W - Luke Kasper
 #April 20 2020
+#Pair Programming - Justin Hill
 
 import RPi.GPIO as GPIO
 import Adafruit_DHT
 import Adafruit_CharLCD as LCD
 import datetime
 import time
+from datetime import datetime, date
 import subprocess
 import sys
 import requests
@@ -75,25 +77,18 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         s.cleanup()
 
-#recieve order from user
 
-#update recieve order state to closed complete
-#Need to install requests package for python
-#easy_install requests
+#recieve order from user
 
 # Set the request parameters
 url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask/3adbbe8e1bc81010befe0d88cc4bcbcf'
-
 # Eg. User name="admin", Password="admin" for this code sample.
 user = 'jbk5490'
 pwd = 'Limewild1234'
-
 # Set proper headers
 headers = {"Content-Type":"application/json","Accept":"application/json"}
-
 # Do the HTTP request
 response = requests.patch(url, auth=(user, pwd), headers=headers ,data="{\"state\":\"0\"}")
-
 # Check for HTTP codes other than 200
 if response.status_code != 200: 
     print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
@@ -101,8 +96,8 @@ if response.status_code != 200:
 
 # Decode the JSON response into a dictionary and use the data
 data = response.json()
-print(data)
-
+#print(data)
+'''\------------------------------------------------------------------------------------------------------------\''''
 #process payment
 
 #update process payment to closed complete
@@ -125,8 +120,8 @@ if response.status_code != 200:
 
 # Decode the JSON response into a dictionary and use the data
 data = response.json()
-print(data)
-
+#print(data)
+''''\----------------------------------------------------------------------------------------------------------\''''
 #recieve receipt
 
 #update recieve receipt to closed complete
@@ -149,7 +144,7 @@ if response.status_code != 200:
 
 # Decode the JSON response into a dictionary and use the data
 data = response.json()
-print(data)
+#print(data)
 
 #confirm order
 
@@ -173,7 +168,7 @@ if response.status_code != 200:
 
 # Decode the JSON response into a dictionary and use the data
 data = response.json()
-print(data)
+#print(data)
 
 
 #confirm brew tasks
@@ -181,29 +176,29 @@ print(data)
 #update confirm brew tasks to closed complete
 
 #post crud to post prep log in log table
-def Post_logtable(start1, end1, qualitycheck):
+def Post_logtable():
     # Set the request parameters
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?sysparm_fields=preperation_quality_check%2Cprep_time_start%2Cprep_time_end%2Cpreperation_rest_clean%2Csys_id'
 
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'Amp6826'
-    pwd = '*****'
+    pwd = 'Swami101'
 
     # Set proper headers
     headers = {"Content-Type":"application/json","Accept":"application/json"}
 
     # Do the HTTP request
-    response = requests.post(url, auth=(user, pwd), headers=headers, data="{\"sys_id\":\"\",\"preperation_quality_check\":\""+bool(qualitycheck)+"\",\"prep_time_start\":\""+datetime(start1)+"\",\"prep_time_end\":\"" + datetime(
+    response = requests.post(url, auth=(user, pwd), headers=headers, data="{\"sys_id\":\"\",\"preperation_quality_check\":\""'''+bool(qualitycheck)+'''"\",\"prep_time_start\":\""+str(start1)+"\",\"prep_time_end\":\"" +str(
                                  end1)+"\",\"preperation_rest_clean\":\"\"}" )
 
     # Check for HTTP codes other than 200
-    if response.status_code != 200:
+    if response.status_code != 200 and response.status_code != 201:
         print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
         exit()
 
     # Decode the JSON response into a dictionary and use the data
-    data = response.json()
-    print(data)
+    data = response
+    #print(data)
 
 #quality fuction once employee done with QC brew master sound buzzer to confrim QC
 #def QualityCheck():
@@ -250,11 +245,11 @@ def Post_logtable(start1, end1, qualitycheck):
 # to get active prep task from service now to excute on crow pi
 def Get_Task_for_CrowPi():
     # Set the request parameters
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=rpi_to_execute%3DPrepPi%5Estate%3D-5%5Eactive%3Dtrue&sysparm_limit=1'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=rpi_to_execute%3DPrepPi%5Estate%3D-5%5Eactive%3Dtrue&sysparm_limit=4'
 
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'Amp6826'
-    pwd = '*****'
+    pwd = 'Swami101'
 
     # Set proper headers
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -268,8 +263,23 @@ def Get_Task_for_CrowPi():
         exit()
 
     # Decode the JSON response into a dictionary and use the data
-    data = response.json()
-    print(data)
+    Task1 = response.json()['result'][0]['number']
+    shortDescTask1 = response.json()['result'][0]['short_description']
+    Task2 = response.json()['result'][1]['number']
+    shortDescTask2 = response.json()['result'][1]['short_description']
+    Task3 = response.json()['result'][2]['number']
+    shortDescTask3 = response.json()['result'][2]['short_description']
+    Task4 = response.json()['result'][3]['number']
+    shortDescTask4 = response.json()['result'][3]['short_description']
+    
+    print(Task1)
+    print(shortDescTask1)
+    print(Task2)
+    print(shortDescTask2)
+    print(Task3)
+    print(shortDescTask3)
+    print(Task4)
+    print(shortDescTask4)
 
 
 # Stepper motor 1
@@ -537,11 +547,12 @@ def get_ingredients():
         #easy_install requests
 
         # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_ingredients?sysparm_query=Active%20%3D%20true&sysparm_fields=grain_weight%2Cgrains&sysparm_limit=1'
-
+# Needs fixing -> url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_ingredients?sysparm_query=Active%20%3D%20true&sysparm_fields=grain_weight%2Cgrains&sysparm_limit=1'
+        
+        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_ingredients?sysparm_query=grain_weightISNOTEMPTY&sysparm_limit=1'
         # Eg. User name="admin", Password="admin" for this code sample.
         user = 'Amp6826'
-        pwd = '*****'
+        pwd = 'Swami101'
 
         # Set proper headers
         headers = {"Content-Type":"application/json","Accept":"application/json"}
@@ -625,9 +636,9 @@ def main():
                 print('Weight measured')
                 lcd.clear()
                 lcd.message('Weight measured')
-                print('Weight: 12lbs.')
+                print('12lbs.')
                 lcd.clear()
-                lcd.message('Weight: 12lbs.')
+                lcd.message('12lbs.')
                 time.sleep(3)
                 lcd.clear()
                 lcd.set_backlight(1)
@@ -719,25 +730,20 @@ response = requests.patch(url, auth=(user, pwd), headers=headers ,data="{\"state
 # Check for HTTP codes other than 200
 if response.status_code != 200: 
     print('Status:', res)
-
-
-#calculate process duration of prep
-def TimeDuration():
-
-    start1 = datetime.datetime.now()
-    #QualityCheck()
-    #Task2
-    #Task3
-    end1 = datetime.datetime.now()
-    elapsed1 = (end1 - start1).seconds
-    print(elapsed1)
-
+    
 def main():
+    global start1, end1
+    start1 = datetime.now()
+    end1 = datetime.now()
+    elapsed1 = (end1 - start1).seconds
     get_ingredients()
     Get_Task_for_CrowPi()
-    TimeDuration()
     #QualityCheck()
     Post_logtable()
+    print(elapsed1)
+    return start1, end1
+    print('done')
 
 main()    
    
+
