@@ -70,7 +70,7 @@ def Get_Rpi_BottleTask():
 
 def GetVolume():
     # Set the request parameters
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=%5EORDERBYDESCsys_created_on&sysparm_fields=keg_volume%2Ckeg_quantity&sysparm_limit=1'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=activeISNOTEMPTY%5EORDERBYDESCsys_created_on&sysparm_fields=keg_volume%2Ckeg_quantity&sysparm_limit=1'
 
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'rap5695'
