@@ -41,7 +41,7 @@ lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
 # Turn backlight on
 lcd.set_backlight(0)
 
-global start_time, end_time, alcohol_input, Kegvolume
+global start_time, end_time, alcohol_input, Kegvolume, Kegquantity
 
 
 def Get_Rpi_BottleTask():
@@ -70,7 +70,7 @@ def Get_Rpi_BottleTask():
 
 def GetVolume():
     # Set the request parameters
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=%5EORDERBYDESCsys_created_on&sysparm_fields=keg_volume&sysparm_limit=1'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=%5EORDERBYDESCsys_created_on&sysparm_fields=keg_volume%2Ckeg_quantity&sysparm_limit=1'
 
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'rap5695'
@@ -88,10 +88,12 @@ def GetVolume():
         exit()
 
     # Decode the JSON response into a dictionary and use the data
-    global Kegvolume
+    global Kegvolume, Kegquantity
     Kegvolume = response.json()['result'][0]['keg_volume']
+    Kegquantity = response.json()['result'][0]['keg_quantity']
     print('Keg Volume: ' + Kegvolume + ' Gallons')
-    return Kegvolume
+    print('Keg Quantity: ' + Kegquantity + ' Kegs')
+    return Kegvolume, Kegquantity
 
 
 def motion_detect_keg():
