@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f4a4f702-7cb1-48ec-83c5-e5946928d9cf" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClosePi.py" beforeDir="false" afterPath="$PROJECT_DIR$/ClosePi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/print_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/print_test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -19,8 +17,12 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="ruc230 &lt;ruc230@psu.edu&gt;" />
+      </list>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="ProjectId" id="1ZJlL2DjOIb3Sac2wRmEQKcN6QO" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -249,5 +251,9 @@
     </state>
     <state x="1259" y="505" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586027836137" />
     <state x="1678" y="699" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.2560.1440@0.0.2560.1440" timestamp="1585340726976" />
+    <state x="659" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1587588868520">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="659" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1587588868520" />
   </component>
 </project>
