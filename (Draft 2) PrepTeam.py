@@ -730,26 +730,18 @@ response = requests.patch(url, auth=(user, pwd), headers=headers ,data="{\"state
 # Check for HTTP codes other than 200
 if response.status_code != 200: 
     print('Status:', res)
-
-
-#calculate process duration of prep
-def TimeDuration():
+    
+def main():
     global start1, end1
     start1 = datetime.now()
-    #QualityCheck()
-    #Task2
-    #Task3
     end1 = datetime.now()
     elapsed1 = (end1 - start1).seconds
-    print(elapsed1)
-    return start1, end1
-
-def main():
     get_ingredients()
     Get_Task_for_CrowPi()
-    TimeDuration()
     #QualityCheck()
     Post_logtable()
+    print(elapsed1)
+    return start1, end1
     print('done')
 
 main()    
