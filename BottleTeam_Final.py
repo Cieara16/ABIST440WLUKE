@@ -92,7 +92,7 @@ def GetVolume():
     Kegvolume = response.json()['result'][0]['keg_volume']
     Kegquantity = response.json()['result'][0]['keg_quantity']
     print('Keg Volume: ' + Kegvolume + ' Gallons')
-    print('Keg Quantity: ' + Kegquantity + ' Kegs')
+    print('Keg Quantity: ' + Kegquantity + ' Kegs ')
     return Kegvolume, Kegquantity
 
 
