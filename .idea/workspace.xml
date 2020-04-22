@@ -199,11 +199,11 @@
     <option name="LAST_COMMIT_MESSAGE" value="Restructured the code" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2562" y="147" key="CommitChangelistDialog2" timestamp="1587341737728">
+    <state x="2562" y="147" key="CommitChangelistDialog2" timestamp="1587521152729">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="642" y="147" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586983363816" />
-    <state x="2562" y="147" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587341737728" />
+    <state x="2562" y="147" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587521152729" />
     <state width="1653" height="318" key="GridCell.Tab.0.bottom" timestamp="1585338475733">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
@@ -220,20 +220,20 @@
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state width="1653" height="318" key="GridCell.Tab.0.right/0.0.2560.1440@0.0.2560.1440" timestamp="1585338475733" />
-    <state x="2620" y="244" key="MultipleFileMergeDialog" timestamp="1587082376637">
+    <state x="2620" y="244" key="MultipleFileMergeDialog" timestamp="1587521140133">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="700" y="244" key="MultipleFileMergeDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586724837761" />
-    <state x="2620" y="244" key="MultipleFileMergeDialog/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587082376637" />
+    <state x="2620" y="244" key="MultipleFileMergeDialog/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587521140133" />
     <state x="1036" y="354" width="1396" height="937" key="SettingsEditor" timestamp="1585340361888">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state x="1036" y="354" width="1396" height="937" key="SettingsEditor/0.0.2560.1440@0.0.2560.1440" timestamp="1585340361888" />
-    <state x="2529" y="286" key="Vcs.Push.Dialog.v2" timestamp="1587341741846">
+    <state x="2529" y="286" key="Vcs.Push.Dialog.v2" timestamp="1587521125670">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="609" y="286" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586983367276" />
-    <state x="2529" y="286" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587341741846" />
+    <state x="2529" y="286" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587521125670" />
     <state x="976" y="476" key="com.intellij.ide.util.TipDialog" timestamp="1585340377140">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>

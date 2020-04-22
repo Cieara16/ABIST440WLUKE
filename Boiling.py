@@ -355,7 +355,6 @@ def PostToLogTable():
     data = response.json()
     print(data)
 
-
 def main():
     global start, end, duration
     print('Beginning the Boiling Process')
