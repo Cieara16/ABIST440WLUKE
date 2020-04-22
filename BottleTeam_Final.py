@@ -97,6 +97,8 @@ def GetVolume():
 
 
 def motion_detect_keg():
+    # Turn backlight on
+    lcd.set_backlight(0)
     point = True
     while point:
         if GPIO.input(motion_pin) == 0:
@@ -242,16 +244,17 @@ def main():
     """
     brew = Keg()
     """
-    global start_time, end_time
+    global start_time, end_time, Kegquantity
 
     Get_Rpi_BottleTask()
     start_time = datetime.datetime.now()
-    motion_detect_keg()
-    GetVolume()
-    Fill_keg()
-    Carbonation_temp()
-    alcohol_content_1()
-    QC()
+    for i in range(int(Kegquantity)):
+        motion_detect_keg()
+        GetVolume()
+        Fill_keg()
+        Carbonation_temp()
+        alcohol_content_1()
+        QC()
     end_time = datetime.datetime.now()
     # return start_time, end_time
     Post()
