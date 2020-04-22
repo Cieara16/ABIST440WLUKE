@@ -248,9 +248,9 @@ def main():
 
     Get_Rpi_BottleTask()
     start_time = datetime.datetime.now()
+    GetVolume()
     for i in range(int(Kegquantity)):
         motion_detect_keg()
-        GetVolume()
         Fill_keg()
         Carbonation_temp()
         alcohol_content_1()
