@@ -10,7 +10,6 @@ def print_label(beer_name, abv, keg_volume, current_date):
     label_write_line_1.wait()
     label_write_line_2 = subprocess.Popen(['/usr/bin/convert', '-pointsize', '18', '-draw', label_line_2, 'beer_label_withtext.png', 'beer_label_finished.png'])
     label_write_line_2.wait()
-    label
     #subprocess.Popen(['/usr/bin/lp', '-d', 'HP_DeskJet_2130_series', '-o', 'orientation-requested=3', 'beer_label_finished.png'])
     
 
@@ -51,8 +50,8 @@ def get_from_any_table(url):
 
 
 def main():
-    current_close_task = get_from_any_table("https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=ORDERBYDESCnumber%5Erpi_to_execute%3DClosePi%5Estate%3D-5&sysparm_limit=1")
-    while (current_close_task != emptyList):
+    while (get_from_any_table("https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=ORDERBYDESCnumber%5Erpi_to_execute%3DClosePi%5Estate%3D-5&sysparm_limit=1") != emptyList):
+        current_close_task = get_from_any_table("https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=ORDERBYDESCnumber%5Erpi_to_execute%3DClosePi%5Estate%3D-5&sysparm_limit=1")[0]
         short_description = current_close_task['short_description']
         short_description = str.lower(short_description)
         description = current_close_task['description']
@@ -65,9 +64,7 @@ def main():
         current_date = datetime.datetime.now().strftime("%b %d %Y")
         if short_description.find('label') != -1 or description.find('label') != -1:
             print_label(beer_name, abv, keg_volume, current_date)
-            patch_brew_task(task_id)
-        current_close_task = get_from_any_table("https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=ORDERBYDESCnumber%5Erpi_to_execute%3DClosePi%5Estate%3D-5&sysparm_limit=1")
-            
+            patch_brew_task(task_id)            
 
 
 if __name__ == "__main__":
