@@ -5,8 +5,6 @@ import datetime
 
 # Set the request parameters
 def get_from_any_table(url):
-    url = "https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query" \
-          "=rpi_to_execute%3DClosePi%&sysparm_limit=1"
 
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'ruc230'
