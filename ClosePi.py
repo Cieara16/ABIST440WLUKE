@@ -4,7 +4,7 @@ import datetime
 
 
 # Set the request parameters
-def main():
+def get_from_any_table(url):
     url = "https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query" \
           "=rpi_to_execute%3DClosePi%&sysparm_limit=1"
 
@@ -25,15 +25,22 @@ def main():
         exit()
 
         # Decode the JSON response into a dictionary and use the data
-    current_close_task = response.json()['result'][0]
+    return response.json()['result'][0]
+
+
+def main():
+    current_close_task = get_from_any_table("https://emplkasperpsu1.service-now.com/api/now\
+    /table/x_snc_beer_brewing_lkbrewtask?sysparm_query\
+    =rpi_to_execute%3DClosePi%&sysparm_limit=1")
     short_description = current_close_task['short_description']
     short_description = str.lower(short_description)
     number = current_close_task['number']
     description = current_close_task['description']
     description = str.lower(description)
-    abv = current_close_task['mother_brew_task'.abv]
-    keg_volume = current_close_task['mother_brew_task'.keg_volume]
-    beer_name = current_close_task['mother_brew_task'.beer_name]
+    mother_brew_record = get_from_any_table(current_close_task['mother_brew_task']['link'])
+    abv = mother_brew_record['abv']
+    keg_volume = mother_brew_record['keg_volume']
+    beer_name = mother_brew_record['beer_name']
     if short_description.find('label') != -1 or description.find('label') != -1:
         print_label(beer_name, abv, keg_volume)
 
