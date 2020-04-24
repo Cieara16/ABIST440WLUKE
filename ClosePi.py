@@ -1,6 +1,13 @@
 import requests
 import subprocess
 import datetime
+emptyList = []
+
+def print_label(beer_name, abv, keg_volume, current_date):
+    text_for_label = 'text 190,490 "' + beer_name + ' ' + current_date + ' ABV: ' + abv + '% ' + keg_volume + ' Gal"'
+    label_write = subprocess.Popen(['/usr/bin/convert', '-pointsize', '18', '-draw', text_for_label, 'beer_label.png', 'beer_label_withtext.png'])
+    label_write.wait()
+    #subprocess.Popen(['/usr/bin/lp', '-d', 'HP_DeskJet_2130_series', '-o', 'orientation-requested=3', 'beer_label_withtext.png'])
 
 
 # Set the request parameters
@@ -23,34 +30,29 @@ def get_from_any_table(url):
         exit()
 
         # Decode the JSON response into a dictionary and use the data
-    return response.json()['result'][0]
+    return response.json()['result']
 
 
 def main():
-    current_close_task = get_from_any_table("https://emplkasperpsu1.service-now.com/api/now\
-    /table/x_snc_beer_brewing_lkbrewtask?sysparm_query\
-    =rpi_to_execute%3DClosePi%&sysparm_limit=1")
-    short_description = current_close_task['short_description']
-    short_description = str.lower(short_description)
-    number = current_close_task['number']
-    description = current_close_task['description']
-    description = str.lower(description)
-    mother_brew_record = get_from_any_table(current_close_task['mother_brew_task']['link'])
-    abv = mother_brew_record['abv']
-    keg_volume = mother_brew_record['keg_volume']
-    beer_name = mother_brew_record['beer_name']
-    if short_description.find('label') != -1 or description.find('label') != -1:
-        print_label(beer_name, abv, keg_volume)
+    while (get_from_any_table("https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=ORDERBYDESCnumber%5Erpi_to_execute%3DClosePi&sysparm_limit=1") != emptyList):
+        current_close_task = get_from_any_table("https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=ORDERBYDESCnumber%5Erpi_to_execute%3DClosePi&sysparm_limit=1")[0]
+        short_description = current_close_task['short_description']
+        short_description = str.lower(short_description)
+        description = current_close_task['description']
+        description = str.lower(description)
+        mother_brew_record = get_from_any_table(current_close_task['mother_brew_task']['link'])
+        abv = mother_brew_record['abv']
+        keg_volume = mother_brew_record['keg_volume']
+        beer_name = mother_brew_record['beer_name']
+        current_date = datetime.datetime.now().strftime("%b %d %y")
+        if short_description.find('label') != -1 or description.find('label') != -1:
+            print_label(beer_name, abv, keg_volume, current_date)
 
 
 if __name__ == "__main__":
     main()
-def print_label(beer_name, abv, keg_volume):
-    current_date = datetime.now().tostring()
-    text_for_label = 'text 190,490 "' + beer_name + ' ' + current_date + ' ABV: ' + abv + '% ' + keg_volume + ' Gal"'
-    subprocess.Popen(['/usr/bin/convert', '-pointsize', '18', '-draw', text_for_label, 'beer_label.png', 'beer_label_withtext.png'])
-    #subprocess.Popen(['/usr/bin/lp', '-d', 'HP_DeskJet_2130_series', '-o', 'orientation-requested=3', 'beer_label_withtext.png'])
-    #CRITICAL: match up number fields, inherit from mother brew, whatever but we need to be able to match tasks up to mother brew records
+    
+    
 
 
 
