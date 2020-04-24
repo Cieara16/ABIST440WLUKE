@@ -4,10 +4,14 @@ import datetime
 emptyList = []
 
 def print_label(beer_name, abv, keg_volume, current_date):
-    text_for_label = 'text 190,490 "' + beer_name + ' ' + current_date + ' ABV: ' + abv + '% ' + keg_volume + ' Gal"'
-    label_write = subprocess.Popen(['/usr/bin/convert', '-pointsize', '18', '-draw', text_for_label, 'beer_label.png', 'beer_label_withtext.png'])
-    label_write.wait()
-    #subprocess.Popen(['/usr/bin/lp', '-d', 'HP_DeskJet_2130_series', '-o', 'orientation-requested=3', 'beer_label_withtext.png'])
+    label_line_1 = 'text 190,490 "' + beer_name + ' ' + current_date
+    label_line_2 = 'text 190,520 "' + 'ABV: ' + abv + '% ' + keg_volume + ' Gal"'
+    label_write_line_1 = subprocess.Popen(['/usr/bin/convert', '-pointsize', '18', '-draw', label_line_1, 'beer_label.png', 'beer_label_withtext.png'])
+    label_write_line_1.wait()
+    label_write_line_2 = subprocess.Popen(['/usr/bin/convert', '-pointsize', '18', '-draw', label_line_2, 'beer_label_withtext.png', 'beer_label_finished.png'])
+    label_write_line_2.wait()
+    label
+    #subprocess.Popen(['/usr/bin/lp', '-d', 'HP_DeskJet_2130_series', '-o', 'orientation-requested=3', 'beer_label_finished.png'])
     
 
 def patch_brew_task(task_id):
