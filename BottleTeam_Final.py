@@ -116,7 +116,7 @@ def Fill_keg():
     point = True
     while point:
         # check if button pressed for 5 gallon
-        if (GPIO.input(button_pin_5_down) == 0) and Kegvolume == 5:
+        if (GPIO.input(button_pin_5_down) == 0) and Kegvolume == '5':
             # set power on
             lcd.message('Button is \nPressed for 5 Gallon')
             # GPIO.setwarnings(False)
@@ -125,7 +125,7 @@ def Fill_keg():
             # Power is off automatically after 5 second
             time.sleep(3)
             # check if button pressed for 10 gallon
-        elif (GPIO.input(button_pin_10_up) == 0) and Kegvolume == 15:
+        elif (GPIO.input(button_pin_10_up) == 0) and Kegvolume == '15':
             # set power on
             lcd.message('Button is \nPressed for 10 Gallon')
             # GPIO.setwarnings(False)
