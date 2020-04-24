@@ -7,15 +7,28 @@ def print_label(beer_name, abv, keg_volume, current_date):
     text_for_label = 'text 190,490 "' + beer_name + ' ' + current_date + ' ABV: ' + abv + '% ' + keg_volume + ' Gal"'
     label_write = subprocess.Popen(['/usr/bin/convert', '-pointsize', '18', '-draw', text_for_label, 'beer_label.png', 'beer_label_withtext.png'])
     label_write.wait()
-    subprocess.Popen(['/usr/bin/lp', '-d', 'HP_DeskJet_2130_series', '-o', 'orientation-requested=3', 'beer_label_withtext.png'])
+    #subprocess.Popen(['/usr/bin/lp', '-d', 'HP_DeskJet_2130_series', '-o', 'orientation-requested=3', 'beer_label_withtext.png'])
+    
 
+def patch_brew_task(task_id):
+    user = 'kasper440'
+    pwd = 'kasper440'
 
+    # Set proper headers
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask/' + task_id
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    response = requests.patch(url, auth=(user, pwd), headers=headers, data="{\"state\":\"3\"}")
+    if response.status_code != 200:
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+        exit()
+        
+        
 # Set the request parameters
 def get_from_any_table(url):
 
     # Eg. User name="admin", Password="admin" for this code sample.
-    user = 'ruc230'
-    pwd = '1%mFMHKr8QE^'
+    user = 'kasper440'
+    pwd = 'kasper440'
 
     # Set proper headers
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -34,12 +47,13 @@ def get_from_any_table(url):
 
 
 def main():
-    while (get_from_any_table("https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=ORDERBYDESCnumber%5Erpi_to_execute%3DClosePi&sysparm_limit=1") != emptyList):
-        current_close_task = get_from_any_table("https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=ORDERBYDESCnumber%5Erpi_to_execute%3DClosePi&sysparm_limit=1")[0]
+    current_close_task = get_from_any_table("https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=ORDERBYDESCnumber%5Erpi_to_execute%3DClosePi%5Estate%3D-5&sysparm_limit=1")
+    while (current_close_task != emptyList):
         short_description = current_close_task['short_description']
         short_description = str.lower(short_description)
         description = current_close_task['description']
         description = str.lower(description)
+        task_id = current_close_task['sys_id']
         mother_brew_record = get_from_any_table(current_close_task['mother_brew_task']['link'])
         abv = mother_brew_record['abv']
         keg_volume = mother_brew_record['keg_volume']
@@ -47,6 +61,9 @@ def main():
         current_date = datetime.datetime.now().strftime("%b %d %y")
         if short_description.find('label') != -1 or description.find('label') != -1:
             print_label(beer_name, abv, keg_volume, current_date)
+            patch_brew_task(task_id)
+        current_close_task = get_from_any_table("https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=ORDERBYDESCnumber%5Erpi_to_execute%3DClosePi%5Estate%3D-5&sysparm_limit=1")
+            
 
 
 if __name__ == "__main__":
