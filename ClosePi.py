@@ -58,7 +58,7 @@ def main():
         abv = mother_brew_record['abv']
         keg_volume = mother_brew_record['keg_volume']
         beer_name = mother_brew_record['beer_name']
-        current_date = datetime.datetime.now().strftime("%b %d %y")
+        current_date = datetime.datetime.now().strftime("%b %d %Y")
         if short_description.find('label') != -1 or description.find('label') != -1:
             print_label(beer_name, abv, keg_volume, current_date)
             patch_brew_task(task_id)
