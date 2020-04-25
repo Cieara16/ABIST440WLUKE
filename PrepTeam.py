@@ -2,6 +2,7 @@
 #Prep team - Jonathan Katz, Ngoc Tran, Elmer Iglesias, Amrish Patel
 #IST440W - Luke Kasper
 #April 20 2020
+#Pair programming - Justin Hill
 
 import RPi.GPIO as GPIO
 import Adafruit_DHT
@@ -32,7 +33,11 @@ touch_pin = 17
 # set GPIO pin to INPUT
 GPIO.setup(touch_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-GPIO.cleanup()
+motion_pin = 23
+# set GPIO as GPIO.BOARD
+GPIO.setmode(GPIO.BCM)
+# set pin mode as INPUT
+GPIO.setup(motion_pin, GPIO.IN)
 
 
 # LED Matrix
@@ -48,7 +53,7 @@ from luma.core.virtual import viewport
 from luma.core.legacy import text, show_message
 from luma.core.legacy.font import proportional, CP437_FONT, TINY_FONT, SINCLAIR_FONT, LCD_FONT
 
-def main(cascaded, block_orientation, rotate):
+def displayBalrog(cascaded=1, block_orientation=90, rotate=0):
     
     # create matrix device
     serial = spi(port=0, device=1, gpio=noop())
@@ -64,11 +69,13 @@ def main(cascaded, block_orientation, rotate):
     show_message(device, msg, fill="white", font=proportional(CP437_FONT), scroll_delay=0.1)
     print("Brew task confirmed")
 
-if __name__ == "__main__":
-    try:
-        main(cascaded=1, block_orientation=90, rotate=0)
-    except KeyboardInterrupt:
-        s.cleanup()
+btn = 0
+if btn == 0:
+    displayBalrog()
+    
+def Create_Receipt():
+    print('receipt code will go here')
+
 # to get active prep task from service now to excute on crow pi
 def Get_Task_for_CrowPi():
     # Set the request parameters
@@ -135,6 +142,7 @@ def GetFromMotherbrew():
     #process payment
 
     #update process payment to closed complete
+def CC1(test=4):
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask/49d399fe1b409010befe0d88cc4bcb41'
 
     # Eg. User name="admin", Password="admin" for this code sample.
@@ -154,30 +162,40 @@ def GetFromMotherbrew():
 
     # Decode the JSON response into a dictionary and use the data
     data = response.json()
+
+CC = 4
+if CC == 4:
+    CC1()
+
     #print(data)
     ''''\----------------------------------------------------------------------------------------------------------\''''
 #recieve receipt
 
 #update recieve receipt to closed complete
-url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask/0dd399fe1b409010befe0d88cc4bcb43'
+def CC2(test=4):
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask/0dd399fe1b409010befe0d88cc4bcb43'
 
-# Eg. User name="admin", Password="admin" for this code sample.
-user = 'jbk5490'
-pwd = 'Limewild1234'
+    # Eg. User name="admin", Password="admin" for this code sample.
+    user = 'jbk5490'
+    pwd = 'Limewild1234'
 
-# Set proper headers
-headers = {"Content-Type":"application/json","Accept":"application/json"}
+    # Set proper headers
+    headers = {"Content-Type":"application/json","Accept":"application/json"}
 
-# Do the HTTP request
-response = requests.patch(url, auth=(user, pwd), headers=headers ,data="{\"state\":\"0\"}")
+    # Do the HTTP request
+    response = requests.patch(url, auth=(user, pwd), headers=headers ,data="{\"state\":\"0\"}")
 
-# Check for HTTP codes other than 200
-if response.status_code != 200: 
-    print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
-    exit()
+    # Check for HTTP codes other than 200
+    if response.status_code != 200: 
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
+        exit()
 
-# Decode the JSON response into a dictionary and use the data
-data = response.json()
+    # Decode the JSON response into a dictionary and use the data
+    data = response.json()
+
+Cl2 = 4
+if Cl2 == 4:
+    CC2()
 #print(data)
 
 #CONFIRM ORDER FROM MOTHERBREW TABLE
@@ -355,35 +373,22 @@ def main(test=0):
     lcd.message('Testing all')
     time.sleep(3.0)
     lcd.clear()
-    lcd.message('Equipments')
+    lcd.message('Equipment')
     time.sleep(3.0)
     lcd.clear()
-    lcd.set_backlight(1)
-    print("Testing started...")
-    time.sleep(2)
-    print("Preparation Unit: Passed")
-    time.sleep(3)
+    print("moving started")
+    lcd.message('Testing mill')
     motor = Stepmotor()
-    #print("One Step")
-    print("Mashing Unit: Passed")
-    time.sleep(3)
+    print("One Step")
     motor.turnSteps(1)
     time.sleep(0.5)
-    #print("20 Steps")
-    print("Boiling Unit: Passed")
-    time.sleep(3)
+    print("20 Steps")
     motor.turnSteps(20)
     time.sleep(0.5)
-    #print("quarter turn")
-    print("Fermenting Unit: Passed")
-    time.sleep(3)
-    print("Bottling Unit: Passed")
-    time.sleep(3)
+    print("quarter turn")
     motor.turnDegrees(90)
-    #print("moving stopped")
-    print("Closing Unit: Passed")
-    time.sleep(3)
-    print("Equipments are ready")
+    print("moving stopped")
+    lcd.clear()
     motor.close()
 
 
@@ -522,7 +527,7 @@ print(data)
 
 # Measure the grains weight
 # Sensor
-def main():
+def main4(test=4):
     # (GET) the grains and weight
     # Set the request parameters     
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_ingredients?sysparm_query=grain_weightISNOTEMPTY&sysparm_limit=1'
@@ -568,8 +573,24 @@ def main():
         # CTRL+C detected, cleaning and quitting the script
         GPIO.cleanup()
 
-if __name__ == "__main__":
-    main()
+for n in range(-1,1):
+    if n == 0:
+        start = time.time()
+        val = main4(n)
+        duration = time.time() - start
+        durationInString = str(duration)
+        "{:<2}".format(durationInString)
+        print(durationInString)
+        lcd.set_backlight(0)
+        lcd.clear()
+        lcd.message("Seconds: ")
+        lcd.message(durationInString)
+        time.sleep(5.0)
+        lcd.clear()
+        print(f'calc for n={n} took {duration:.2f}s')
+        break
+        main()
+        break
 
 # Mill the grains
 # LCD display message
@@ -585,18 +606,13 @@ if __name__ == "__main__":
     main()
 
 # Motor mills the grains
-def main():
+def main3(test=4):
     lcd.clear()
     lcd.show_cursor(True)
     lcd.message('Milling grains...')
     print('Milling grains...')
     time.sleep(2.0)
-    lcd.clear()
-    lcd.show_cursor(True)
-    lcd.message('Motor is on.')
     print('Motor is on.')
-    lcd.clear()
-    lcd.set_backlight(1)
     print("Grain 1 in")
     time.sleep(0.5)
     motor = Stepmotor()
@@ -609,13 +625,30 @@ def main():
     time.sleep(0.5)
     lcd.message("Mill is running...")
     print("Mill is running...")
-    motor.turnDegrees(360)   
+    motor.turnDegrees(360)
+    lcd.clear()
+    lcd.set_backlight(1)
     motor.close()
     time.sleep(0.5)
     print("Grains mill stopped")
 
-if __name__ == "__main__":
-    main()
+for n in range(-1,1):
+    n = 0
+    start = time.time()
+    val = main3(n)
+    duration = time.time() - start
+    durationInString = str(duration)
+    "{:<2}".format(durationInString)
+    print(durationInString)
+    lcd.set_backlight(0)
+    lcd.message("Seconds: ")
+    lcd.message(durationInString)
+    time.sleep(5.0)
+    lcd.clear()
+    print(f'calc for n={n} took {duration:.2f}s')
+    break
+    main3()
+    break
     
 #update run the mill to closed complete
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask/d5c699721b809010befe0d88cc4bcb68'
@@ -673,7 +706,7 @@ def TimeDuration():
     print(elapsed1)
     return start1, end1
 
-def main():
+def main7():
     #get_ingredients()
     Get_Task_for_CrowPi()
     TimeDuration()
@@ -683,7 +716,7 @@ def main():
     time.sleep(3)
     print("Prepare for cleaning task..")
 
-main()
+main7()
 
 
 
@@ -723,7 +756,7 @@ class sg90:
     self.servo.ChangeDutyCycle( self._henkan( direction ) )
     self.direction = direction
 
-def main(test=4):
+def main2(test=4):
 
     s = sg90(0)
 
@@ -732,31 +765,27 @@ def main(test=4):
             lcd.set_backlight(0)
             lcd.clear()
             lcd.show_cursor(True)
-            lcd.message('Finish task. Start cleaning')
+            lcd.message('Start cleaning')
             time.sleep(2.0)
             lcd.clear()
             lcd.message('Sanitizing...')
             time.sleep(2.0)
-            print("Testing cleaner wiping turning left")
+            print("Swipe left")
             s.setdirection( 100, 100 )
             time.sleep(0.5)
-            print("Testing cleaner wiping turning right")
+            print("Swipe right")
             s.setdirection( -100, -100 )
-            time.sleep(2)
-            lcd.message('Cleaner Working')
             lcd.clear()
             time.sleep(3.0)
             lcd.set_backlight(1)
             
     except KeyboardInterrupt:
         s.cleanup()
-        
-if __name__ == "__main__":
-    main()
-        
-for n in range(0):
+            
+for n in range(-1,1):
+    n = 0
     start = time.time()
-    val = main(n)
+    val = main2(n)
     duration = time.time() - start
     durationInString = str(duration)
     "{:<2}".format(durationInString)
@@ -767,13 +796,50 @@ for n in range(0):
     time.sleep(5.0)
     lcd.clear()
     print(f'calc for n={n} took {duration:.2f}s')
+    break
+    main2()
+    break
 
-if __name__ == "__main__":
-    main()
+GPIO.setup(motion_pin, GPIO.IN)
+def Transfer_Grains(test=4):
+    lcd.set_backlight(0)
+    lcd.clear()
+    lcd.show_cursor(True)
+    lcd.message('Transferring')
+    time.sleep(3)
+    lcd.clear()
+    lcd.show_cursor(True)
+    lcd.message('Grains')
+    time.sleep(3)
+    lcd.clear()
+    lcd.show_cursor(True)
+    lcd.message('To Mashtun')
+    time.sleep(3)
+    lcd.clear()
+    print('Transferring grains')
+    time.sleep(5)
+    try:
+        if True:
+            if(GPIO.input(motion_pin) == 0):
+                time.sleep(10)
+                print("Grains not found")
+            elif(GPIO.input(motion_pin) == 1):
+                lcd.clear()
+                lcd.show_cursor(True)
+                lcd.message('Grains moved')
+                time.sleep(3)
+                lcd.clear()
+                print("Grains moved")
+    except KeyboardInterrupt:
+         GPIO.cleanup()
+
+btn = 4
+if btn == 4:
+    Transfer_Grains()
     
-    
+
 # LCD display message
-def main():
+def main5():
     lcd.set_backlight(0)
     lcd.clear()
     lcd.show_cursor(True)
@@ -783,5 +849,6 @@ def main():
     lcd.clear()
     lcd.set_backlight(1)             
     
-if __name__ == "__main__":
-    main()
+btn = 3
+if btn == 3:
+    main5()
