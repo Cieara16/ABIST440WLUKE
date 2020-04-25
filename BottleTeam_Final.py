@@ -34,6 +34,7 @@ GPIO.setup(motion_pin, GPIO.IN)
 GPIO.setup(button_pin_5_down, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(button_pin_10_up, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(power_pin, GPIO.OUT)
+GPIO.output(power_pin, GPIO.LOW)
 # Setup button pin asBu input and QC check
 GPIO.setup(button_QC_right, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 # Initialize the LCD using the pins
@@ -46,7 +47,7 @@ global start_time, end_time, alcohol_input, Kegvolume, Kegquantity
 
 def Get_Rpi_BottleTask():
     # Set the request parameters
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=rpi_to_execute%3DBottlePi%5Estate%3D-5%5Eactive%3Dtrue&sysparm_limit=1'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=ORDERBYDESCsys_created_on%5Erpi_to_execute%3DBottlePi%5Estate%3D-5%5Eactive%3Dtrue&sysparm_limit=1'
 
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'rap5695'
@@ -64,14 +65,12 @@ def Get_Rpi_BottleTask():
         exit()
 
     # Decode the JSON response into a dictionary and use the data
-    data = response.json()
-    print(data)
+    return response.json()['result']
 
 
-def GetVolume():
+
+def GetVolume(mother_brew_link):
     # Set the request parameters
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=activeISNOTEMPTY%5EORDERBYDESCsys_created_on&sysparm_fields=keg_volume%2Ckeg_quantity&sysparm_limit=1'
-
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'rap5695'
     pwd = 'Rp13595@'
@@ -80,7 +79,7 @@ def GetVolume():
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
 
     # Do the HTTP request
-    response = requests.get(url, auth=(user, pwd), headers=headers)
+    response = requests.get(mother_brew_link, auth=(user, pwd), headers=headers)
 
     # Check for HTTP codes other than 200
     if response.status_code != 200:
@@ -89,8 +88,9 @@ def GetVolume():
 
     # Decode the JSON response into a dictionary and use the data
     global Kegvolume, Kegquantity
-    Kegvolume = response.json()['result'][0]['keg_volume']
-    Kegquantity = response.json()['result'][0]['keg_quantity']
+    mother_brew_record = response.json()['result']
+    Kegvolume = mother_brew_record['keg_volume']
+    Kegquantity = mother_brew_record['keg_quantity']
     print('Keg Volume: ' + Kegvolume + ' Gallons')
     print('Keg Quantity: ' + Kegquantity + ' Kegs ')
     return Kegvolume, Kegquantity
@@ -113,10 +113,11 @@ def motion_detect_keg():
 
 
 def Fill_keg():
+    lcd.message('Press the Button \n' + Kegvolume + ' Gallons \n')
     point = True
     while point:
         # check if button pressed for 5 gallon
-        if (GPIO.input(button_pin_5_down) == 0) and Kegvolume == '5':
+        if (GPIO.input(button_pin_5_down) == 0) and Kegvolume == "5":
             # set power on
             lcd.message('Button is \nPressed for 5 Gallon')
             # GPIO.setwarnings(False)
@@ -124,8 +125,11 @@ def Fill_keg():
             GPIO.output(power_pin, GPIO.HIGH)
             # Power is off automatically after 5 second
             time.sleep(3)
+            GPIO.output(power_pin, GPIO.LOW)
+            point = False
+
             # check if button pressed for 10 gallon
-        elif (GPIO.input(button_pin_10_up) == 0) and Kegvolume == '15':
+        elif (GPIO.input(button_pin_10_up) == 0) and Kegvolume == "15":
             # set power on
             lcd.message('Button is \nPressed for 10 Gallon')
             # GPIO.setwarnings(False)
@@ -133,13 +137,10 @@ def Fill_keg():
             GPIO.output(power_pin, GPIO.HIGH)
             # Power is off automatically after 6 second
             time.sleep(6)
-        else:
-            # it's not pressed, set button off
             GPIO.output(power_pin, GPIO.LOW)
-            lcd.message('Press the Button \n' + Kegvolume + ' Gallons \n')
-            time.sleep(10)
-            lcd.clear()
             point = False
+    lcd.clear()
+
 
 
 def Carbonation_temp():
@@ -185,25 +186,19 @@ def alcohol_content_1():
     if doubleChecking == "N":
         alcohol_input = float(input("Enter alcohol percentage: "))
         print(alcohol_input)
-        return alcohol_input
+        #return alcohol_input
 
 
 def QC():
+    print('Requested for \nQuality Check \n')
     point = True
     while point:
         try:
-            if (GPIO.input(button_QC_right) == 1):
-                print('Requested for \nQuality Check \n')
-                time.sleep(2)
-
-            elif (GPIO.input(button_QC_right) == 0):
+            if (GPIO.input(button_QC_right) == 0):
                 print('Quality Check is \nCompleted \n')
                 # Wait half a second
                 time.sleep(2)
                 point = False
-            else:
-                print('Wait for keg')
-                time.sleep(2)
         except KeyboardInterrupt:
             GPIO.cleanup()
             print('Quality Check Error')
@@ -246,15 +241,17 @@ def main():
     """
     global start_time, end_time, Kegquantity
 
-    Get_Rpi_BottleTask()
+    task_record = Get_Rpi_BottleTask()[0]
+    #print(task_record)
     start_time = datetime.datetime.now()
-    GetVolume()
+    GetVolume(task_record['mother_brew_task']['link'])
     for i in range(int(Kegquantity)):
         motion_detect_keg()
         Fill_keg()
         Carbonation_temp()
         alcohol_content_1()
         QC()
+        lcd.clear()
     end_time = datetime.datetime.now()
     # return start_time, end_time
     Post()
