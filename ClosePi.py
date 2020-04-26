@@ -55,9 +55,9 @@ def main():
     while (get_from_any_table("https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=ORDERBYDESCnumber%5Erpi_to_execute%3DClosePi%5Estate%3D-5&sysparm_limit=1") != emptyList):
         current_close_task = get_from_any_table("https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=ORDERBYDESCnumber%5Erpi_to_execute%3DClosePi%5Estate%3D-5&sysparm_limit=1")[0]
         short_description = current_close_task['short_description']
-        short_description = str.lower(short_description)
+        short_description = short_description.lower()
         description = current_close_task['description']
-        description = str.lower(description)
+        description = description.lower()
         task_id = current_close_task['sys_id']
         mother_brew_record = get_from_any_table(current_close_task['mother_brew_task']['link'])
         abv = mother_brew_record['abv']
