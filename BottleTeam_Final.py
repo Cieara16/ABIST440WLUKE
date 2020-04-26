@@ -1,6 +1,7 @@
 # IST 440 
 # Bottle Team
-# Author: Riken, Eduard, Wilmer, Muhammad
+# Author: Riken, Eduard, Wilmer, Muhammad, Ryan carey
+
 import time
 import sys
 import Adafruit_DHT
