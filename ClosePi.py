@@ -1,6 +1,7 @@
 import requests
 import subprocess
 import datetime
+import time
 emptyList = []
 
 def print_label(beer_name, abv, keg_volume, current_date):
@@ -67,6 +68,8 @@ def main():
             print_label(beer_name, abv, keg_volume, current_date)
             patch_brew_task(task_id)
             time.sleep(5)
+    time.sleep(5)
+    main()
 
 
 if __name__ == "__main__":
