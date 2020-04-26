@@ -10,6 +10,7 @@ def print_label(beer_name, abv, keg_volume, current_date):
     label_write_line_1.wait()
     label_write_line_2 = subprocess.Popen(['/usr/bin/convert', '-pointsize', '18', '-draw', label_line_2, 'beer_label_withtext.png', 'beer_label_finished.png'])
     label_write_line_2.wait()
+    #printing is commented out atm to save paper
     #subprocess.Popen(['/usr/bin/lp', '-d', 'HP_DeskJet_2130_series', '-o', 'orientation-requested=3', 'beer_label_finished.png'])
     
 
@@ -64,7 +65,8 @@ def main():
         current_date = datetime.datetime.now().strftime("%b %d %Y")
         if short_description.find('label') != -1 or description.find('label') != -1:
             print_label(beer_name, abv, keg_volume, current_date)
-            patch_brew_task(task_id)            
+            patch_brew_task(task_id)
+            time.sleep(5)
 
 
 if __name__ == "__main__":
