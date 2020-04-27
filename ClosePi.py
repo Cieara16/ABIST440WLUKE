@@ -60,16 +60,20 @@ def main():
         description = current_close_task['description']
         description = description.lower()
         task_id = current_close_task['sys_id']
-        mother_brew_record = get_from_any_table(current_close_task['mother_brew_task']['link'])
+        try:
+            mother_brew_record = get_from_any_table(current_close_task['mother_brew_task']['link'])}
+        except:
+            print("The task is missing a reference to mother brew table.")
+            break
         abv = mother_brew_record['abv']
         keg_volume = mother_brew_record['keg_volume']
         beer_name = mother_brew_record['beer_name']
         current_date = datetime.datetime.now().strftime("%b %d %Y")
-        if short_description.find('label') != -1 or description.find('label') != -1:
+        if short_description.startswith('print') != -1 or description.startswith('print') != -1:
             print_label(beer_name, abv, keg_volume, current_date)
             patch_brew_task(task_id)
             time.sleep(5)
-        if short_description.find('attach') != -1 or description.find('attach') != -1:
+        if short_description.startswith('attach') != -1 or description.startswith('attach') != -1:
             input("Press enter when the label has been attached...")
             patch_brew_task(task_id)
             time.sleep(5)
