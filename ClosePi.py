@@ -71,7 +71,7 @@ def main():
             time.sleep(5)
         if short_description.find('attach') != -1 or description.find('attach') != -1:
             input("Press enter when the label has been attached...")
-            patch_brew_task()
+            patch_brew_task(task_id)
             time.sleep(5)
 
     time.sleep(5)
