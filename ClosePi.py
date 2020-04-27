@@ -4,6 +4,7 @@ import datetime
 import time
 emptyList = []
 
+
 def print_label(beer_name, abv, keg_volume, current_date):
     label_line_1 = 'text 190,490 "' + beer_name + ' ' + current_date
     label_line_2 = 'text 190,520 "' + 'ABV: ' + abv + '% ' + keg_volume + ' Gal"'
