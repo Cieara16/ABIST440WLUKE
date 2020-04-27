@@ -74,10 +74,11 @@ def main():
             print_label(beer_name, abv, keg_volume, current_date)
             patch_brew_task(task_id)
             time.sleep(5)
-        if short_description.startswith('attach') != -1 or description.startswith('attach') != -1:
+        elif short_description.startswith('attach') != -1 or description.startswith('attach') != -1:
             input("Press enter when the label has been attached...")
             patch_brew_task(task_id)
             time.sleep(5)
+
 
     time.sleep(5)
     print("No new tasks, refreshing...")
