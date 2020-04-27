@@ -1,6 +1,7 @@
 # IST 440 
 # Bottle Team
-# Author: Riken, Eduard, Wilmer, Muhammad, Ryan carey
+# Author: Riken, Eduard, Wilmer, Muhammad, 
+# Helped edit some Ryan carey
 
 import time
 import sys
