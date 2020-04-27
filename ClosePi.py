@@ -13,7 +13,7 @@ def print_label(beer_name, abv, keg_volume, current_date):
     label_write_line_2 = subprocess.Popen(['/usr/bin/convert', '-pointsize', '18', '-draw', label_line_2, 'beer_label_withtext.png', 'beer_label_finished.png'])
     label_write_line_2.wait()
     #printing is commented out atm to save paper
-    #subprocess.Popen(['/usr/bin/lp', '-d', 'HP_DeskJet_2130_series', '-o', 'orientation-requested=3', 'beer_label_finished.png'])
+    subprocess.Popen(['/usr/bin/lp', '-d', 'HP_DeskJet_2130_series', '-o', 'orientation-requested=3', 'beer_label_finished.png'])
     
 
 def patch_brew_task(task_id):
