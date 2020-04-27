@@ -13,7 +13,8 @@ def print_label(beer_name, abv, keg_volume, current_date):
     label_write_line_2 = subprocess.Popen(['/usr/bin/convert', '-pointsize', '18', '-draw', label_line_2, 'beer_label_withtext.png', 'beer_label_finished.png'])
     label_write_line_2.wait()
     #printing is commented out atm to save paper
-    subprocess.Popen(['/usr/bin/lp', '-d', 'HP_DeskJet_2130_series', '-o', 'orientation-requested=3', 'beer_label_finished.png'])
+    print("label printed")
+    #subprocess.Popen(['/usr/bin/lp', '-d', 'HP_DeskJet_2130_series', '-o', 'orientation-requested=3', 'beer_label_finished.png'])
     
 
 def patch_brew_task(task_id):
@@ -61,7 +62,7 @@ def main():
         description = description.lower()
         task_id = current_close_task['sys_id']
         try:
-            mother_brew_record = get_from_any_table(current_close_task['mother_brew_task']['link'])}
+            mother_brew_record = get_from_any_table(current_close_task['mother_brew_task']['link'])
         except:
             print("The task is missing a reference to mother brew table.")
             break
