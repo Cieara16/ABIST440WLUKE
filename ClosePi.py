@@ -80,6 +80,7 @@ def main():
             time.sleep(5)
 
     time.sleep(5)
+    print("No new tasks, refreshing...")
     main()
 
 
