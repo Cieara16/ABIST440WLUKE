@@ -72,8 +72,9 @@ def main():
         task_id = current_close_task['sys_id']
         try:
             mother_brew_record = get_from_any_table(current_close_task['mother_brew_task']['link'])
-        except:
-            print("The task is missing a reference to mother brew table, or there is no task.")
+            lcd.message("Task Found")
+        except:no 
+            lcd.message("No Task")
             break
         abv = mother_brew_record['abv']
         keg_volume = mother_brew_record['keg_volume']
