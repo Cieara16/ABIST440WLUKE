@@ -120,6 +120,8 @@ def MotherBrewGet():
     print("ABV Level: " + ABVLevel)
     print("Sugar Amount: " + sugarAmount)
     print("Secondary Fermentation: " + secondFerment)
+    
+    return beerType, yeast1, yeast2, yeast3, ABVLevel, sugarAmount, secondFerment, number, beerName
 
 #boil temps
 def BoilTempGet():
@@ -142,8 +144,7 @@ def BoilTempGet():
         exit()
 
     # Decode the JSON response into a dictionary and use the data
-    global boilTemp
-    global startTemp
+    global boilTemp, startTemp
     boilTemp = response.json()['result'][0]['boiling_temperature']
     print("Incoming temperature is: ", boilTemp)
 
@@ -158,6 +159,8 @@ def BoilTempGet():
     time.sleep(3.0)
     lcd.clear()
     GPIO.cleanup()
+    
+    return boilTemp, startTemp
 
 def TempCheck():
     #different temps for different beers
@@ -461,6 +464,31 @@ def PostCRUD():
     # Decode the JSON response into a dictionary and use the data
     data = response
     print(data)
+    
+#function to send to bottle
+def SendToBottle():
+    # Set the request parameters
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_brew_task?sysparm_display_value=rpi_to_executeSTARTSWITHBottlePi'
+    
+    # Eg. User name="admin", Password="admin" for this code sample.
+    user = 'kasper440'
+    pwd = 'kasper440'
+    
+    # Set proper headers
+    headers = {"Content-Type":"application/json","Accept":"application/json"}
+    
+    # Do the HTTP request
+    response = requests.post(url, auth=(user, pwd), headers=headers,
+                             data = "{\fermenting_start_time\":\"" + str(nextTeam))
+    
+    # Check for HTTP codes other than 200
+    if response.status_code != 200: 
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
+        exit()
+    
+    # Decode the JSON response into a dictionary and use the data
+    data = response.json()
+    print(data)
 
 
 # function to display temp n humidity
@@ -558,7 +586,7 @@ def Main(): # ledMartrix variables
     TempCheck()
     
     #getting times n duration
-    global startTime, endTime, fermentDuration
+    global startTime, endTime, fermentDuration, nextTeam
     now = datetime.datetime.now()
     startTime = now.strftime("%H:%M:%S")
     print("Fermenting start time: " + str(startTime))
@@ -571,6 +599,11 @@ def Main(): # ledMartrix variables
     fermentDuration = '2 weeks'
         
     SecondFerment()
+    
+    #send to bottle
+    print("Sending to bottle.")
+    nextTeam = "BottlePi"
+    SendToBottle()
     print("Sent to bottle.")
     
     #end time
