@@ -67,7 +67,7 @@ def CheckForRecipie():
 #get crud
 def MotherBrewGet():
     # Set the request parameters
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=abvISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%2526abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%255Ebeer_typeANYTHING%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%255Ebeer_typeANYTHING%255Esugar_levelsISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%255Ebeer_typeANYTHING%255Esugar_levelsISNOTEMPTY%255Esecondary_fermentationANYTHING&sysparm_limit=1'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=abvISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%2526abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%255Ebeer_typeANYTHING%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%255Ebeer_typeANYTHING%255Esugar_levelsISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%255Ebeer_typeANYTHING%255Esugar_levelsISNOTEMPTY%255Esecondary_fermentationANYTHING%numberISNOTEMPTY%beer_nameISNOTEMPTY&sysparm_limit=1'
     user = 'kasper440'
     pwd = 'kasper440'
 
@@ -83,7 +83,13 @@ def MotherBrewGet():
         exit()
         
     # Decode the JSON response into a dictionary and use the data
-    global beerType, yeast1, yeast2, yeast3, ABVLevel, sugarAmount, secondFerment 
+    global beerType, yeast1, yeast2, yeast3, ABVLevel, sugarAmount, secondFerment, number, beerName
+    numRecord = response.json()['result']
+    number = numRecord[0]['number']
+    
+    beerNameRecord = response.json()['result']
+    beerName = beerNameRecord[0]['beer_name']
+    
     beerTypeRecord = response.json()['result']
     beerType = beerTypeRecord[0]['beer_type']
     
@@ -105,6 +111,8 @@ def MotherBrewGet():
     secondFermentRecord = response.json()['result']
     secondFerment = secondFermentRecord[0]['secondary_fermentation']
     
+    print("Record number: " + number)
+    print("Beer name: " + beerName)
     print("Type of beer: " + beerType)
     print("Yeast type 1: " + yeast1)
     print("Yeast type 2: " + yeast2)
@@ -145,16 +153,17 @@ def BoilTempGet():
 
     startTemp = float(boilTemp) * 9 / 5.0 + 32
     lcd.set_backlight(0)
-    print("Printing temperature: ")
+    print("Checking temperature.")
     lcd.message("Incoming temp:\n" + str(boilTemp))  # pulled from mother brew
     time.sleep(3.0)
     lcd.clear()
     GPIO.cleanup()
 
-def SecondFerment():
+def TempCheck():
     #different temps for different beers
-    #ale
-    if (beerType == 'ale'):
+    startTemp = float(boilTemp) * 9 / 5.0 + 32
+    #ale 
+    if (beerType == 'Ale'):
         print("Temperature for an ale needs to be 72 degrees F.")
         #temp was right for ale
         if (startTemp == 72):
@@ -175,6 +184,7 @@ def SecondFerment():
                     time.sleep(3.0)
                     lcd.clear()
                     GPIO.cleanup()
+                    startTemp += 2
 
                 # temp too high
                 elif (startTemp > 72):
@@ -183,6 +193,7 @@ def SecondFerment():
                     time.sleep(3.0)
                     lcd.clear()
                     GPIO.cleanup()
+                    startTemp -= 2
 
                 # temp acutally worked
                 elif (startTemp == 72):
@@ -197,7 +208,8 @@ def SecondFerment():
             GPIO.cleanup()
 
     #stout
-    elif (beerType == 'stout'):
+    
+    elif(beerType == 'Stout'):
         print("Temperature for a stout needs to be 75 degrees F.")
         #temp was right for stout
         lcd.set_backlight(0)
@@ -225,6 +237,7 @@ def SecondFerment():
                     time.sleep(3.0)
                     lcd.clear()
                     GPIO.cleanup()
+                    startTemp += 2
 
                 # temp too high
                 elif (startTemp > 75):
@@ -233,6 +246,7 @@ def SecondFerment():
                     time.sleep(3.0)
                     lcd.clear()
                     GPIO.cleanup()
+                    startTemp -= 2
 
                 # temp acutally worked
                 elif (startTemp == 75):
@@ -246,7 +260,7 @@ def SecondFerment():
             lcd.clear()
             GPIO.cleanup()
 
-    elif (beerType == 'lager'):
+    elif (beerType == 'Lager'):
         #temp was right for lager
         print("Temperature for a lager needs to be 55 degrees F.")
         # temp was right for stout
@@ -275,6 +289,7 @@ def SecondFerment():
                     time.sleep(3.0)
                     lcd.clear()
                     GPIO.cleanup()
+                    startTemp += 2
 
                 # temp too high
                 elif (startTemp > 55):
@@ -283,6 +298,7 @@ def SecondFerment():
                     time.sleep(3.0)
                     lcd.clear()
                     GPIO.cleanup()
+                    startTemp -= 2
 
                 # temp acutally worked
                 elif (temperature == 55):
@@ -296,7 +312,7 @@ def SecondFerment():
             lcd.clear()
             GPIO.cleanup()
 
-    elif (beerType == 'ipa'):
+    elif (beerType == 'IPA'):
         #temp was right for ipa
         print("Temperature for an IPA needs to be 70 degrees F.")
         # temp was right for stout
@@ -325,6 +341,7 @@ def SecondFerment():
                     time.sleep(3.0)
                     lcd.clear()
                     GPIO.cleanup()
+                    startTemp += 2
 
                 # temp too high
                 elif (startTemp > 70):
@@ -333,6 +350,7 @@ def SecondFerment():
                     time.sleep(3.0)
                     lcd.clear()
                     GPIO.cleanup()
+                    startTemp -= 2
 
                 # temp acutally worked
                 elif (startTemp == 70):
@@ -345,11 +363,74 @@ def SecondFerment():
             time.sleep(3.0)
             lcd.clear()
             GPIO.cleanup()
+            
     
+    
+    #function to ferment
+def SecondFerment():
+    global fermentDuration
+    if (str(secondFerment) == 'Kräusening'):
+        print("Kräusening selected.")
+        print("Sent to conditioning tank.")
+        print("Fermenting for 3 days.")
+        for i in range (0, 4):
+            LEDMatrix(cascaded, block_orientation, rotate, msg)
+        BuzzerDone(buzzerPin)
+        fermentDuration = '3 days'
+
+    elif (str(secondFerment) == 'Bottle'):
+        print("Bottle selected.")
+        print("Fermenting for 2 weeks.")
+        for i in range(0, 11):
+            LEDMatrix(cascaded, block_orientation, rotate, msg)
+        BuzzerDone(buzzerPin)
+        fermentDuration = '2 weeks'
+
+    elif (str(secondFerment) == 'Cask_Condistioning'):
+        print("Cask Conditioning selected.")
+        print("Putting into cask.")
+        print("Fermenting for 5 days.")
+        for i in range(0, 6):
+            LEDMatrix(cascaded, block_orientation, rotate, msg)
+        BuzzerDone(buzzerPin)
+        fermentDuration = '5 days'
+
+    elif (str(secondFerment) == 'Lagering'):
+        print("Laggering selected.")
+        print("Storing at celler temperature.")
+        print("Fermenting for 3 months.")
+        for i in range (0, 31):
+            LEDMatrix(cascaded, block_orientation, rotate, msg)
+        BuzzerDone(buzzerPin)
+        fermentDuration = '3 months'
+
+    elif (str(secondFerment) == 'Secondary'):
+        print("Secondary Fermentation selected.")
+        print("Fermenting for 2 weeks.")
+        for i in range(0, 11):
+            LEDMatrix(cascaded, block_orientation, rotate, msg)
+        BuzzerDone(buzzerPin)
+        fermentDuration = '2 weeks'
+
+    elif (str(secondFerment) == 'Barrel_Agein'):
+        print("Barrel Aging Selected.")
+        print("Sent to barrel to sour.")
+        print("Fermenting for 1 month.")
+        for i in range(0, 23):
+            LEDMatrix(cascaded, block_orientation, rotate, msg)
+        BuzzerDone(buzzerPin)
+        fermentDuration = '1 month'
+
+    else:
+        pass
+        
+    return fermentDuration
+
 #function for POST
 def PostCRUD():
     # Set the request parameters
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?sysparm_display_value=All'
+    #url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?sysparm_display_value=abvISEMPTY%26abvISEMPTY%5Eferment_tempatureISEMPTY%26abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%26abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%5Efermenting_end_timeISEMPTY%25abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%5Efermenting_end_timeISEMPTY%5Efermenting_quality_checkISEMPTY%26abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%5Efermenting_end_timeISEMPTY%5Efermenting_quality_checkISEMPTY%5Efermenting_reset_cleanISEMPTY%26abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%5Efermenting_end_timeISEMPTY%5Efermenting_quality_checkISEMPTY%5Efermenting_reset_cleanISEMPTY%5Efermenting_start_timeISEMPTY%25abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%5Efermenting_end_timeISEMPTY%5Efermenting_quality_checkISEMPTY%5Efermenting_reset_cleanISEMPTY%5Efermenting_start_timeISEMPTY%5Esecond_fermentationISEMPTY%numberISNOTEMPTY'
 
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'kasper440'
@@ -366,17 +447,19 @@ def PostCRUD():
                              + "\",\"fermenting_end_time\":\"" + str(endTime)
                              + "\",\"fermenting_duration\":\"" + str(fermentDuration)
                              + "\",\"abv\":\"" + str(ABVLevel)
+                             + "\",\"number\":\"" + str(number)
                              + "\",\"fermenting_quality_check\":\"true\"}"
                              + "\",\"fermenting_reset/clean\":\"true\"}"
                              + "\",\"second_fermentation\":\"true\"}")
 
+
     # Check for HTTP codes other than 200
-    if response.status_code != 200: 
+    if response.status_code != 201: 
         print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
         exit()
 
     # Decode the JSON response into a dictionary and use the data
-    data = response.json()
+    data = response
     print(data)
 
 
@@ -429,12 +512,12 @@ def LEDMatrix(cascaded, block_orientation, rotate, msg):
     serial = spi(port=0, device=1, gpio=noop())
     device = max7219(serial, cascaded=cascaded or 1, block_orientation=block_orientation, rotate=rotate or 0)
     # debugging purpose
-    print("[-] Matrix initialized")
+    #print("%s" % msg)
 
     # print hello world on the matrix display
     msg = "."
     # debugging purpose
-    print("[-] Printing: %s" % msg)
+    #print("%s" % msg)
     show_message(device, msg, fill="white", font=proportional(CP437_FONT), scroll_delay=0.1)
 
 
@@ -472,88 +555,31 @@ def Main(): # ledMartrix variables
     CheckForRecipie()
     MotherBrewGet()
     BoilTempGet()
+    TempCheck()
     
     #getting times n duration
-    global startTime 
-    startTime = datetime.datetime.now()
+    global startTime, endTime, fermentDuration
+    now = datetime.datetime.now()
+    startTime = now.strftime("%H:%M:%S")
     print("Fermenting start time: " + str(startTime))
     
     #2nd ferment or normal ferment
+    print("Fermenting:")
+    for i in range (0, 11):
+        LEDMatrix(cascaded, block_orientation, rotate, msg)
+    BuzzerDone(buzzerPin)
+    fermentDuration = '2 weeks'
+        
     SecondFerment()
-    global fermentDuration
-
-    if (str(secondFerment) == 'Kräusening'):
-        print("Kräusening selected.")
-        print("Sent to conditioning tank.")
-        print("Fermenting for 3 days.")
-        for i in range (0, 4):
-            LEDMatrix(cascaded, block_orientation, rotate, msg)
-        BuzzerDone(buzzerPin)
-        fermentDuration = '3 days'
-        print("Sent to bottle.")
-
-    elif (str(secondFerment) == 'Bottle'):
-        print("Bottle selected.")
-        print("Fermenting for 2 weeks.")
-        for i in range(0, 11):
-            LEDMatrix(cascaded, block_orientation, rotate, msg)
-        BuzzerDone(buzzerPin)
-        fermentDuration = '2 weeks'
-        print("Sent to bottle.")
-
-    elif (str(secondFerment) == 'Cask_Condistioning'):
-        print("Cask Conditioning selected.")
-        print("Putting into cask.")
-        print("Fermenting for 5 days.")
-        for i in range(0, 6):
-            LEDMatrix(cascaded, block_orientation, rotate, msg)
-        BuzzerDone(buzzerPin)
-        fermentDuration = '5 days'
-        print("Sent to bottle.")
-
-    elif (str(secondFerment) == 'Lagering'):
-        print("Laggering selected.")
-        print("Storing at celler temperature.")
-        print("Fermenting for 3 months.")
-        for i in range (0, 31):
-            LEDMatrix(cascaded, block_orientation, rotate, msg)
-        BuzzerDone(buzzerPin)
-        fermentDuration = '3 months'
-        print("Sent to bottle.")
-
-    elif (str(secondFerment) == 'Secondary'):
-        print("Secondary Fermentation selected.")
-        print("Fermenting for 2 weeks.")
-        for i in range(0, 11):
-            LEDMatrix(cascaded, block_orientation, rotate, msg)
-        BuzzerDone(buzzerPin)
-        fermentDuration = '2 weeks'
-        print("Sent to bottle.")
-
-    elif (str(secondFerment) == 'Barrel_Agein'):
-        print("Barrel Aging Selected.")
-        print("Sent to barrel to sour.")
-        print("Fermenting for 1 month.")
-        for i in range(0, 23):
-            LEDMatrix(cascaded, block_orientation, rotate, msg)
-        BuzzerDone(buzzerPin)
-        fermentDuration = '1 month'
-        print("Sent to bottle.")
-
-    else:
-        print("Fermenting.")
-        for i in range (0, 11):
-            LEDMatrix(cascaded, block_orientation, rotate, msg)
-        BuzzerDone(buzzerPin)
-        fermentDuration = '2 weeks'
-        print("Sent to bottle.")
-
+    print("Sent to bottle.")
+    
     #end time
-    global endTime
-    endTime = datetime.datetime.now()
-    print("Fermenting start time: " + str(endTime))
+    now = datetime.datetime.now()
+    endTime = now.strftime("%H:%M:%S")
+    print("Fermenting end time: " + str(endTime))
 
     #checks a cleaning
+    print("Posting to log table: ")
     PostCRUD()
 
     print("Ferment Completed.")
