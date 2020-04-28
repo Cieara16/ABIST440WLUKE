@@ -81,10 +81,9 @@ def main():
             time.sleep(5)
 
 
-    time.sleep(5)
-    print('No tasks')
     time.sleep(2)
     print('Refreshing...')
+    time.sleep(5)
     main()
 
 
