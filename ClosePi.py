@@ -2,6 +2,16 @@ import requests
 import subprocess
 import datetime
 import time
+import Adafruit_CharLCD as LCD
+import RPi.GPIO as GPIO
+
+
+# Define LCD column and row size for 16x2 LCD.
+lcd_columns = 16
+lcd_rows = 2
+
+# Initialize the LCD using the pins
+lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
 emptyList = []
 
 
@@ -12,8 +22,8 @@ def print_label(beer_name, abv, keg_volume, current_date):
     label_write_line_1.wait()
     label_write_line_2 = subprocess.Popen(['/usr/bin/convert', '-pointsize', '18', '-draw', label_line_2, 'beer_label_withtext.png', 'beer_label_finished.png'])
     label_write_line_2.wait()
-    #printing is commented out atm to save paper
-    print("label printed")
+    #printing i9s commented out atm to save paper
+    lcd.message("label printing")
     #subprocess.Popen(['/usr/bin/lp', '-d', 'HP_DeskJet_2130_series', '-o', 'orientation-requested=3', 'beer_label_finished.png'])
     
 
@@ -46,7 +56,6 @@ def get_from_any_table(url):
 
     # Check for HTTP codes other than 200
     if response.status_code != 200:
-        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
         exit()
 
         # Decode the JSON response into a dictionary and use the data
@@ -64,7 +73,7 @@ def main():
         try:
             mother_brew_record = get_from_any_table(current_close_task['mother_brew_task']['link'])
         except:
-            print("The task is missing a reference to mother brew table.")
+            print("The task is missing a reference to mother brew table, or there is no task.")
             break
         abv = mother_brew_record['abv']
         keg_volume = mother_brew_record['keg_volume']
@@ -81,7 +90,9 @@ def main():
 
 
     time.sleep(5)
-    print("No new tasks, refreshing...")
+    lcd.message("No tasks")
+    time.sleep(2)
+    lcd.message("refreshing...")
     main()
 
 
