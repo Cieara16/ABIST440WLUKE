@@ -64,7 +64,7 @@ def main():
         try:
             mother_brew_record = get_from_any_table(current_close_task['mother_brew_task']['link'])
             print('Task Found')
-        except:no 
+        except: 
             print('No Task')
             break
         abv = mother_brew_record['abv']
