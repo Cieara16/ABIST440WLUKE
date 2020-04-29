@@ -21,6 +21,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f4a4f702-7cb1-48ec-83c5-e5946928d9cf" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BottleTeam_Final.py" beforeDir="false" afterPath="$PROJECT_DIR$/BottleTeam_Final.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,6 +140,8 @@
       <workItem from="1587599217582" duration="163000" />
       <workItem from="1587599625423" duration="58000" />
       <workItem from="1587691033077" duration="17000" />
+      <workItem from="1587692511226" duration="52000" />
+      <workItem from="1588193623772" duration="115000" />
     </task>
     <task id="LOCAL-00001" summary="Removed comments">
       <created>1586034772640</created>
@@ -259,7 +262,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587599651540</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Loop will run as many keg quantity">
+      <created>1587692550000</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1587692550000</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -334,13 +344,13 @@
     <option name="LAST_COMMIT_MESSAGE" value="Loop will run as many keg quantity" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="482" y="23" width="854" height="811" key="CommitChangelistDialog2" timestamp="1587599651316">
+    <state x="482" y="23" width="854" height="811" key="CommitChangelistDialog2" timestamp="1587692549833">
       <screen x="0" y="23" width="1440" height="811" />
     </state>
     <state x="642" y="147" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586983363816" />
     <state x="2562" y="147" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587082404431" />
     <state x="482" y="23" key="CommitChangelistDialog2/0.23.1440.808@0.23.1440.808" timestamp="1587508213160" />
-    <state x="482" y="23" width="854" height="811" key="CommitChangelistDialog2/0.23.1440.811@0.23.1440.811" timestamp="1587599651316" />
+    <state x="482" y="23" width="854" height="811" key="CommitChangelistDialog2/0.23.1440.811@0.23.1440.811" timestamp="1587692549833" />
     <state x="482" y="23" key="CommitChangelistDialog2/0.23.1440.814@0.23.1440.814" timestamp="1587595827967" />
     <state x="482" y="23" width="854" height="816" key="CommitChangelistDialog2/0.23.1440.816@0.23.1440.816" timestamp="1587442217363" />
     <state width="1653" height="318" key="GridCell.Tab.0.bottom" timestamp="1585338475733">
@@ -371,13 +381,13 @@
     <state x="1036" y="354" width="1396" height="937" key="SettingsEditor/0.0.2560.1440@0.0.2560.1440" timestamp="1585340361888" />
     <state x="540" y="109" width="900" height="722" key="SettingsEditor/0.23.1440.808@0.23.1440.808" timestamp="1587508191986" />
     <state x="540" y="115" width="900" height="722" key="SettingsEditor/0.23.1440.814@0.23.1440.814" timestamp="1587441674445" />
-    <state x="457" y="246" key="Vcs.Push.Dialog.v2" timestamp="1587599654740">
+    <state x="457" y="246" key="Vcs.Push.Dialog.v2" timestamp="1587692551829">
       <screen x="0" y="23" width="1440" height="811" />
     </state>
     <state x="609" y="286" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586983367276" />
     <state x="2529" y="286" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587082406923" />
     <state x="457" y="245" key="Vcs.Push.Dialog.v2/0.23.1440.808@0.23.1440.808" timestamp="1587508220010" />
-    <state x="457" y="246" key="Vcs.Push.Dialog.v2/0.23.1440.811@0.23.1440.811" timestamp="1587599654740" />
+    <state x="457" y="246" key="Vcs.Push.Dialog.v2/0.23.1440.811@0.23.1440.811" timestamp="1587692551829" />
     <state x="457" y="247" key="Vcs.Push.Dialog.v2/0.23.1440.814@0.23.1440.814" timestamp="1587595829762" />
     <state x="976" y="476" key="com.intellij.ide.util.TipDialog" timestamp="1585340377140">
       <screen x="0" y="0" width="2560" height="1440" />
