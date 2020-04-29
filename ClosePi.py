@@ -17,7 +17,7 @@ def print_label(beer_name, abv, keg_volume, current_date):
     label_write_line_2.wait()
     #printing is now live
     print("label printing")
-    subprocess.Popen(['/usr/bin/lp', '-d', 'HP_DeskJet_2130_series', '-o', 'orientation-requested=3', 'beer_label_finished.png'])
+    #subprocess.Popen(['/usr/bin/lp', '-d', 'HP_DeskJet_2130_series', '-o', 'orientation-requested=3', 'beer_label_finished.png'])
 
 
 def post_start_time(mother_brew_number, start_time):
@@ -25,8 +25,8 @@ def post_start_time(mother_brew_number, start_time):
 
     # Do the HTTP request
     response = requests.post(url, auth=(user, pwd), headers=headers,
-                             data="{\"number\":\"" + mother_brew_number + "\",\"close_start_time\":\"" + start_time + "\"}")
-    if response.status_code != 200:
+                             data="{\"number\":\"" + mother_brew_number + "\",\"close_start_time\":\"" + str(start_time) + "\"}")
+    if response.status_code != 201:
         print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
         exit()
     return response.json()['result']['sys_id']
@@ -34,7 +34,7 @@ def post_start_time(mother_brew_number, start_time):
 
 def patch_end_time(log_post_sys_id, end_time):
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table/' + log_post_sys_id
-    response = requests.patch(url, auth=(user, pwd), headers=headers, data="{\"close_end_time\":\"" + end_time + "\"}")
+    response = requests.patch(url, auth=(user, pwd), headers=headers, data="{\"close_end_time\":\"" + str(end_time) + "\"}")
     if response.status_code != 200:
         print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
         exit()
