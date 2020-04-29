@@ -68,18 +68,15 @@ def displayBalrog(cascaded=1, block_orientation=90, rotate=0):
     print("[-] Printing: %s" % msg)
     show_message(device, msg, fill="white", font=proportional(CP437_FONT), scroll_delay=0.1)
     print("Brew task confirmed")
-
+    
 btn = 0
 if btn == 0:
     displayBalrog()
     
-def Create_Receipt():
-    print('receipt code will go here')
-
 # to get active prep task from service now to excute on crow pi
-def Get_Task_for_CrowPi():
+def Get_BrewTask_for_CrowPi():
     # Set the request parameters
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=rpi_to_execute%3DPrepPi%5Estate%3D-5%5Eactive%3Dtrue&sysparm_limit=10'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=active%3Dtrue%5Erpi_to_executeSTARTSWITHPrepPi%5Estate%3D-5&sysparm_limit=10'
 
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'Amp6826'
@@ -97,6 +94,7 @@ def Get_Task_for_CrowPi():
         exit()
 
     # Decode the JSON response into a dictionary and use the data
+    global Task1, shortDescTask1, Task2, shortDescTask2, Task3, shortDescTask3, Task4, shortDescTask4, Task5, shortDescTask5, Task6, shortDescTask6, Task7, shortDescTask7, Task8, shortDescTask8
     Task1 = response.json()['result'][0]['number']
     shortDescTask1 = response.json()['result'][0]['short_description']
     Task2 = response.json()['result'][1]['number']
@@ -105,15 +103,41 @@ def Get_Task_for_CrowPi():
     shortDescTask3 = response.json()['result'][2]['short_description']
     Task4 = response.json()['result'][3]['number']
     shortDescTask4 = response.json()['result'][3]['short_description']
+    Task5 = response.json()['result'][4]['number']
+    shortDescTask5 = response.json()['result'][4]['short_description']
+    Task6 = response.json()['result'][5]['number']
+    shortDescTask6 = response.json()['result'][5]['short_description']
+    Task7 = response.json()['result'][6]['number']
+    shortDescTask7 = response.json()['result'][6]['short_description']
+    Task8 = response.json()['result'][7]['number']
+    shortDescTask8 = response.json()['result'][7]['short_description']
     
-    print(Task1)
-    print(shortDescTask1)
-    print(Task2)
-    print(shortDescTask2)
-    print(Task3)
-    print(shortDescTask3)
-    print(Task4)
-    print(shortDescTask4)
+    print(Task1 + " :" + shortDescTask1)
+    time.sleep(1)
+    print(Task2 + " :" + shortDescTask2)
+    time.sleep(1)
+    print(Task3 + " :" + shortDescTask3)
+    time.sleep(1)
+    print(Task4 + " :" + shortDescTask4)
+    time.sleep(1)
+    print(Task5 + " :" + shortDescTask5)
+    time.sleep(1)
+    print(Task6 + " :" + shortDescTask6)
+    time.sleep(1)
+    print(Task7 + " :" + shortDescTask7)
+    time.sleep(1)
+    print(Task8 + " :" + shortDescTask8)
+    time.sleep(1)
+    return Task1, shortDescTask1, Task2, shortDescTask2, Task3, shortDescTask3, Task4, shortDescTask4, Task5, shortDescTask5, Task6, shortDescTask6, Task7, shortDescTask7, Task8, shortDescTask8
+
+btn = 0
+if btn == 0:
+    Get_BrewTask_for_CrowPi()
+
+    
+def Create_Prices():
+    print('receipt code will go here')
+    
 
 def GetFromMotherbrew():   
     #recieve order from user
@@ -436,35 +460,35 @@ for n in range(-1,1):
     
 global grain, grain_weight
 
-# def get_ingredients():
-#         #Need to install requests package for python
-#         #easy_install requests
-# 
-#         # Set the request parameters
-# # Needs fixing -> url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_ingredients?sysparm_query=Active%20%3D%20true&sysparm_fields=grain_weight%2Cgrains&sysparm_limit=1'
-#         
-#         url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_ingredients?sysparm_query=grain_weightISNOTEMPTY&sysparm_limit=1'
-#         # Eg. User name="admin", Password="admin" for this code sample.
-#         user = 'Amp6826'
-#         pwd = 'Swami101'
-# 
-#         # Set proper headers
-#         headers = {"Content-Type":"application/json","Accept":"application/json"}
-# 
-#         # Do the HTTP request
-#         response = requests.get(url, auth=(user, pwd), headers=headers )
-# 
-#         # Check for HTTP codes other than 200
-#         if response.status_code != 200:
-#             print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
-#             exit()
-# 
-#         # Decode the JSON response into a dictionary and use the data
-#         grain = response.json()['result'][0]['grain']
-#         grain_weight = response.json()['result'][0]['grain_weight']
-#         print('Grain: ' + grain)
-#         print('Grain weight: ' + grain_weight)
-#         return grain, grain_weight
+def get_ingredients():
+        #Need to install requests package for python
+        #easy_install requests
+
+        # Set the request parameters
+        #url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_ingredients?sysparm_query=grain_weightISNOTEMPTY&sysparm_limit=1'
+        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=active%3Dtrue%5EnumberISNOTEMPTY%5EORDERBYDESCsys_created_on&sysparm_limit=10'
+        # Eg. User name="admin", Password="admin" for this code sample.
+        user = 'Amp6826'
+        pwd = 'Swami101'
+
+        # Set proper headers
+        headers = {"Content-Type":"application/json","Accept":"application/json"}
+
+        # Do the HTTP request
+        response = requests.get(url, auth=(user, pwd), headers=headers )
+
+        # Check for HTTP codes other than 200
+        if response.status_code != 200:
+            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
+            exit()
+
+        # Decode the JSON response into a dictionary and use the data
+        global grain, grain_weight
+        grain = response.json()['result'][0]['grain']
+        grain_weight = response.json()['result'][0]['grain_weight']
+        print('Grain: ' + grain)
+        print('Grain weight: ' + grain_weight)
+        return grain, grain_weight
     
 # Gather the grains
 btn = 1
@@ -489,11 +513,11 @@ if btn == 1:
         lcd.message('task.')
         time.sleep(1.0)
         lcd.clear()
-        lcd.message('Measure grains')
+        lcd.message('Measure ')
         time.sleep(2.0)
         lcd.clear()
         lcd.blink(True)
-        lcd.message('weight.')
+        lcd.message('Grains weight..')
         time.sleep(1.0)
         lcd.clear()
         lcd.set_backlight(1)
@@ -567,6 +591,7 @@ def main4(test=4):
                 lcd.message((grain_weight) + ' lbs.')
                 time.sleep(3)
                 lcd.clear()
+                lcd.message('Crtl + C ')
                 lcd.set_backlight(1)
                 time.sleep(1.0)
     except KeyboardInterrupt:
@@ -691,6 +716,51 @@ response = requests.patch(url, auth=(user, pwd), headers=headers ,data="{\"state
 if response.status_code != 200: 
     print('Status:', res)
 
+# Last task - TRansfer grains to mash tun
+
+# define motion pin
+motion_pin = 23
+# set GPIO as GPIO.BOARD
+GPIO.setmode(GPIO.BCM)
+# set pin mode as INPUT
+GPIO.setup(motion_pin, GPIO.IN)
+def Transfer_Grains(test=4):
+    lcd.set_backlight(0)
+    lcd.clear()
+    lcd.show_cursor(True)
+    lcd.message('Transferring')
+    time.sleep(3)
+    lcd.clear()
+    lcd.show_cursor(True)
+    lcd.message('Grains')
+    time.sleep(3)
+    lcd.clear()
+    lcd.show_cursor(True)
+    lcd.message('To Mashtun')
+    time.sleep(3)
+    lcd.clear()
+    print('Transferring grains')
+    time.sleep(5)
+    try:
+        if True:
+            if(GPIO.input(motion_pin) == 0):
+                time.sleep(10)
+                print("Grains not found")
+            elif(GPIO.input(motion_pin) == 1):
+                lcd.clear()
+                lcd.show_cursor(True)
+                lcd.message('Grains moved')
+                time.sleep(3)
+                lcd.clear()
+                print("Grains moved")
+    except KeyboardInterrupt:
+         GPIO.cleanup()
+
+btn = 4
+if btn == 4:
+    Transfer_Grains()
+
+
 # Clean Up Task
 # Servo 
 
@@ -799,43 +869,6 @@ for n in range(-1,1):
     break
     main2()
     break
-
-GPIO.setup(motion_pin, GPIO.IN)
-def Transfer_Grains(test=4):
-    lcd.set_backlight(0)
-    lcd.clear()
-    lcd.show_cursor(True)
-    lcd.message('Transferring')
-    time.sleep(3)
-    lcd.clear()
-    lcd.show_cursor(True)
-    lcd.message('Grains')
-    time.sleep(3)
-    lcd.clear()
-    lcd.show_cursor(True)
-    lcd.message('To Mashtun')
-    time.sleep(3)
-    lcd.clear()
-    print('Transferring grains')
-    time.sleep(5)
-    try:
-        if True:
-            if(GPIO.input(motion_pin) == 0):
-                time.sleep(10)
-                print("Grains not found")
-            elif(GPIO.input(motion_pin) == 1):
-                lcd.clear()
-                lcd.show_cursor(True)
-                lcd.message('Grains moved')
-                time.sleep(3)
-                lcd.clear()
-                print("Grains moved")
-    except KeyboardInterrupt:
-         GPIO.cleanup()
-
-btn = 4
-if btn == 4:
-    Transfer_Grains()
     
 
 # LCD display message
@@ -846,9 +879,30 @@ def main5():
     lcd.message('Done.')
     print('Done.')
     time.sleep(2.0)
-    lcd.clear()
-    lcd.set_backlight(1)             
+#     lcd.set_backlight(3)
+#     lcd.clear()
     
 btn = 3
 if btn == 3:
     main5()
+
+def done():
+    buzzer_pin = 18
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(buzzer_pin, GPIO.OUT)
+
+# Make buzzer sound
+GPIO.output(buzzer_pin, GPIO.HIGH)
+time.sleep(.2)
+# Stop buzzer sound
+GPIO.output(buzzer_pin, GPIO.LOW)
+# define touch pin
+touch_pin = 17
+# set GPIO pin to INPUT
+GPIO.setup(touch_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+btn = 5
+if btn == 5:
+    done()
+
