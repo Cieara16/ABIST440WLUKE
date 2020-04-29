@@ -1,10 +1,10 @@
 # Team Ferment - James Bee, Virginia Hoffman, Michaela Fox, and Samantha Scheer
 # IST 440 - Luke Kasper
 
-# imports
-#import AutoBrew
+#imports
 import RPi.GPIO as GPIO
 import time
+import datetime
 import requests
 import json
 import Adafruit_DHT
@@ -20,7 +20,7 @@ from Adafruit_LED_Backpack import SevenSegment
 # service now imports
 import requests
 
-# from pymongo import MongoClient 
+# from pymongo import MongoClient
 # import pymongo
 
 # led matrix
@@ -44,421 +44,453 @@ tempPin = 4
 buzzerPin = 18
 
 # ledMartrix variables
+msg = ""
+#LEDMatrix(cascaded, block_orientation, rotate, msg)
 cascaded = 1
 block_orientation = 90
 rotate = 0
 
-# clock veriables
+#startup pi parts
 segment = SevenSegment.SevenSegment(address=0x70)
+# Initialize the display. Must be called once before using the display.
+segment.begin()
 
+#LCD screen
+#TempAndHumidityLCD(lcdColumns, lcdRows, tempSensor, tempPin)
+lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
+msg = "."
 
-# class for getting brew task fro boil
-class BrewTask():
-    def BrewTaskGET():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=sys_created_onRELATIVEGT%40minute%40ago%401&sysparm_limit=1'
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = '***'
+#get recipie
+def CheckForRecipie():
+    import CheckForRecipie
 
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+#get crud
+def MotherBrewGet():
+    # Set the request parameters
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=abvISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%2526abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%255Ebeer_typeANYTHING%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%255Ebeer_typeANYTHING%255Esugar_levelsISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%255Ebeer_typeANYTHING%255Esugar_levelsISNOTEMPTY%255Esecondary_fermentationANYTHING%numberISNOTEMPTY%beer_nameISNOTEMPTY&sysparm_limit=1'
+    user = 'kasper440'
+    pwd = 'kasper440'
 
-        # Do the HTTP request
-        response = requests.get(url, auth=(user, pwd), headers=headers)
+    # Set proper headers
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
 
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
+    # Do the HTTP request
+    response = requests.get(url, auth=(user, pwd), headers=headers)
 
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
+    # Check for HTTP codes other than 200
+    if response.status_code != 200:
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+        exit()
         
-        startTask = response.json()['result'][0]['rpi_to_execute']
-        print(startTask)
-        FermentPi = startTask['FermentPi']
-
-# recipie table Yeast
-class RecipeiTableYeast():
-    def Yeast1Get():
-        # Set the request parameters 
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=yeast_type_1%3D&sysparm_limit=1' 
-     
-        # Eg. User name="admin", Password="admin" for this code sample. 
-        user = 'mmf5571' 
-        pwd = '***' 
-     
-        # Set proper headers 
-        headers = {"Content-Type": "application/json", "Accept": "application/json"} 
-     
-        # Do the HTTP request 
-        response = requests.get(url, auth=(user, pwd), headers=headers) 
-     
-        # Check for HTTP codes other than 200 
-        if response.status_code != 200: 
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json()) 
-            exit() 
-     
-        # Decode the JSON response into a dictionary and use the data 
-        data = response.json() 
-        print(data)
-        yeast1 = data['result'][0]['yeast_type_1']
-        print("Yeast type 1: " + str(yeast1))
- 
-    def Yeast2Get(): 
-        # Set the request parameters 
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=yeast_type_2%3D&sysparm_limit=1' 
- 
-        # Eg. User name="admin", Password="admin" for this code sample. 
-        user = 'mmf5571' 
-        pwd = '***' 
- 
-        # Set proper headers 
-        headers = {"Content-Type": "application/json", "Accept": "application/json"} 
- 
-        # Do the HTTP request 
-        response = requests.get(url, auth=(user, pwd), headers=headers) 
- 
-        # Check for HTTP codes other than 200 
-        if response.status_code != 200: 
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json()) 
-            exit() 
- 
-        # Decode the JSON response into a dictionary and use the data 
-        data = response.json() 
-        print(data)
-        yeast2 = data['result'][0]['yeast_type_2']
-        print("Yeast type 2: " + str(yeast2))
- 
-    def Yeast3Get(): 
-        # Set the request parameters 
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=yeast_type_3%3D&sysparm_limit=1' 
- 
-        # Eg. User name="admin", Password="admin" for this code sample. 
-        user = 'mmf5571' 
-        pwd = '***' 
- 
-        # Set proper headers 
-        headers = {"Content-Type": "application/json", "Accept": "application/json"} 
- 
-        # Do the HTTP request 
-        response = requests.get(url, auth=(user, pwd), headers=headers) 
- 
-        # Check for HTTP codes other than 200 
-        if response.status_code != 200: 
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json()) 
-            exit() 
- 
-        # Decode the JSON response into a dictionary and use the data 
-        data = response.json() 
-        print(data)
-        yeast3 = data['result'][0]['yeast_type_3']
-        print("Yeast type 3: " + str(yeast3))
+    # Decode the JSON response into a dictionary and use the data
+    global beerType, yeast1, yeast2, yeast3, ABVLevel, sugarAmount, secondFerment, number, beerName
+    numRecord = response.json()['result']
+    number = numRecord[0]['number']
     
-# recipie table ABV
-class RecipieTableABV():
-    def ABVGet():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=abv%3D&sysparm_limit=1'
+    beerNameRecord = response.json()['result']
+    beerName = beerNameRecord[0]['beer_name']
+    
+    beerTypeRecord = response.json()['result']
+    beerType = beerTypeRecord[0]['beer_type']
+    
+    yeast1Record = response.json()['result']
+    yeast1 = yeast1Record[0]['yeast_type_1']
+    
+    yeast2Record = response.json()['result']
+    yeast2 = yeast2Record[0]['yeast_type_2']
+    
+    yeast3Record = response.json()['result']
+    yeast3 = yeast3Record[0]['yeast_type_3']
+    
+    ABVLevelRecord = response.json()['result']
+    ABVLevel = ABVLevelRecord[0]['abv']
+    
+    sugarAmountRecord = response.json()['result']
+    sugarAmount = sugarAmountRecord[0]['sugar_levels']
+    
+    secondFermentRecord = response.json()['result']
+    secondFerment = secondFermentRecord[0]['secondary_fermentation']
+    
+    print("Record number: " + number)
+    print("Beer name: " + beerName)
+    print("Type of beer: " + beerType)
+    print("Yeast type 1: " + yeast1)
+    print("Yeast type 2: " + yeast2)
+    print("Yeast type 3: " + yeast3)
+    print("ABV Level: " + ABVLevel)
+    print("Sugar Amount: " + sugarAmount)
+    print("Secondary Fermentation: " + secondFerment)
+    
+    return beerType, yeast1, yeast2, yeast3, ABVLevel, sugarAmount, secondFerment, number, beerName
 
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = '***'
+#boil temps
+def BoilTempGet():
+    # Set the request parameters
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?sysparm_query=boil_end_timeONToday%2540javascript%253Ags.beginningOfToday()%2540javascript%253Ags.endOfToday()&sysparm_limit=1'
 
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    # Eg. User name="admin", Password="admin" for this code sample.
+    user = 'kasper440'
+    pwd = 'kasper440'
 
-        # Do the HTTP request
-        response = requests.get(url, auth=(user, pwd), headers=headers)
+    # Set proper headers
+    headers = {"Content-Type":"application/json","Accept":"application/json"}
 
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
+    # Do the HTTP request
+    response = requests.get(url, auth=(user, pwd), headers=headers )
 
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-        ABVLevel = data['result'][0]['abv']
-        print("ABV Level: " + str(ABVLevel))
+    # Check for HTTP codes other than 200
+    if response.status_code != 200: 
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
+        exit()
 
-# recipie table sugar
-class RecipieTableSugar():
-    def SugarGet():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=sugar_levels%3D&sysparm_limit=1'
+    # Decode the JSON response into a dictionary and use the data
+    global boilTemp, startTemp
+    boilTemp = response.json()['result'][0]['boiling_temperature']
+    print("Incoming temperature is: ", boilTemp)
 
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = '***'
+    temperature, humidity = Adafruit_DHT.read(tempSensor, tempPin)
+    time.sleep(1)
+    GPIO.cleanup()
 
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    startTemp = float(boilTemp) * 9 / 5.0 + 32
+    lcd.set_backlight(0)
+    print("Checking temperature.")
+    lcd.message("Incoming temp:\n" + str(boilTemp))  # pulled from mother brew
+    time.sleep(3.0)
+    lcd.clear()
+    GPIO.cleanup()
+    
+    return boilTemp, startTemp
 
-        # Do the HTTP request
-        response = requests.get(url, auth=(user, pwd), headers=headers)
+def TempCheck():
+    #different temps for different beers
+    startTemp = float(boilTemp) * 9 / 5.0 + 32
+    #ale 
+    if (beerType == 'Ale'):
+        print("Temperature for an ale needs to be 72 degrees F.")
+        #temp was right for ale
+        if (startTemp == 72):
+            lcd.set_backlight(0)
+            lcd.message("Drink Type: Ale\n" + "Temp: " + str(startTemp) + " F")
+            time.sleep(3.0)
+            lcd.clear()
+            GPIO.cleanup()
+            pass
 
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
+        #temp wasn't right for ale
+        elif (startTemp != 72):
+            for i in range(0, 6):
+                # temp too low
+                if (startTemp < 72):
+                    lcd.set_backlight(0)
+                    lcd.message("Temperature is\n" + "too low: " + str(startTemp) + " F")
+                    time.sleep(3.0)
+                    lcd.clear()
+                    GPIO.cleanup()
+                    startTemp += 2
 
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-        sugarAmount = data['result'][0]['sugar_levels']
-        print("Sugar Amount: " + str(sugarAmount))
-        
-# Log table time stamps
-class FermentingTimeStamps():
-    def FermentStartGET():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?sysparm_query=fermenting_start_timeONToday%40javascript%3Ags.beginningOfToday()%40javascript%3Ags.endOfToday()&sysparm_limit=1'
+                # temp too high
+                elif (startTemp > 72):
+                    lcd.set_backlight(0)
+                    lcd.message("Temperature is\n" + "too high: " + str(startTemp) + " F")
+                    time.sleep(3.0)
+                    lcd.clear()
+                    GPIO.cleanup()
+                    startTemp -= 2
 
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = '***'
+                # temp acutally worked
+                elif (startTemp == 72):
+                    break
+                i += 1
 
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+            #print ending temp
+            lcd.set_backlight(0)
+            lcd.message("Drink Type: Ale\n" + "Temp: " + str(startTemp) + " F")
+            time.sleep(3.0)
+            lcd.clear()
+            GPIO.cleanup()
 
-        # Do the HTTP request
-        response = requests.get(url, auth=(user, pwd), headers=headers)
+    #stout
+    
+    elif(beerType == 'Stout'):
+        print("Temperature for a stout needs to be 75 degrees F.")
+        #temp was right for stout
+        lcd.set_backlight(0)
+        lcd.message("Drink Type: Ale\n" + "Temp: " + str(startTemp) + " F")
+        time.sleep(3.0)
+        lcd.clear()
+        GPIO.cleanup()
 
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
+        #temp was right
+        if (startTemp == 75):
+            lcd.set_backlight(0)
+            lcd.message("Drink Type: Ale\n" + "Temp: " + str(startTemp) + " F")
+            time.sleep(3.0)
+            lcd.clear()
+            GPIO.cleanup()
+            pass
 
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-        
-        #FermentTempStart = data['boil']
-        #print("Max Temp: " + maxTemp)
+        # temp wasn't right for ale
+        elif (startTemp != 75):
+            for i in range(0, 6):
+                # temp too low
+                if (startTemp < 75):
+                    lcd.set_backlight(0)
+                    lcd.message("Temperature is\n" + "too low: " + str(startTemp) + " F")
+                    time.sleep(3.0)
+                    lcd.clear()
+                    GPIO.cleanup()
+                    startTemp += 2
 
-    def FermentEndGet():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?sysparm_query=fermenting_end_timeONToday%40javascript%3Ags.beginningOfToday()%40javascript%3Ags.endOfToday()&sysparm_limit=1'
+                # temp too high
+                elif (startTemp > 75):
+                    lcd.set_backlight(0)
+                    lcd.message("Temperature is\n" + "too high: " + str(startTemp) + " F")
+                    time.sleep(3.0)
+                    lcd.clear()
+                    GPIO.cleanup()
+                    startTemp -= 2
 
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = '***'
+                # temp acutally worked
+                elif (startTemp == 75):
+                    break
+                i += 1
 
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+            # print ending temp
+            lcd.set_backlight(0)
+            lcd.message("Drink Type: Ale\n" + "Temp: " + str(startTemp) + " F")
+            time.sleep(3.0)
+            lcd.clear()
+            GPIO.cleanup()
 
-        # Do the HTTP request
-        response = requests.get(url, auth=(user, pwd), headers=headers)
+    elif (beerType == 'Lager'):
+        #temp was right for lager
+        print("Temperature for a lager needs to be 55 degrees F.")
+        # temp was right for stout
+        lcd.set_backlight(0)
+        lcd.message("Drink Type: Ale\n" + "Temp: " + str(startTemp) + " F")
+        time.sleep(3.0)
+        lcd.clear()
+        GPIO.cleanup()
 
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
+        # temp was right
+        if (startTemp == 55):
+            lcd.set_backlight(0)
+            lcd.message("Drink Type: Ale\n" + "Temp: " + str(startTemp) + " F")
+            time.sleep(3.0)
+            lcd.clear()
+            GPIO.cleanup()
+            pass
 
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
+        # temp wasn't right for ale
+        elif (startTemp != 55):
+            for i in range(0, 6):
+                # temp too low
+                if (startTemp < 55):
+                    lcd.set_backlight(0)
+                    lcd.message("Temperature is\n" + "too low: " + str(startTemp) + " F")
+                    time.sleep(3.0)
+                    lcd.clear()
+                    GPIO.cleanup()
+                    startTemp += 2
 
-# # temp log - log table
-# class FermentTemps():
-#     def tempGet():
-# 
-#     TempAndHumidityLCD(lcdColumns, lcdRows, tempSensor, tempPin)
-# 
-#     temperature, humidity = Adafruit_DHT.read(tempSensor, tempPin)
-#     time.sleep(1)
-#     GPIO.cleanup()
-# 
-#     temperature = temperature * 9 / 5.0 + 32
-#     lcd.set_backlight(0)
-#     lcd.message("Current temp\n" + temperature)  # pulled from mother brew
-#     time.sleep(3.0)
-#     lcd.clear()
-#     GPIO.cleanup()
-# 
-#     # checking temp
-#     for i in range(0, 6):
-#         # temp too low
-#         if (temperature < 68):
-#             lcd.set_backlight(0)
-#             lcd.message("Temperature is\n" + "too low: " + str(temperature) + " F")
-#             time.sleep(3.0)
-#             lcd.clear()
-#             GPIO.cleanup()
-# 
-#         # temp too high
-#         elif (temperature > 78):
-#             lcd.set_backlight(0)
-#             lcd.message("Temperature is\n" + "too high: " + str(temperature) + " F")
-#             time.sleep(3.0)
-#             lcd.clear()
-#             GPIO.cleanup()
-# 
-#         # temp acutally worked
-#         elif (temperature == 78):
-#             break
-#         i += 1
-# 
-#     def temoUpdate():
-# 
-#     def tempPost():
+                # temp too high
+                elif (startTemp > 55):
+                    lcd.set_backlight(0)
+                    lcd.message("Temperature is\n" + "too high: " + str(startTemp) + " F")
+                    time.sleep(3.0)
+                    lcd.clear()
+                    GPIO.cleanup()
+                    startTemp -= 2
 
+                # temp acutally worked
+                elif (temperature == 55):
+                    break
+                i += 1
 
-# class steralize
-class FermentClean():
-    def CleanGet():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?sysparm_query=ferment_tempature%3D&sysparm_limit=1'
+            # print ending temp
+            lcd.set_backlight(0)
+            lcd.message("Drink Type: Ale\n" + "Temp: " + str(startTemp) + " F")
+            time.sleep(3.0)
+            lcd.clear()
+            GPIO.cleanup()
 
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = '***'
+    elif (beerType == 'IPA'):
+        #temp was right for ipa
+        print("Temperature for an IPA needs to be 70 degrees F.")
+        # temp was right for stout
+        lcd.set_backlight(0)
+        lcd.message("Drink Type: Ale\n" + "Temp: " + str(startTemp) + " F")
+        time.sleep(3.0)
+        lcd.clear()
+        GPIO.cleanup()
 
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        # temp was right
+        if (startTemp == 70):
+            lcd.set_backlight(0)
+            lcd.message("Drink Type: Ale\n" + "Temp: " + str(startTemp) + " F")
+            time.sleep(3.0)
+            lcd.clear()
+            GPIO.cleanup()
+            pass
 
-        # Do the HTTP request
-        response = requests.get(url, auth=(user, pwd), headers=headers)
+        # temp wasn't right for ale
+        elif (startTemp != 70):
+            for i in range(0, 6):
+                # temp too low
+                if (startTemp < 70):
+                    lcd.set_backlight(0)
+                    lcd.message("Temperature is\n" + "too low: " + str(startTemp) + " F")
+                    time.sleep(3.0)
+                    lcd.clear()
+                    GPIO.cleanup()
+                    startTemp += 2
 
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
+                # temp too high
+                elif (startTemp > 70):
+                    lcd.set_backlight(0)
+                    lcd.message("Temperature is\n" + "too high: " + str(startTemp) + " F")
+                    time.sleep(3.0)
+                    lcd.clear()
+                    GPIO.cleanup()
+                    startTemp -= 2
 
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
+                # temp acutally worked
+                elif (startTemp == 70):
+                    break
+                i += 1
 
-# quality check
-class QualityCheck():
-    def qualityCheckGet():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?sysparm_query=ferment_tempature%3D&sysparm_limit=1'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = '***'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.get(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-        
-# class ferment duration
-class FermentDuration():
-    def durationGet():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?sysparm_query=fermenting_duration%3Djavascript%3Ags.getDurationDate('
-        0 % 200 % 3
-        A0 % 3
-        A0
-        ')&sysparm_limit=1'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = '***'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.get(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)duration = data['result'][0]['fermentation_duration']
-        print("Fermentation Duration: " + str(duration))
-        
-# class 2nd ferment
-class SecondFerment():
-    def secondFermentGet():
-        # Set the request parameters
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=secondary_fermentation%3D&sysparm_limit=1'
-
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'mmf5571'
-        pwd = '***'
-
-        # Set proper headers
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
-        # Do the HTTP request
-        response = requests.get(url, auth=(user, pwd), headers=headers)
-
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
-            exit()
-
-        # Decode the JSON response into a dictionary and use the data
-        data = response.json()
-        print(data)
-        secondFerment = data['result'][0]['secondary_fermentation']
-        print("Secondary Fermentation: " + str(secondFerment))        
-        
-        if (str(secondFerment) == 'Kräusening'):
-            print("Kräusening selected.")
-            print("Sent to conditioning tank.")
-            print("Fermenting.")
-            BuzzerDone(buzzerPin)
-            print("Sent to bottle.")
-
-        elif (str(secondFerment) == 'Bottle'):
-            print("Bottle selected.")
-            print("Fermenting.")
-            BuzzerDone(buzzerPin)
-            print("Sent to bottle.")
-
-        elif (str(secondFerment) == 'Cask_Condistioning'):
-            print("Cask Conditioning selected.")
-            print("Putting into cask.")
-            print("Fermenting.")
-            BuzzerDone(buzzerPin)
-            print("Sent to bottle.")
-
-        elif (str(secondFerment) == 'Lagering'):
-            print("Laggering selected.")
-            print("Storing at celler temperature.")
-            print("Fermenting.")
-            BuzzerDone(buzzerPin)
-            print("Sent to bottle.")
-
-        elif (str(secondFerment) == 'Secondary'):
-            print("Secondary Fermentation selected.")
-            print("Fermenting.")
-            BuzzerDone(buzzerPin)
-            print("Sent to bottle.")
-
-        elif (str(secondFerment) == 'Barrel_Agein'):
-            print("Barrel Aging Selected.")
-            print("Sent to barrel to sour.")
-            print("Fermenting.")
-            BuzzerDone(buzzerPin)
-            print("Sent to bottle.")
-
-        else:
-            print("Fermenting.")
-            BuzzerDone(buzzerPin)
-            print("Sent to bottle.")
+            # print ending temp
+            lcd.set_backlight(0)
+            lcd.message("Drink Type: Ale\n" + "Temp: " + str(startTemp) + " F")
+            time.sleep(3.0)
+            lcd.clear()
+            GPIO.cleanup()
             
+    
+    
+    #function to ferment
+def SecondFerment():
+    global fermentDuration
+    if (str(secondFerment) == 'Kräusening'):
+        print("Kräusening selected.")
+        print("Sent to conditioning tank.")
+        print("Fermenting for 3 days.")
+        for i in range (0, 4):
+            LEDMatrix(cascaded, block_orientation, rotate, msg)
+        BuzzerDone(buzzerPin)
+        fermentDuration = '3 days'
+
+    elif (str(secondFerment) == 'Bottle'):
+        print("Bottle selected.")
+        print("Fermenting for 2 weeks.")
+        for i in range(0, 11):
+            LEDMatrix(cascaded, block_orientation, rotate, msg)
+        BuzzerDone(buzzerPin)
+        fermentDuration = '2 weeks'
+
+    elif (str(secondFerment) == 'Cask_Condistioning'):
+        print("Cask Conditioning selected.")
+        print("Putting into cask.")
+        print("Fermenting for 5 days.")
+        for i in range(0, 6):
+            LEDMatrix(cascaded, block_orientation, rotate, msg)
+        BuzzerDone(buzzerPin)
+        fermentDuration = '5 days'
+
+    elif (str(secondFerment) == 'Lagering'):
+        print("Laggering selected.")
+        print("Storing at celler temperature.")
+        print("Fermenting for 3 months.")
+        for i in range (0, 31):
+            LEDMatrix(cascaded, block_orientation, rotate, msg)
+        BuzzerDone(buzzerPin)
+        fermentDuration = '3 months'
+
+    elif (str(secondFerment) == 'Secondary'):
+        print("Secondary Fermentation selected.")
+        print("Fermenting for 2 weeks.")
+        for i in range(0, 11):
+            LEDMatrix(cascaded, block_orientation, rotate, msg)
+        BuzzerDone(buzzerPin)
+        fermentDuration = '2 weeks'
+
+    elif (str(secondFerment) == 'Barrel_Agein'):
+        print("Barrel Aging Selected.")
+        print("Sent to barrel to sour.")
+        print("Fermenting for 1 month.")
+        for i in range(0, 23):
+            LEDMatrix(cascaded, block_orientation, rotate, msg)
+        BuzzerDone(buzzerPin)
+        fermentDuration = '1 month'
+
+    else:
+        pass
+        
+    return fermentDuration
+
+#function for POST
+def PostCRUD():
+    # Set the request parameters
+    #url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?sysparm_display_value=abvISEMPTY%26abvISEMPTY%5Eferment_tempatureISEMPTY%26abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%26abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%5Efermenting_end_timeISEMPTY%25abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%5Efermenting_end_timeISEMPTY%5Efermenting_quality_checkISEMPTY%26abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%5Efermenting_end_timeISEMPTY%5Efermenting_quality_checkISEMPTY%5Efermenting_reset_cleanISEMPTY%26abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%5Efermenting_end_timeISEMPTY%5Efermenting_quality_checkISEMPTY%5Efermenting_reset_cleanISEMPTY%5Efermenting_start_timeISEMPTY%25abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%5Efermenting_end_timeISEMPTY%5Efermenting_quality_checkISEMPTY%5Efermenting_reset_cleanISEMPTY%5Efermenting_start_timeISEMPTY%5Esecond_fermentationISEMPTY%numberISNOTEMPTY'
+
+    # Eg. User name="admin", Password="admin" for this code sample.
+    user = 'kasper440'
+    pwd = 'kasper440'
+
+    # Set proper headers
+    headers = {"Content-Type":"application/json","Accept":"application/json"}
+
+    # Do the HTTP request
+    response = requests.post(url, auth=(user, pwd), headers=headers,
+                             data = "{\fermenting_start_time\":\"" + str(startTime)
+                             + "\",\"fermenting_end_time\":\"" + str(endTime)
+                             + "\",\"ferment_temeprature\":\"" + str(boilTemp)
+                             + "\",\"fermenting_end_time\":\"" + str(endTime)
+                             + "\",\"fermenting_duration\":\"" + str(fermentDuration)
+                             + "\",\"abv\":\"" + str(ABVLevel)
+                             + "\",\"number\":\"" + str(number)
+                             + "\",\"fermenting_quality_check\":\"true\"}"
+                             + "\",\"fermenting_reset/clean\":\"true\"}"
+                             + "\",\"second_fermentation\":\"true\"}")
+
+
+    # Check for HTTP codes other than 200
+    if response.status_code != 201: 
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
+        exit()
+
+    # Decode the JSON response into a dictionary and use the data
+    data = response
+    print(data)
+    
+#function to send to bottle
+def SendToBottle():
+    # Set the request parameters
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_brew_task?sysparm_display_value=rpi_to_executeSTARTSWITHBottlePi'
+    
+    # Eg. User name="admin", Password="admin" for this code sample.
+    user = 'kasper440'
+    pwd = 'kasper440'
+    
+    # Set proper headers
+    headers = {"Content-Type":"application/json","Accept":"application/json"}
+    
+    # Do the HTTP request
+    response = requests.post(url, auth=(user, pwd), headers=headers,
+                             data = "{\fermenting_start_time\":\"" + str(nextTeam))
+    
+    # Check for HTTP codes other than 200
+    if response.status_code != 200: 
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
+        exit()
+    
+    # Decode the JSON response into a dictionary and use the data
+    data = response.json()
+    print(data)
+
+
 # function to display temp n humidity
 def TempAndHumidityLCD(lcdColumns, lcdRows, tempSensor, tempPin):
     # Initialize the LCD using the pins
@@ -508,12 +540,13 @@ def LEDMatrix(cascaded, block_orientation, rotate, msg):
     serial = spi(port=0, device=1, gpio=noop())
     device = max7219(serial, cascaded=cascaded or 1, block_orientation=block_orientation, rotate=rotate or 0)
     # debugging purpose
-    print("[-] Matrix initialized")
+    #print("%s" % msg)
 
+    # print hello world on the matrix display
+    msg = "."
     # debugging purpose
-    print("[-] Printing: %s" % msg)
+    #print("%s" % msg)
     show_message(device, msg, fill="white", font=proportional(CP437_FONT), scroll_delay=0.1)
-    GPIO.cleanup()
 
 
 # function for stepmotor
@@ -545,121 +578,45 @@ def StepMotor():
 
     GPIO.cleanup()
 
-
-# function for clock
-def Clock():
-    now = datetime.datetime.now()
-    hour = now.hour
-    minute = now.minute
-    second = now.second
-
-    segment.clear()
-    # Set hours
-    segment.set_digit(0, int(hour / 10))  # Tens
-    segment.set_digit(1, hour % 10)  # Ones
-    # Set minutes
-    segment.set_digit(2, int(minute / 10))  # Tens
-    segment.set_digit(3, minute % 10)  # Ones
-    # Toggle colon
-    segment.set_colon(second % 2)  # Toggle colon at 1Hz
-
-    # Write the display buffer to the hardware.  This must be called to
-    # update the actual display LEDs.
-    segment.write_display()
-
-    # Wait a quarter second (less than 1 second to prevent colon blinking getting$
-    time.sleep(0.25)
-
-
 # runs all other code
-def Main():
-    BrewTask.BrewTaskGET()
-    RecipeiTableYeast.YeastGet()
+def Main(): # ledMartrix variables
+    CheckForRecipie()
+    MotherBrewGet()
+    BoilTempGet()
+    TempCheck()
+    
+    #getting times n duration
+    global startTime, endTime, fermentDuration, nextTeam
+    now = datetime.datetime.now()
+    startTime = now.strftime("%H:%M:%S")
+    print("Fermenting start time: " + str(startTime))
+    
+    #2nd ferment or normal ferment
+    print("Fermenting:")
+    for i in range (0, 11):
+        LEDMatrix(cascaded, block_orientation, rotate, msg)
+    BuzzerDone(buzzerPin)
+    fermentDuration = '2 weeks'
+        
+    SecondFerment()
+    
+    #send to bottle
+    print("Sending to bottle.")
+    nextTeam = "BottlePi"
+    SendToBottle()
+    print("Sent to bottle.")
+    
+    #end time
+    now = datetime.datetime.now()
+    endTime = now.strftime("%H:%M:%S")
+    print("Fermenting end time: " + str(endTime))
 
-    segment = SevenSegment.SevenSegment(address=0x70)
-    # Initialize the display. Must be called once before using the display.
-    segment.begin()
-
-    # initialize ledmatrix
-    msg = ""
-    LEDMatrix(cascaded, block_orientation, rotate, msg)
-
-    # initialize LCD screen
-    TempAndHumidityLCD(lcdColumns, lcdRows, tempSensor, tempPin)
-    lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
-
-    msg = "."
-
-    temperature, humidity = Adafruit_DHT.read(tempSensor, tempPin)
-    time.sleep(1)
-    GPIO.cleanup()
-
-    temperature = temperature * 9 / 5.0 + 32
-    lcd.set_backlight(0)
-    lcd.message("Current temp\n" + temperature)  # pulled from mother brew
-    time.sleep(3.0)
-    lcd.clear()
-    GPIO.cleanup()
-
-    # checking temp
-    for i in range(0, 6):
-        # temp too low
-        if (temperature < 68):
-            lcd.set_backlight(0)
-            lcd.message("Temperature is\n" + "too low: " + str(temperature) + " F")
-            time.sleep(3.0)
-            lcd.clear()
-            GPIO.cleanup()
-
-        # temp too high
-        elif (temperature > 78):
-            lcd.set_backlight(0)
-            lcd.message("Temperature is\n" + "too high: " + str(temperature) + " F")
-            time.sleep(3.0)
-            lcd.clear()
-            GPIO.cleanup()
-
-        # temp acutally worked
-        elif (temperature == 78):
-            break
-        i += 1
-
-    lcd.set_backlight(0)
-    lcd.message("Temperature is:\n" + str(temperature) + " F")
-    time.sleep(5.0)
-    lcd.clear()
-    GPIO.cleanup()
-
-    # pull yeast and sugar to check amounts
-    RecipeiTableYeast.Yeast1Get()
-    RecipeiTableYeast.Yeast2Get()
-    RecipeiTableYeast.Yeast3Get()
-
-    RecipieTableSugar.SugarGet()
-
-    # update API level and gravity check
-    RecipieTableABV.ABVGet()
-
-    # choose second ferment - if/elif branch
-    SecondFerment.secondFermentGet()
-
-    today = datetime.date.today()
- 
-     # end time
-    outgoingTemp = datetime.date.today()
-
-    FermentDuration.durationGet()
-
-
-    QualityCheck.qualityCheckGet()
-
-
-    FermentClean.CleanGet()
-    Stepmotor()
-
-    # push to boil
+    #checks a cleaning
+    print("Posting to log table: ")
+    PostCRUD()
 
     print("Ferment Completed.")
-    imprt CHeckForRecipie
+    CheckForRecipie()
+    
 # run all the stuff
 Main()

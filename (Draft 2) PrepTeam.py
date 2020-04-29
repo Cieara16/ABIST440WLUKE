@@ -13,6 +13,7 @@ from datetime import datetime, date
 import subprocess
 import sys
 import requests
+from GetFromMotherBrew import Loop
 lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
 
 # Buzzer 1 
@@ -199,49 +200,8 @@ def Post_logtable():
     # Decode the JSON response into a dictionary and use the data
     data = response
     #print(data)
-
-#quality fuction once employee done with QC brew master sound buzzer to confrim QC
-#def QualityCheck():
-    # button  used as buzzer to check the quality
-    # change
-    #Qc_empbutton_left = 25
-    # buzzer
-    #buzzerpin = 18
-    # set GPIO as GPIO.BOARD
-    #GPIO.setmode(GPIO.BCM)
-    # Setup button pin asBu input and power pins
-    #GPIO.setup(Qc_empbutton_left, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    # buzzer
-    #GPIO.setup(buzzerpin, GPIO.OUT)
-    # Initialize the LCD using the pins
-    #lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
-    # Turn backlight on
-    #lcd.set_backlight(0)
-
-    #def quality_check(Qc_empbutton_left, lcd, Prep, buzzerpin):
-        # regular quality check using lcd screen
-        #Prep = True
-         #while Prep:
-            #quality_check = False
-            # Prep employee sets quality check
-            #if GPIO.input(Qc_empbutton_left) == 1:
-                # turn on LED
-                #lcd.message('Quality Check request by employee')
-                  #GPIO.output(buzzerpin, GPIO.LOW)
-                #time.sleep(5)
-                # after Quality check complete employee press button for QC Completed
-            #elif GPIO.input(Qc_empbutton_left) == 0:
-                #lcd.message('Employee completed the Quality Check ')
-                #GPIO.output(buzzerpin, GPIO.HIGH)
-                #time.sleep(0.8)
-                # Wait half a second
-                #time.sleep(5)
-                #Prep = False
-            #else:
-                #lcd.message('Waiting for Request order')
-                #time.sleep(3)
-   #quality_check(quality_check)
-
+    
+    
 # to get active prep task from service now to excute on crow pi
 def Get_Task_for_CrowPi():
     # Set the request parameters
@@ -281,6 +241,46 @@ def Get_Task_for_CrowPi():
     print(Task4)
     print(shortDescTask4)
 
+def Loop():
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=sys_created_onRELATIVEGT%40minute%40ago%401&sysparm_limit=1'
+    user = 'kasper440'
+    pwd = 'kasper440'
+    # Set proper headers
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    # Do the HTTP request
+    response = requests.get(url, auth=(user, pwd), headers=headers)
+
+    # Check for HTTP codes other than 200
+    if response.status_code != 200:
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+        exit()
+
+    # Decode the JSON response into a dictionary and use the data
+    result = response.json()['result']
+    emptyList = []
+
+    while (result == emptyList):
+        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=sys_created_onRELATIVEGT%40minute%40ago%401&sysparm_limit=1'
+        user = 'kasper440'
+        pwd = 'kasper440'
+        # Set proper headers
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        # Do the HTTP request
+        response = requests.get(url, auth=(user, pwd), headers=headers)
+
+        # Check for HTTP codes other than 200
+        if response.status_code != 200:
+            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+            exit()
+
+        # Decode the JSON response into a dictionary and use the data
+        result = response.json()['result']
+        emptyList = []
+        print(result)
+        time.sleep(25)
+    #if (result != emptyList):
+        #main()
+        
 
 # Stepper motor 1
 # test equipment
@@ -540,38 +540,112 @@ if __name__ == "__main__":
     print(data)
 
     
-global grain, grain_weight
+global start1, end1, elapsed1, number, beername, beertype, Grains, Grainweight
 
-def get_ingredients():
-        #Need to install requests package for python
-        #easy_install requests
+def GetIngredient():
+    # Need to install requests package for python
+    # easy_install requests
+    import requests
 
-        # Set the request parameters
-# Needs fixing -> url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_ingredients?sysparm_query=Active%20%3D%20true&sysparm_fields=grain_weight%2Cgrains&sysparm_limit=1'
-        
-        url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_ingredients?sysparm_query=grain_weightISNOTEMPTY&sysparm_limit=1'
-        # Eg. User name="admin", Password="admin" for this code sample.
-        user = 'Amp6826'
-        pwd = 'Swami101'
+    # Set the request parameters
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=%5EORDERBYDESCsys_created_on&sysparm_fields=number%2Cbeer_type%2Cbeer_name%2Cgrains%2Cgrain_weight&sysparm_limit=1'
 
-        # Set proper headers
-        headers = {"Content-Type":"application/json","Accept":"application/json"}
+    # Eg. User name="admin", Password="admin" for this code sample.
+    user = 'Amp6826'
+    pwd = 'Swami101'
 
-        # Do the HTTP request
-        response = requests.get(url, auth=(user, pwd), headers=headers )
+    # Set proper headers
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
 
-        # Check for HTTP codes other than 200
-        if response.status_code != 200:
-            print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
-            exit()
+    # Do the HTTP request
+    response = requests.get(url, auth=(user, pwd), headers=headers)
 
-        # Decode the JSON response into a dictionary and use the data
-        grain = response.json()['result'][0]['grain']
-        grain_weight = response.json()['result'][0]['grain_weight']
-        print('Grain: ' + grain)
-        print('Grain weight: ' + grain_weight)
-        return grain, grain_weight
+    # Check for HTTP codes other than 200
+    if response.status_code != 200:
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+        exit()
+
+    # Decode the JSON response into a dictionary and use the data
+    global number, beername, beertype, Grains, Grainweight
+    number = response.json()['result'][0]['number']
+    beername = response.json()['result'][0]['beer_name']
+    beertype = response.json()['result'][0]['beer_type']
+    Grains = response.json()['result'][0]['grains']
+    Grainweight = response.json()['result'][0]['grain_weight']
+    print('Number: ' + number)
+    print('Beer Name: ' + beername)
+    print('Beer Type: ' + beertype)
+    print('Grains: ' + Grains)
+    print('Grainweight: ' + Grainweight)
+    return number, beername, beertype, Grains, Grainweight
+
+def Grains1():
+    global Grains, Grainweight
+    if Grains == 'All':
+        print('Add the Grain: Pale(2-Row), Graizular, ..... '+ Grainweight + ' pounds')
+    elif Grains == 'Grainz':
+        print('Add the Grainz'+ Grainweight + ' pounds')
+    elif Grains == 'Pale (2-row)':
+        print('Add the Pale (2-rows)' + Grainweight + ' pounds')
+    elif Grains == '':
+        print('')
+
+def grainweight():
+    #write your code here
+    pass
+
+#post curd to post prep log in log table
+def Post():
+    # Set the request parameters
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?sysparm_fields=preperation_quality_check%2Cpreperation_rest_clean%2Cprep_time_start%2Cprep_time_end'
+
+    # Eg. User name="admin", Password="admin" for this code sample.
+    user = 'Amp6826'
+    pwd = 'Swami101'
+
+    # Set proper headers
+    headers = {"Content-Type":"application/json","Accept":"application/json"}
+
+    # Do the HTTP request
+    response = requests.post(url, auth=(user, pwd), headers=headers, data="{\"sys_id\":\"\",\"preperation_quality_check\":\"true\",\"prep_time_start\":\""+ str(start1) +"\",\"prep_time_end\":\"" + str(
+                                 end1)+"\",\"preperation_rest_clean\":\"\"}")
+
+    # Check for HTTP codes other than 200
+    if response.status_code != 200:
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
+        exit()
+
+    # Decode the JSON response into a dictionary and use the data
+    data = response.json()
+    print(data)
+
+
+
+#quality fuction once employee done with QC brew master sound buzzer to confrim QC
+def QualityCheck():
+        # regular quality check using lcd screen
+        Prep = True
+        while Prep:
+            quality_check = False
+            # Prep employee sets quality check
+            if GPIO.input(Qc_empbutton_left) == 1:
+                # turn on LED
+                lcd.message('Quality Check request by employee')
+                GPIO.output(buzzerpin, GPIO.LOW)
+                time.sleep(5)
+                # after Quality check complete employee press button for QC Completed
+            elif GPIO.input(Qc_empbutton_left) == 0:
+                lcd.message('Employee completed the Quality Check ')
+                GPIO.output(buzzerpin, GPIO.HIGH)
+                time.sleep(0.8)
+                # Wait half a second
+                time.sleep(5)
+                Prep = False
+            else:
+                lcd.message('Waiting for Request order')
+                time.sleep(3)    
     
+
 #gather the grains
 btn = 1
 if btn == 1:
@@ -732,16 +806,20 @@ if response.status_code != 200:
     print('Status:', res)
     
 def main():
-    global start1, end1
-    start1 = datetime.now()
-    end1 = datetime.now()
-    elapsed1 = (end1 - start1).seconds
+    global start1, end1, elapsed1
+    start1 = datetime.datetime.now()
     get_ingredients()
-    Get_Task_for_CrowPi()
     #QualityCheck()
-    Post_logtable()
+    end1 = datetime.datetime.now()
+    # calculate process duration of prep
+    elapsed1 = (end1 - start1).seconds
+    #return start1, end1, elapsed1
+    Get_Task_for_CrowPi()
+    
     print(elapsed1)
-    return start1, end1
+    return start1, end1, elapsed1
+    Post_logtable()
+    Loop()
     print('done')
 
 main()    
