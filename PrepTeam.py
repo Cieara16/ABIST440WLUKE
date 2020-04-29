@@ -24,7 +24,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(buzzer_pin, GPIO.OUT)
 
 # Make buzzer sound
-GPIO.output(buzzer_pin, GPIO.LOW)
+GPIO.output(buzzer_pin, GPIO.HIGH)
 time.sleep(1)
 # Stop buzzer sound
 GPIO.output(buzzer_pin, GPIO.LOW)
@@ -465,7 +465,6 @@ def get_ingredients():
         #easy_install requests
 
         # Set the request parameters
-        #url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_ingredients?sysparm_query=grain_weightISNOTEMPTY&sysparm_limit=1'
         url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=active%3Dtrue%5EnumberISNOTEMPTY%5EORDERBYDESCsys_created_on&sysparm_limit=10'
         # Eg. User name="admin", Password="admin" for this code sample.
         user = 'Amp6826'
@@ -586,12 +585,10 @@ def main4(test=4):
                 lcd.clear()
                 lcd.message('Weight measured')
                 print((grain_weight) + ' lbs.')
-                print("Press Crtl+C to move to the next task.")
                 lcd.clear()
                 lcd.message((grain_weight) + ' lbs.')
                 time.sleep(3)
                 lcd.clear()
-                lcd.message('Crtl + C ')
                 lcd.set_backlight(1)
                 time.sleep(1.0)
     except KeyboardInterrupt:
@@ -778,7 +775,7 @@ def TimeDuration():
 
 def main7():
     #get_ingredients()
-    Get_Task_for_CrowPi()
+    #Get_Task_for_CrowPi()
     TimeDuration()
     #QualityCheck()
     Post_logtable()
@@ -894,7 +891,7 @@ GPIO.setup(buzzer_pin, GPIO.OUT)
 
 # Make buzzer sound
 GPIO.output(buzzer_pin, GPIO.HIGH)
-time.sleep(.2)
+time.sleep(1)
 # Stop buzzer sound
 GPIO.output(buzzer_pin, GPIO.LOW)
 # define touch pin
