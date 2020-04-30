@@ -66,7 +66,7 @@ def Loop():
         print(result)
         time.sleep(25)
         if (result != emptyList):
-        #import Your Main Program name here. E.x. BoilPhase.py but do not include the .py
+        #import PrepTeam.py into the Loop
             import PrepTeamCopy10
 
 Loop()
