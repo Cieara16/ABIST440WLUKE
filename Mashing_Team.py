@@ -115,7 +115,6 @@ def GetFromBrewTasks():
     Task6 = response.json()['result'][5]['number']
     shortDesc6 = response.json()['result'][5]['short_description']
     return Task1, shortDesc1, Task2, shortDesc2, Task3, shortDesc3, Task4, shortDesc4, Task5, shortDesc5, Task6, shortDesc6
-# ???
 #     print(Task5 + " :" + shortDesc5 )
 #     time.sleep(1)
     
