@@ -1,78 +1,96 @@
+#Brian Tu, Eni Saraci, Nicholas Galindo, Yongkang Deng
 import sys
 import Adafruit_DHT
 import time
+import sys
 import Adafruit_CharLCD as LCD
 import RPi.GPIO as GPIO
 import requests
 from datetime import datetime, date
 from Adafruit_LED_Backpack import SevenSegment
+import math
 
-sensor = 11
-pin = 4
+# Buzzer 1 
+# Goes off to indicated the start of the Preparation process
 
-lcd_columns = 16
-lcd_rows = 2
+buzzer_pin = 18
 
-buzzerPin = 18
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(buzzer_pin, GPIO.OUT)
+
+# Make buzzer sound
+GPIO.output(buzzer_pin, GPIO.LOW)
+time.sleep(1)
+# Stop buzzer sound
+GPIO.output(buzzer_pin, GPIO.LOW)
+# define touch pin
+touch_pin = 17
+# set GPIO pin to INPUT
+GPIO.setup(touch_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+motion_pin = 23
+# set GPIO as GPIO.BOARD
+GPIO.setmode(GPIO.BCM)
+# set pin mode as INPUT
+GPIO.setup(motion_pin, GPIO.IN)
 
 segment = SevenSegment.SevenSegment(address=0x70)
 
-global temperatureCelsius, humidity, start, end, duration
-
-humidity, temperatureCelsius = Adafruit_DHT.read_retry(sensor, pin)
-
-lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
-
-temperatureFarenheit = temperatureCelsius * 9 / 5.0 + 32
-
-temperatureCelsius *= 2
-
-def readTemp(sensor, pin):
-    return temperature, humidity
-    time.sleep(1)
+def getFromMb():
+    #Need to install requests package for python
+    #easy_install requests
+    import requests
     
-def _init_(self, temperature, humidity):
-    self.humidity = humidity
-    self.temperature = temperature
-
-def GetFromMotherbrew():
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=active%3Dtrue%5EnumberISNOTEMPTY%5EORDERBYDESCsys_created_on&sysparm_limit=1'
-    user = 'kasper440'
-    pwd = 'kasper440'
+    # Set the request parameters
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=active%3Dtrue%5EnumberISNOTEMPTY%5EORDERBYDESCsys_created_on&sysparm_limit=10'
     
-    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    # Eg. User name="admin", Password="admin" for this code sample.
+    user = 'bqt5061'
+    pwd = 'LanTsui26'
     
-    response = requests.get(url, auth=(user, pwd), headers=headers)
+    # Set proper headers
+    headers = {"Content-Type":"application/json","Accept":"application/json"}
     
-    if response.status_code != 200:
-        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+    # Do the HTTP request
+    response = requests.get(url, auth=(user, pwd), headers=headers )
+    
+    # Check for HTTP codes other than 200
+    if response.status_code != 200: 
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
         exit()
     
-    global heatHlt, grainVol, ambientTemp, strikeVol, strikeTemp, waterVol, mashInWater, strikeWater
-    heatHlt = response.json()['result'][0]['heat_hlt']
-    grainVol = response.json() ['result'] [0] ['grain_volume']
-    ambientTemp = response.json() ['result'][0]['ambient_temperature']
-    strikeVol = response.json() ['result'] [0] ['strike_volume']
-    strikeTemp = response.json() ['result'] [0] ['strike_temperature']
-    waterVol = response.json() ['result'] [0] ['water_volume']
-    mashInWater = response.json() ['result'] [0] ['mash_in_water']
-    strikeWater = response.json() ['result'] [0] ['strike_water']
-    print('Heat HLT: ' + heatHLT)
-    print('Grain Volume: ' + grainVol)
-    print('Ambient Temperature: '+ ambientTemp)
-    print('Strike Volume: ' + strikeVol)
-    print('Strike Temperature: ' + strikeTemp)
-    print('Water Volume: ' + waterVol)
-    print('Mash In Water: ' + mashInWater)
-    print('Strike Water: ' + strikeWater)
+    # Decode the JSON response into a dictionary and use the data
+    global grain_weight, number, mash_temperature, waterMass, water_temp, sys_Id, order_Id
+    order_Id = response.json()['result'][0]['order_id']
+    grain_weight = response.json()['result'][0]['grain_weight']
+    mash_temperature = response.json()['result'][0]['mash_temperature']
+    waterMass = response.json()['result'][0]['water_by_weight']
+    water_temp = response.json()['result'][0]['water_temperature']
+    sys_Id = response.json()['result'][0]['sys_id']
+    number = response.json()['result'][0]['number']
+    print('Order No.: ' + number)
+    time.sleep(2)
+    print('Order ID: ' + order_Id)
+    time.sleep(2)
+    print('Record ID: ' + sys_Id)
+    time.sleep(2)
+    print('Grain weight: ' + grain_weight)
+    time.sleep(2)
+    print('Mash Temperature: ' + mash_temperature)
+    time.sleep(2)
+    print('Water Mass: ' + waterMass)
+    time.sleep(2)
+    print('Water Temperature: ' + water_temp)
     time.sleep(1)
+    # return the local variables
+    return grain_weight, number, mash_temperature, waterMass, water_temp, sys_Id, order_Id
+getFromMb()
     
-    return heatHLT, grainVol, ambientTemp, strikeVol, strikeTemp, waterVol, mashInWater, strikeWater
-    
+
 def GetFromBrewTasks():
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=rpi_to_execute%3DMashPi%5Estate%3D-5%5Eactive%3Dtrue&sysparm_limit=10' 
-    user = 'kasper440'
-    pwd = 'kasper440'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=active%3Dtrue%5Erpi_to_executeSTARTSWITHMashPi%5Estate%3D-5&sysparm_limit=10'
+    user = 'bqt5061'
+    pwd = 'LanTsui26'
     
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     
@@ -82,146 +100,414 @@ def GetFromBrewTasks():
         print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
         exit()
     
-    #global
-  
-def Post():
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mash'
-    user = 'kasper440'
-    pwd = 'kasper440'
+    # Decode  the JSON response into dictionary and use the  data
+    global Task1, shortDesc1, Task2, shortDesc2, Task3, shortDesc3, Task4, shortDesc4, Task5, shortDesc5, Task6, shortDesc6
+    Task1 = response.json()['result'][0]['number']
+    shortDesc1 = response.json()['result'][0]['short_description']
+    Task2 = response.json()['result'][1]['number']
+    shortDesc2 = response.json()['result'][1]['short_description']
+    Task3 = response.json()['result'][2]['number']
+    shortDesc3 = response.json()['result'][2]['short_description']
+    Task4 = response.json()['result'][3]['number']
+    shortDesc4 = response.json()['result'][3]['short_description']
+    Task5 = response.json()['result'][4]['number']
+    shortDesc5 = response.json()['result'][4]['short_description']
+    Task6 = response.json()['result'][5]['number']
+    shortDesc6 = response.json()['result'][5]['short_description']
+    return Task1, shortDesc1, Task2, shortDesc2, Task3, shortDesc3, Task4, shortDesc4, Task5, shortDesc5, Task6, shortDesc6
+# ???
+#     print(Task5 + " :" + shortDesc5 )
+#     time.sleep(1)
     
-    headers = {"Content-Type": "application/json", "Accept": "application/json"}
-    
-    response = requests.post(url, auth=(user, pwd), headers=headers,
-                             data="{\"sys_id\":\"\",\"short_description\":\"Mashing\",\"current_temperature\":\""+ str(
-                                 temperature) + "\",\"sys_updated_on\":\"\"}")
-    
-    if response.status_code != 200 and response.status_code != 201:
-        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response)
-        exit()
-        
-    data = response
-    
-    return data
+GetFromBrewTasks()
 
-def systemCheck():
-    pass
-        
-def ResetClean():
-    motor = '  '
+def heat_HLT():
+    time.sleep(2)
+    print("\n")
+    print(Task6 + " :" + shortDesc6 )
+    time.sleep(1)
+    class Stepmotor:
+
+        def __init__(self):
+
+            # set GPIO mode
+            GPIO.setmode(GPIO.BCM)
+            # These are the pins which will be used on the Raspberry Pi
+            self.pin_A = 5
+            self.pin_B = 6
+            self.pin_C = 13
+            self.pin_D = 19
+            self.interval = 0.010
+
+            # Declare pins as output
+            GPIO.setup(self.pin_A,GPIO.OUT)
+            GPIO.setup(self.pin_B,GPIO.OUT)
+            GPIO.setup(self.pin_C,GPIO.OUT)
+            GPIO.setup(self.pin_D,GPIO.OUT)
+            GPIO.output(self.pin_A, False)
+            GPIO.output(self.pin_B, False)
+            GPIO.output(self.pin_C, False)
+            GPIO.output(self.pin_D, False)
+
+        def Step1(self):
+
+            GPIO.output(self.pin_D, True)
+            time.sleep(self.interval)
+            GPIO.output(self.pin_D, False)
+
+        def Step2(self):
+
+            GPIO.output(self.pin_D, True)
+            GPIO.output(self.pin_C, True)
+            time.sleep(self.interval)
+            GPIO.output(self.pin_D, False)
+            GPIO.output(self.pin_C, False)
+
+        def Step3(self):
+
+            GPIO.output(self.pin_C, True)
+            time.sleep(self.interval)
+            GPIO.output(self.pin_C, False)
+
+        def Step4(self):
+
+            GPIO.output(self.pin_B, True)
+            GPIO.output(self.pin_C, True)
+            time.sleep(self.interval)
+            GPIO.output(self.pin_B, False)
+            GPIO.output(self.pin_C, False)
+
+        def Step5(self):
+
+            GPIO.output(self.pin_B, True)
+            time.sleep(self.interval)
+            GPIO.output(self.pin_B, False)
+
+        def Step6(self):
+
+            GPIO.output(self.pin_A, True)
+            GPIO.output(self.pin_B, True)
+            time.sleep(self.interval)
+            GPIO.output(self.pin_A, False)
+            GPIO.output(self.pin_B, False)
+
+        def Step7(self):
+
+            GPIO.output(self.pin_A, True)
+            time.sleep(self.interval)
+            GPIO.output(self.pin_A, False)
+
+        def Step8(self):
+
+            GPIO.output(self.pin_D, True)
+            GPIO.output(self.pin_A, True)
+            time.sleep(self.interval)
+            GPIO.output(self.pin_D, False)
+            GPIO.output(self.pin_A, False)
+
+        def turn(self,count):
+            for i in range (int(count)):
+                self.Step1()
+                self.Step2()
+                self.Step3()
+                self.Step4()
+                self.Step5()
+                self.Step6()
+                self.Step7()
+                self.Step8()
+
+        def close(self):
+            # cleanup the GPIO pin use
+            GPIO.cleanup()
+
+        def turnSteps(self, count):
+            # Turn n steps
+            # (supply with number of steps to turn)
+            for i in range (count):
+                self.turn(1)
+
+        def turnDegrees(self, count):
+            # Turn n degrees (small values can lead to inaccuracy)
+            # (supply with degrees to turn)
+            self.turn(round(count*512/360,0))
+
+        def turnDistance(self, dist, rad):
+            # Turn for translation of wheels or coil (inaccuracies involved e.g. due to thickness of rope)
+            # (supply with distance to move and radius in same metric)
+            self.turn(round(512*dist/(2*math.pi*rad),0))
+
+    def main():
+
+        print("Hot liquor tank")
+        motor = Stepmotor()
+        print("is running")
+        motor.turnSteps(1)
+        time.sleep(0.5)
+        print("Heating in process")
+        motor.turnSteps(20)
+        time.sleep(0.5)
+        print("Heating in process")
+        motor.turnDegrees(90)
+        print("Done.")
+        print('Prepare the water')
+        motor.close()
+
+    if __name__ == "__main__":
+        main()
+heat_HLT()
+
+#def check_Temp():
     
-def PostToLogTable():
+def addStrikeWater1():
+    print("\n")
+    print(Task1 + " :" + shortDesc1 )
+    time.sleep(1)
+    print('Adding water to the mash tun.')
+    # define vibration pin
+    vibration_pin = 27
+
+    # Set board mode to GPIO.BOARD
+    GPIO.setmode(GPIO.BCM)
+
+    # Setup vibration pin to OUTPUT
+    GPIO.setup(vibration_pin, GPIO.OUT)
+
+    # turn on vibration
+    GPIO.output(vibration_pin, GPIO.HIGH)
+    # wait half a second
+    time.sleep(5)
+    # turn off vibration
+    GPIO.output(vibration_pin, GPIO.LOW)
+    # cleaup GPIO
+    GPIO.cleanup()
+
+    print('Mash tun is 3/4 full.')
+    time.sleep(3)
     
+addStrikeWater1()
+
+def Sparging1():
+    print("\n")
+    print(Task3 + " :" + shortDesc3 )
+    time.sleep(1)
+    print('Start Sparging')
+    class sg90:
+
+      def __init__( self, direction):
+
+        self.pin = 25
+        GPIO.setmode( GPIO.BCM )
+        GPIO.setup( self.pin, GPIO.OUT )
+        self.direction = int( direction )
+        self.servo = GPIO.PWM( self.pin, 50 )
+        self.servo.start(0.0)
+
+      def cleanup( self ):
+
+        self.servo.ChangeDutyCycle(self._henkan(0))
+        time.sleep(0.3)
+        self.servo.stop()
+        GPIO.cleanup()
+
+      def currentdirection( self ):
+
+        return self.direction
+
+      def _henkan( self, value ):
+
+        return 0.05 * value + 7.0
+
+      def setdirection( self, direction, speed ):
+
+        for d in range( self.direction, direction, int(speed) ):
+          self.servo.ChangeDutyCycle( self._henkan( d ) )
+          self.direction = d
+          time.sleep(0.1)
+        self.servo.ChangeDutyCycle( self._henkan( direction ) )
+        self.direction = direction
+
+    def main():
+
+        s = sg90(0)
+
+        try:
+            while True:
+                print("Turn left")
+                s.setdirection( 100, 10 )
+                time.sleep(0.5)
+                print("Turn right")
+                s.setdirection( -100, -10 )
+                time.sleep(0.5)
+        except KeyboardInterrupt:
+            s.cleanup()
+
+    if __name__ == "__main__":
+        main()
+Sparging1()
+
+def checkWaterVolume():
+    print("\n")
+    print(Task4 + " :" + shortDesc4 )
+    time.sleep(2)
+    print('Check water volume')
+    buzzer_pin = 18
+
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(buzzer_pin, GPIO.OUT)
+
+    # Make buzzer sound
+    GPIO.output(buzzer_pin, GPIO.LOW)
+    time.sleep(2)
+    # Stop buzzer sound
+    GPIO.output(buzzer_pin, GPIO.LOW)
+    # define touch pin
+    touch_pin = 17
+    # set GPIO pin to INPUT
+    GPIO.setup(touch_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+    motion_pin = 23
+    # set GPIO as GPIO.BOARD
+    GPIO.setmode(GPIO.BCM)
+    # set pin mode as INPUT
+    GPIO.setup(motion_pin, GPIO.IN)
+    time.sleep(2)
+    print('Water volume is low')
+    print('Adding more water')
+    
+
+time.sleep(3)
+def addStrikeWater2():
+    print("\n")
+    print(Task1 + " :" + shortDesc1 )
+    time.sleep(1)
+    
+    # define vibration pin
+    vibration_pin = 27
+
+    # Set board mode to GPIO.BOARD
+    GPIO.setmode(GPIO.BCM)
+
+    # Setup vibration pin to OUTPUT
+    GPIO.setup(vibration_pin, GPIO.OUT)
+
+    # turn on vibration
+    GPIO.output(vibration_pin, GPIO.HIGH)
+    # wait half a second
+    time.sleep(5)
+    # turn off vibration
+    GPIO.output(vibration_pin, GPIO.LOW)
+    # cleaup GPIO
+    GPIO.cleanup()
+    time.sleep(3)
+    print('Mash tun is full')
+    time.sleep(3)
+    print('Continue sparging')
+    
+addStrikeWater2()
+
+def Sparging2():
+    print("\n")
+    print(Task2 + " :" + shortDesc2 )
+    time.sleep(1)
+    class sg90:
+
+      def __init__( self, direction):
+
+        self.pin = 25
+        GPIO.setmode( GPIO.BCM )
+        GPIO.setup( self.pin, GPIO.OUT )
+        self.direction = int( direction )
+        self.servo = GPIO.PWM( self.pin, 50 )
+        self.servo.start(0.0)
+
+      def cleanup( self ):
+
+        self.servo.ChangeDutyCycle(self._henkan(0))
+        time.sleep(0.3)
+        self.servo.stop()
+        GPIO.cleanup()
+
+      def currentdirection( self ):
+
+        return self.direction
+
+      def _henkan( self, value ):
+
+        return 0.05 * value + 7.0
+
+      def setdirection( self, direction, speed ):
+
+        for d in range( self.direction, direction, int(speed) ):
+          self.servo.ChangeDutyCycle( self._henkan( d ) )
+          self.direction = d
+          time.sleep(0.1)
+        self.servo.ChangeDutyCycle( self._henkan( direction ) )
+        self.direction = direction
+
+    def main():
+
+        s = sg90(0)
+
+        try:
+            while True:
+                print("Turn left")
+                s.setdirection( 100, 10 )
+                time.sleep(0.5)
+                print("Turn right")
+                s.setdirection( -100, -10 )
+                time.sleep(0.5)
+        except KeyboardInterrupt:
+            s.cleanup()
+
+    if __name__ == "__main__":
+        main()
+Sparging2()
+
+time.sleep(2)
+def Complete():
+    buzzer_pin = 18
+
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(buzzer_pin, GPIO.OUT)
+
+    # Make buzzer sound
+    GPIO.output(buzzer_pin, GPIO.HIGH)
+    time.sleep(1)
+    # Stop buzzer sound
+    GPIO.output(buzzer_pin, GPIO.LOW)
+
+    GPIO.cleanup()
+Complete()
+    
+print('Mash is complete.')    
+
+def PostMashrecord():
+    
+    #Need to install requests package for python
+    #easy_install requests
+    
+    # Set the request parameters
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table'
-    user = 'kasper440'
-    pwd = 'kasper440'
-    headers = {"Content-Type": "application/json", "accept": "application/json"}
     
-    response = requests.post(url, auth=(user, pwd), headers=headers,
-                             data="{\"mashing_temperature\":\"" + str(temperature) + "\",\"mash_start_time\":\"" + str(
-                                 start) + "\",\"mash_end_time\":\"" + str(end) + "\",\"mash_duration\":\"" + str(
-                                 duration) + "\",\"mash_quality_check\":\"True\",\"mash_reset_clean\":\"\",\"mash_errors\":\"\",\"number\":\"" + str(
-                                 number) + "\"}")
+    # Eg. User name="admin", Password="admin" for this code sample.
+    user = 'bqt5061'
+    pwd = 'LanTsui26'
     
-    if response.status_code != 201:
-        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+    # Set proper headers
+    headers = {"Content-Type":"application/json","Accept":"application/json"}
+    
+    # Do the HTTP request
+    response = requests.post(url, auth=(user, pwd), headers=headers ,data="{\"mash_duration\":\"" + str(mash_duration) + "\",\"mash_end_time\":\"" + str(mash_end_time) + "\",\"mash_start_time\":\"" + str(mash_start_time) + "\",\"mash_reset_clean\":\"True\",\"mash_quality_check\":\"True\"}")
+    
+    # Check for HTTP codes other than 200
+    if response.status_code != 200: 
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
         exit()
-        
+    
+    # Decode the JSON response into a dictionary and use the data
     data = response.json()
     print(data)
-    tables
-    
-class Mashing(object):
-	def __init__(self, ratio, tempoftarget, weightofgrain, tempofgrain, timeofboil, sizeofbatch, lossoftrub, lossoftun):
-
-		self.ratio = ratio
-		self.tempoftarget = tempoftarget
-		self.weightofgrain = weightofgrain
-		self.tempofgrain = tempofgrain
-		self.timeofboil = timeofboil
-		self.sizeofbatch = sizeofbatch
-		self.lossoftrub = lossoftrub
-		self.lossoftun = lossoftun
-		
-    def strikeTemp(self):
-		#This is calculating the strike water temperature#
-		return round(((.2/(float(self.ratio))*(float(self.tempoftarget) - float(self.tempofgrain)) +float(self.tempoftarget))),2)
-
-    def strikeVol(self):
-		#This is calculating the water volume#
-		return round(((self.ratio * self.weightofgrain)/4), 2)
-
-    def volofsparge(self):
-#This procedure calculates the volume of water that is needed in order to start sparging phase#
-		return  self.totalofwater() - self.volstrike()
-	
-	def totalofwater(self):
-#This procedure calculates the amount of water needed for the brewing procedure along with the losses during this phase#
-		return round((self._preboilvol() + self.lossoftun + self._absorption()),2)
-		
-	def absorption(self):
-                        #This procedure calculates the amount of water lost during absorption process# 
-		return (self.weightofgrain *.15)
-
-    def lossofmashtun(self):
-		#Procedure used to calculate the amount of water that was lost in the mash tun due to transferring to the boil kettle#                                
-		return (((self.volofstrike() - (self._absorption()) - self.lossoftun)))
-	
-	def rateofevap(self):
-		#Procedure to calculate the amount of water that was lost to evaporation in the boil phase#
-		rateofevap = .10 #The rate of evaporation per hour
-		return round(1-(rateofevap*(self.timeofboil/60)), 2)
-		
-	def lossofshrink(self):
-		#Procedure to calculate the amount of water lost due to cooling of the wort.
-		# 4 percent is the standard shrink factor.
-		return 1 - .04
-
-	def volofpreboil(self):
-		#Procedure to calculate the amount of water needed during pre boil#
-		return round((((self.sizeofbatch + self.lossoftrub)/self._lossofshrink())/self._rateofevap()),2)
-	
-if __name__ == "__main__":
-	sizeofbatch = 5    #Gallons
-	ratio = 1.25     #Quarts
-	tempofmash = 152   #Fahrenheit
-	weightofgrain = 11 #Pounds
-	tempofgrain = 70   #Fahrenheit
-	timeofboil = 60    #Minutes
-	#This process depends on the system
-	#Gallons:
-	lossoftrub= 0     
-	lossoftun= 0      
-
-	mash = Mashing(weightofgrain, timeofboil, tempofmash, ratio, sizeofbatch, lossoftrub, tempofgrain, lossoftun) 
-#{0} Fahrenheit - Temperature of Strike Water#
-	print(mash.strikeTemp())
-
-#{0} Gallons - Volume of Strike Water#
-	print(mash.strikeVol())
-
-#{0} Gallons - Volume of Sparge Water#
-	print(mash.spargeVol())
-
-#{0} Gallons - Amount of Water Needed#
-	print(mash.totalWaterNeeded())
-
-#{0} Gallons - Mash process absorbed by grain#
-	print(mash._absorption())
-
-#{0} Gallons - First outcomes #
-	print(mash._mashlossoftun())
-
-#{0} Gallons -Amount during Pre Boil #
-	print(mash._preboilamount())
-
-#{0} Gallons - Amount lost after evaporation during {1} minute boil#
-	print(mash._preboillamount()-(mash._preboilamount()*mash._rateofevap()),mash.timeofboil)
-
-#{0} Gallons -Amount that was lost to shrinking after reducing wort temperature.#
-	print(mash._preboilamount()*mash._rateofevap()-5)
-    
     
 def main():
+    PostMashrecord()
 
-main()
-import GetFromMotherBrew
