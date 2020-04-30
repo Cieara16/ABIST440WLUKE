@@ -1,4 +1,4 @@
-#Brian Tu, Eni Saraci, Nicholas Galindo, Yongkang Deng
+#Brian Tu, Eni Saraci, Nicolas Galindo, Yongkang Deng
 import sys
 import Adafruit_DHT
 import time
