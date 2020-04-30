@@ -90,9 +90,9 @@ def main():
         elif short_description.startswith('attach') or description.startswith('attach'):
             input("Press enter when the label has been attached...")
             patch_brew_task(task_id)
+            end_time = datetime.datetime.now()
+            patch_end_time(log_post_sys_id, end_time)
             time.sleep(5)
-        end_time = datetime.datetime.now()
-        patch_end_time(log_post_sys_id, end_time)
     time.sleep(2)
     print('Refreshing...')
     time.sleep(5)
