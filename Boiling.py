@@ -612,7 +612,6 @@ def main():
     lcd.clear()
     segment.clear()
 
-
 # Run the program
 main()
 # import GetFromMotherBrew
