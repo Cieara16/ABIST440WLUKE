@@ -83,12 +83,13 @@ def main():
         keg_volume = mother_brew_record['keg_volume']
         beer_name = mother_brew_record['beer_name']
         current_date = datetime.datetime.now().strftime("%b %d %Y")
+        print(current_close_task['number'])
         if short_description.startswith('print') or description.startswith('print'):
             print_label(beer_name, abv, keg_volume, current_date)
             patch_brew_task(task_id)
             time.sleep(5)
         elif short_description.startswith('attach') or description.startswith('attach'):
-            input("Press enter when the label has been attached...")
+            enter = input("Press enter when the label has been attached...")
             patch_brew_task(task_id)
             end_time = datetime.datetime.now()
             patch_end_time(log_post_sys_id, end_time)
