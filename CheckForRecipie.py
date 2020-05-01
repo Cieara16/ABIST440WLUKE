@@ -2,7 +2,6 @@
 # IST 440 - Luke Kasper
 
 # Justin Hill - Team Boil
-# Ryan Carey - Team Close
 
 import requests
 import json
