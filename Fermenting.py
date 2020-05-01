@@ -152,14 +152,21 @@ def BoilTempGet():
     time.sleep(1)
     GPIO.cleanup()
 
-    startTemp = float(boilTemp) * 9 / 5.0 + 32
-    lcd.set_backlight(0)
-    print("Checking temperature.")
-    lcd.message("Incoming temp:\n" + str(boilTemp))  # pulled from mother brew
-    time.sleep(3.0)
-    lcd.clear()
-    GPIO.cleanup()
-    
+    #no incming temp
+    try:
+        startTemp = float(boilTemp) * 9 / 5.0 + 32
+        lcd.set_backlight(0)
+        print("Checking temperature.")
+        lcd.message("Incoming temp:\n" + str(boilTemp))  # pulled from mother brew
+        time.sleep(3.0)
+        lcd.clear()
+        GPIO.cleanup()
+            
+    #incoming temp
+    except ValueError:
+        boilTemp = 100
+        startTemp = boilTemp
+        
     return boilTemp, startTemp
 
 def TempCheck():
@@ -415,7 +422,7 @@ def SecondFerment():
         BuzzerDone(buzzerPin)
         fermentDuration = '2 weeks'
 
-    elif (str(secondFerment) == 'Barrel_Agein'):
+    elif (str(secondFerment) == 'Barrel_Aging'):
         print("Barrel Aging Selected.")
         print("Sent to barrel to sour.")
         print("Fermenting for 1 month.")
