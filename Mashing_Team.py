@@ -1,8 +1,9 @@
-#Brian Tu, Eni Saraci, Nicolas Galindo, Yongkang Deng
+#Brian Tu, Eni Saraci, Nicholas Galindo, Yongkang Deng
 import sys
 import Adafruit_DHT
 import time
 import sys
+import requests
 import Adafruit_CharLCD as LCD
 import RPi.GPIO as GPIO
 import requests
@@ -11,7 +12,6 @@ from Adafruit_LED_Backpack import SevenSegment
 import math
 
 # Buzzer 1 
-# Goes off to indicated the start of the Preparation process
 
 buzzer_pin = 18
 
@@ -60,9 +60,12 @@ def getFromMb():
         exit()
     
     # Decode the JSON response into a dictionary and use the data
-    global grain_weight, number, mash_temperature, waterMass, water_temp, sys_Id, order_Id
+    global grain_weight, number, malt_type_1, malt_type_2, malt_type_3, mash_temperature, waterMass, water_temp, sys_Id, order_Id
     order_Id = response.json()['result'][0]['order_id']
     grain_weight = response.json()['result'][0]['grain_weight']
+    malt_type_1 = response.json()['result'][0]['malt_type_1']
+    malt_type_2 = response.json()['result'][0]['malt_type_2']
+    malt_type_3 = response.json()['result'][0]['malt_type_3']
     mash_temperature = response.json()['result'][0]['mash_temperature']
     waterMass = response.json()['result'][0]['water_by_weight']
     water_temp = response.json()['result'][0]['water_temperature']
@@ -74,6 +77,11 @@ def getFromMb():
     time.sleep(2)
     print('Record ID: ' + sys_Id)
     time.sleep(2)
+    print("\n")
+    print('Malt Type #1: ' + malt_type_1)
+    print('Malt Type #2: ' + malt_type_2)
+    print('Malt Type #3: ' + malt_type_3)
+    print("\n")
     print('Grain weight: ' + grain_weight)
     time.sleep(2)
     print('Mash Temperature: ' + mash_temperature)
@@ -88,7 +96,8 @@ getFromMb()
     
 
 def GetFromBrewTasks():
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=active%3Dtrue%5Erpi_to_executeSTARTSWITHMashPi%5Estate%3D-5&sysparm_limit=10'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=rpi_to_execute%3DMashPi%5Estate%3D-5%5Eactive%3Dtrue&sysparm_limit=10'
+    #url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=active%3Dtrue%5Erpi_to_executeSTARTSWITHMashPi%5Estate%3D-5&sysparm_limit=10'
     user = 'bqt5061'
     pwd = 'LanTsui26'
     
@@ -101,7 +110,7 @@ def GetFromBrewTasks():
         exit()
     
     # Decode  the JSON response into dictionary and use the  data
-    global Task1, shortDesc1, Task2, shortDesc2, Task3, shortDesc3, Task4, shortDesc4, Task5, shortDesc5, Task6, shortDesc6
+    global Task1, shortDesc1, Task2, shortDesc2, Task3, shortDesc3, Task4, shortDesc4, Task5, shortDesc5, Task6, shortDesc6, Task7, shortDesc7, Task8, shortDesc8, Task9, shortDesc9
     Task1 = response.json()['result'][0]['number']
     shortDesc1 = response.json()['result'][0]['short_description']
     Task2 = response.json()['result'][1]['number']
@@ -114,11 +123,23 @@ def GetFromBrewTasks():
     shortDesc5 = response.json()['result'][4]['short_description']
     Task6 = response.json()['result'][5]['number']
     shortDesc6 = response.json()['result'][5]['short_description']
-    return Task1, shortDesc1, Task2, shortDesc2, Task3, shortDesc3, Task4, shortDesc4, Task5, shortDesc5, Task6, shortDesc6
+    Task7 = response.json()['result'][6]['number']
+    shortDesc7 = response.json()['result'][6]['short_description']
+    Task8 = response.json()['result'][7]['number']
+    shortDesc8 = response.json()['result'][7]['short_description']
+    Task9 = response.json()['result'][8]['number']
+    shortDesc9 = response.json()['result'][8]['short_description']
+    return Task1, shortDesc1, Task2, shortDesc2, Task3, shortDesc3, Task4, shortDesc4, Task5, shortDesc5, Task6, shortDesc6, Task7, shortDesc7, Task8, shortDesc8, Task9, shortDesc9
+# ???
 #     print(Task5 + " :" + shortDesc5 )
 #     time.sleep(1)
     
 GetFromBrewTasks()
+
+# def BrewTasksUpdate()
+#     global sys_IDTask
+#     
+#     url = '
 
 def heat_HLT():
     time.sleep(2)
@@ -248,6 +269,7 @@ def heat_HLT():
         print("Heating in process")
         motor.turnDegrees(90)
         print("Done.")
+        print("\n")
         print('Prepare the water')
         motor.close()
 
@@ -272,7 +294,7 @@ def addStrikeWater1():
     GPIO.setup(vibration_pin, GPIO.OUT)
 
     # turn on vibration
-    GPIO.output(vibration_pin, GPIO.HIGH)
+    GPIO.output(vibration_pin, GPIO.LOW)
     # wait half a second
     time.sleep(5)
     # turn off vibration
@@ -284,6 +306,22 @@ def addStrikeWater1():
     time.sleep(3)
     
 addStrikeWater1()
+
+def addMaltType1():
+    print("\n")
+    print(Task8 + " :" + shortDesc8)
+    time.sleep(1)
+    print('Adding in Malt 1.')
+    
+addMaltType1()
+
+def addMaltType2():
+    print("\n")
+    print(Task9 + " :" + shortDesc9)
+    time.sleep(1)
+    print('Adding in Malt 2.')
+    
+addMaltType2()
 
 def Sparging1():
     print("\n")
@@ -344,6 +382,14 @@ def Sparging1():
         main()
 Sparging1()
 
+def addMaltType3():
+    print("\n")
+    print(Task7 + " :" + shortDesc7)
+    time.sleep(1)
+    print('Adding in Malt 3')
+    
+addMaltType3()
+
 def checkWaterVolume():
     print("\n")
     print(Task4 + " :" + shortDesc4 )
@@ -372,7 +418,8 @@ def checkWaterVolume():
     time.sleep(2)
     print('Water volume is low')
     print('Adding more water')
-    
+
+checkWaterVolume()    
 
 time.sleep(3)
 def addStrikeWater2():
@@ -390,7 +437,7 @@ def addStrikeWater2():
     GPIO.setup(vibration_pin, GPIO.OUT)
 
     # turn on vibration
-    GPIO.output(vibration_pin, GPIO.HIGH)
+    GPIO.output(vibration_pin, GPIO.LOW)
     # wait half a second
     time.sleep(5)
     # turn off vibration
@@ -470,7 +517,7 @@ def Complete():
     GPIO.setup(buzzer_pin, GPIO.OUT)
 
     # Make buzzer sound
-    GPIO.output(buzzer_pin, GPIO.HIGH)
+    GPIO.output(buzzer_pin, GPIO.LOW)
     time.sleep(1)
     # Stop buzzer sound
     GPIO.output(buzzer_pin, GPIO.LOW)
