@@ -15,7 +15,7 @@ case $PI_NAME in
 	"MashPi")
 		python Mashing_Team.py;;
 	"BoilPi")
-		python Boiling.py;;
+		python BoilPhase.py;;
 	"FermentPi")
 		python Fermenting.py;;
 
