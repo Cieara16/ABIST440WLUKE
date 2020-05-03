@@ -91,7 +91,7 @@ def getFromMb():
     print('Water Temperature: ' + water_temp)
     time.sleep(1)
     # return the local variables
-    return grain_weight, number, mash_temperature, waterMass, water_temp, sys_Id, order_Id
+    return grain_weight, number, malt_type_1, malt_type_2, malt_type_3, mash_temperature, waterMass, water_temp, sys_Id, order_Id
 getFromMb()
     
 
@@ -110,7 +110,7 @@ def GetFromBrewTasks():
         exit()
     
     # Decode  the JSON response into dictionary and use the  data
-    global Task1, shortDesc1, Task2, shortDesc2, Task3, shortDesc3, Task4, shortDesc4, Task5, shortDesc5, Task6, shortDesc6, Task7, shortDesc7, Task8, shortDesc8, Task9, shortDesc9
+    global Task1, shortDesc1, Task2, shortDesc2, Task3, shortDesc3, Task4, shortDesc4, Task5, shortDesc5, Task6, shortDesc6, Task7, shortDesc7, Task8, shortDesc8, Task9, shortDesc9, Task10, shortDesc10
     Task1 = response.json()['result'][0]['number']
     shortDesc1 = response.json()['result'][0]['short_description']
     Task2 = response.json()['result'][1]['number']
@@ -129,18 +129,32 @@ def GetFromBrewTasks():
     shortDesc8 = response.json()['result'][7]['short_description']
     Task9 = response.json()['result'][8]['number']
     shortDesc9 = response.json()['result'][8]['short_description']
-    return Task1, shortDesc1, Task2, shortDesc2, Task3, shortDesc3, Task4, shortDesc4, Task5, shortDesc5, Task6, shortDesc6, Task7, shortDesc7, Task8, shortDesc8, Task9, shortDesc9
+    Task10 = response.json()['result'][9]['number']
+    shortDesc10 = response.json()['result'][9]['short_description']
+    return Task1, shortDesc1, Task2, shortDesc2, Task3, shortDesc3, Task4, shortDesc4, Task5, shortDesc5, Task6, shortDesc6, Task7, shortDesc7, Task8, shortDesc8, Task9, shortDesc9, Task10, shortDesc10
 # ???
 #     print(Task5 + " :" + shortDesc5 )
 #     time.sleep(1)
     
 GetFromBrewTasks()
 
-# def BrewTasksUpdate()
-#     global sys_IDTask
+# def BrewTasksClose():
+#     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask/' + str(sysId)
+#     user = 'bqt5061'
+#     pwd = 'LanTsui26'
+#      
+#     headers = {"Content-Type":"aplication/json","Accept":"application/json"}
 #     
-#     url = '
+#     response = requests.patch(url, auth=(user, pwd), headers=headers, data="{\"state\":\"3\"}")
+#     
+#     if response.status_code != 200:
+#         print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+#         exit()
+# 
+# BrewTasksClose()        
 
+
+        
 def heat_HLT():
     time.sleep(2)
     print("\n")
@@ -269,13 +283,18 @@ def heat_HLT():
         print("Heating in process")
         motor.turnDegrees(90)
         print("Done.")
-        print("\n")
+        print('\n')
+#         GetFromBrewTasks()
+#         time.sleep(10)
+#         BrewTasksClose()
+#         time.sleep(10)
         print('Prepare the water')
         motor.close()
 
     if __name__ == "__main__":
         main()
 heat_HLT()
+
 
 #def check_Temp():
     
@@ -384,7 +403,7 @@ Sparging1()
 
 def addMaltType3():
     print("\n")
-    print(Task7 + " :" + shortDesc7)
+    print(Task10 + " :" + shortDesc10)
     time.sleep(1)
     print('Adding in Malt 3')
     
@@ -508,8 +527,19 @@ def Sparging2():
     if __name__ == "__main__":
         main()
 Sparging2()
-
 time.sleep(2)
+
+def CheckForQuality():
+    print('\n')
+    print('Starting Mashing Check')
+    time.sleep(10)
+    print('\n')
+    print('Checking Mash')
+    time.sleep(10)
+    print ('\n')
+    print('Ending Mashing Check')
+CheckForQuality()
+
 def Complete():
     buzzer_pin = 18
 
@@ -524,14 +554,19 @@ def Complete():
 
     GPIO.cleanup()
 Complete()
-    
-print('Mash is complete.')    
+
+print('\n')
+print('Mash is complete.')
+
+def ProcessReset():
+    print('\n')
+    print('Cleaning in Process')
+    time.sleep(20)
+    print('\n')
+    print('Finished Cleaning')
+ProcessReset()
 
 def PostMashrecord():
-    
-    #Need to install requests package for python
-    #easy_install requests
-    
     # Set the request parameters
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table'
     
@@ -543,7 +578,13 @@ def PostMashrecord():
     headers = {"Content-Type":"application/json","Accept":"application/json"}
     
     # Do the HTTP request
-    response = requests.post(url, auth=(user, pwd), headers=headers ,data="{\"mash_duration\":\"" + str(mash_duration) + "\",\"mash_end_time\":\"" + str(mash_end_time) + "\",\"mash_start_time\":\"" + str(mash_start_time) + "\",\"mash_reset_clean\":\"True\",\"mash_quality_check\":\"True\"}")
+    response = requests.post(url, auth=(user, pwd), headers=headers,
+                             data="{\"mash_duration\":\"" + str(timeDuration) + "\",\"mash_end_time\":\"" + str(
+                                 endingTime) + "\",\"mash_start_time\":\"" + str(
+                                 startingTime) + "\",\"number\":\"" + str(number) + "\",\"mash_reset_clean\":\"True\",\"mash_quality_check\":\"True\",\"mash_malts_1_name\":\"" + str(
+                                 mash_malts_1_name) + "\",\"mash_malts_1_amount\":\"" + str(mash_malts_1_amount) + "\",\"mash_malts_2_name\":\"" + str(
+                                 mash_malts_2_name) + "\",\"mash_malts_2_amount\":\"" + str(mash_malts_2_amount) + "\",\"mash_malts_3_name\":\"" + str(
+                                 mash_malts_3_name) + "\",\"mash_malts_3_amount\":\"" + str(mash_malts_3_amount) + "\"}")
     
     # Check for HTTP codes other than 200
     if response.status_code != 200: 
@@ -555,5 +596,6 @@ def PostMashrecord():
     print(data)
     
 def main():
+    
     PostMashrecord()
-
+  
