@@ -153,8 +153,6 @@ GetFromBrewTasks()
 # 
 # BrewTasksClose()        
 
-
-        
 def heat_HLT():
     time.sleep(2)
     print("\n")
