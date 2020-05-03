@@ -87,12 +87,10 @@ def main():
         if short_description.startswith('print') or description.startswith('print'):
             print_label(beer_name, abv, keg_volume, current_date)
             patch_brew_task(task_id)
-            time.sleep(5)
         elif short_description.startswith('attach') or description.startswith('attach'):
             enter = input("Press enter when the label has been attached...")
             patch_brew_task(task_id)
-            end_time = datetime.datetime.now()
-            time.sleep(5)
+        end_time = datetime.datetime.now()
         patch_end_time(log_post_sys_id, end_time)
         print('Logging complete.')
     time.sleep(2)
