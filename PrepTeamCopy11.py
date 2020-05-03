@@ -30,8 +30,8 @@ from luma.core.legacy.font import proportional, CP437_FONT, TINY_FONT, SINCLAIR_
 
 def Loop():
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=sys_created_onRELATIVEGT%40minute%40ago%401&sysparm_limit=1'
-    user = 'kasper440'
-    pwd = 'kasper440'
+    user = 'ndt7'
+    pwd = 'Tui@920Tyson!'
     # Set proper headers
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     # Do the HTTP request
@@ -66,8 +66,10 @@ def Loop():
         print(result)
         time.sleep(25)
         if (result != emptyList):
-        #import PrepTeam.py into the Loop
-            import PrepTeamCopy10
+        #import Your Main Program name here.
+            #import PrepTeamX
+            import PrepTeamX6
+            #import latest file
 
 Loop()
     
