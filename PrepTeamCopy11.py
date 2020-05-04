@@ -13,7 +13,6 @@ from datetime import datetime, date
 import subprocess
 import sys
 import requests
-lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
 
 # LED Matrix
 # Represent machine status
@@ -67,9 +66,12 @@ def Loop():
         time.sleep(25)
         if (result != emptyList):
         #import Your Main Program name here.
-            #import PrepTeamX
-            import PrepTeamX6
             #import latest file
+            
+            #import PrepTeamX
+            import PrepTeamX7
+            #import PrepTeamX6
+            
 
 Loop()
     

@@ -62,15 +62,7 @@ def displayBalrog(cascaded=1, block_orientation=90, rotate=0):
     # print hello world on the matrix display
     msg = "Balrog Brewery"
     # debugging purpose
-    print("[-] Printing: %s" % msg)
-    show_message(device, msg, fill="white", font=proportional(CP437_FONT), scroll_delay=0.1)
-    print("\n")
-    print("Brew task confirmed")
-    time.sleep(3)
-    
-btn = 0
-if btn == 0:
-    displayBalrog()
+
     
 # to get active prep task from service now to excute on crow pi
 def Get_BrewTask_for_CrowPi():
