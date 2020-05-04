@@ -3,8 +3,9 @@
 
 #imports
 import RPi.GPIO as GPIO
-import time
 import datetime
+import time
+from datetime import datetime, date
 import requests
 import json
 import Adafruit_DHT
@@ -14,7 +15,6 @@ import sys, subprocess
 import math
 
 # clock imports
-import datetime
 from Adafruit_LED_Backpack import SevenSegment
 
 # service now imports
@@ -67,7 +67,7 @@ def CheckForRecipie():
 #get crud
 def MotherBrewGet():
     # Set the request parameters
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=abvISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%2526abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%255Ebeer_typeANYTHING%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%255Ebeer_typeANYTHING%255Esugar_levelsISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%255Ebeer_typeANYTHING%255Esugar_levelsISNOTEMPTY%255Esecondary_fermentationANYTHING%numberISNOTEMPTY%beer_nameISNOTEMPTY&sysparm_limit=1'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=abvISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%2526abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%255Ebeer_typeANYTHING%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%255Ebeer_typeANYTHING%255Esugar_levelsISNOTEMPTY%2525abvISNOTEMPTY%255Eyeast_type_1ISNOTEMPTY%255Eyeast_type_2ISNOTEMPTY%255Eyeast_type_3ISNOTEMPTY%255Ebeer_typeANYTHING%255Esugar_levelsISNOTEMPTY%255Esecondary_fermentationANYTHING%numberISNOTEMPTY%beer_nameISNOTEMPTY%sys_idISNOTEMPTY&sysparm_limit=1'
     user = 'kasper440'
     pwd = 'kasper440'
 
@@ -83,7 +83,10 @@ def MotherBrewGet():
         exit()
         
     # Decode the JSON response into a dictionary and use the data
-    global beerType, yeast1, yeast2, yeast3, ABVLevel, sugarAmount, secondFerment, number, beerName
+    global beerType, yeast1, yeast2, yeast3, ABVLevel, sugarAmount, secondFerment, number, beerName, sysID
+    sysIDRecord = response.json()['result']
+    sysID = sysIDRecord[0]['sys_id']
+    
     numRecord = response.json()['result']
     number = numRecord[0]['number']
     
@@ -143,6 +146,7 @@ def BoilTempGet():
         print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
         exit()
 
+    print()
     # Decode the JSON response into a dictionary and use the data
     global boilTemp, startTemp
     boilTemp = response.json()['result'][0]['boiling_temperature']
@@ -164,7 +168,7 @@ def BoilTempGet():
             
     #incoming temp
     except ValueError:
-        boilTemp = 100
+        boilTemp = 35
         startTemp = boilTemp
         
     return boilTemp, startTemp
@@ -382,65 +386,64 @@ def SecondFerment():
     if (str(secondFerment) == 'Kräusening'):
         print("Kräusening selected.")
         print("Sent to conditioning tank.")
-        print("Fermenting for 3 days.")
+        print("Fermenting for 3 days:")
         for i in range (0, 4):
             LEDMatrix(cascaded, block_orientation, rotate, msg)
         BuzzerDone(buzzerPin)
-        fermentDuration = '3 days'
+        fermentDuration = '3'
 
     elif (str(secondFerment) == 'Bottle'):
         print("Bottle selected.")
-        print("Fermenting for 2 weeks.")
+        print("Fermenting for 2 weeks:")
         for i in range(0, 11):
             LEDMatrix(cascaded, block_orientation, rotate, msg)
         BuzzerDone(buzzerPin)
-        fermentDuration = '2 weeks'
+        fermentDuration = '2'
 
-    elif (str(secondFerment) == 'Cask_Condistioning'):
+    elif (str(secondFerment) == 'Cask Condistioning'):
         print("Cask Conditioning selected.")
         print("Putting into cask.")
-        print("Fermenting for 5 days.")
+        print("Fermenting for 5 days:")
         for i in range(0, 6):
             LEDMatrix(cascaded, block_orientation, rotate, msg)
         BuzzerDone(buzzerPin)
-        fermentDuration = '5 days'
+        fermentDuration = '5'
 
     elif (str(secondFerment) == 'Lagering'):
         print("Laggering selected.")
         print("Storing at celler temperature.")
-        print("Fermenting for 3 months.")
+        print("Fermenting for 3 months:")
         for i in range (0, 31):
             LEDMatrix(cascaded, block_orientation, rotate, msg)
         BuzzerDone(buzzerPin)
-        fermentDuration = '3 months'
+        fermentDuration = '3'
 
     elif (str(secondFerment) == 'Secondary'):
         print("Secondary Fermentation selected.")
-        print("Fermenting for 2 weeks.")
+        print("Fermenting for 2 weeks:")
         for i in range(0, 11):
             LEDMatrix(cascaded, block_orientation, rotate, msg)
         BuzzerDone(buzzerPin)
-        fermentDuration = '2 weeks'
+        fermentDuration = '2'
 
-    elif (str(secondFerment) == 'Barrel_Aging'):
+    elif (str(secondFerment) == 'Barrel Aging'):
         print("Barrel Aging Selected.")
         print("Sent to barrel to sour.")
-        print("Fermenting for 1 month.")
+        print("Fermenting for 1 month:")
         for i in range(0, 23):
             LEDMatrix(cascaded, block_orientation, rotate, msg)
         BuzzerDone(buzzerPin)
-        fermentDuration = '1 month'
+        fermentDuration = '1'
 
     else:
-        pass
+        fermentDuration = '2'
         
     return fermentDuration
 
 #function for POST
 def PostCRUD():
-    # Set the request parameters
-    #url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?'
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?sysparm_display_value=abvISEMPTY%26abvISEMPTY%5Eferment_tempatureISEMPTY%26abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%26abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%5Efermenting_end_timeISEMPTY%25abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%5Efermenting_end_timeISEMPTY%5Efermenting_quality_checkISEMPTY%26abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%5Efermenting_end_timeISEMPTY%5Efermenting_quality_checkISEMPTY%5Efermenting_reset_cleanISEMPTY%26abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%5Efermenting_end_timeISEMPTY%5Efermenting_quality_checkISEMPTY%5Efermenting_reset_cleanISEMPTY%5Efermenting_start_timeISEMPTY%25abvISEMPTY%5Eferment_tempatureISEMPTY%5Efermenting_durationISEMPTY%5Efermenting_end_timeISEMPTY%5Efermenting_quality_checkISEMPTY%5Efermenting_reset_cleanISEMPTY%5Efermenting_start_timeISEMPTY%5Esecond_fermentationISEMPTY%numberISNOTEMPTY'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table'
+    #?sysparm_fields=ferment_end_time%2fermenting_start_time%2fermenting_duration%2ferment_temperature%2abv%2number%2fermenting_quality_check%2fermenting_reset/clean%2second_fermentation
 
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'kasper440'
@@ -450,52 +453,36 @@ def PostCRUD():
     headers = {"Content-Type":"application/json","Accept":"application/json"}
 
     # Do the HTTP request
-    response = requests.post(url, auth=(user, pwd), headers=headers,
-                             data = "{\fermenting_start_time\":\"" + str(startTime)
-                             + "\",\"fermenting_end_time\":\"" + str(endTime)
-                             + "\",\"ferment_temeprature\":\"" + str(boilTemp)
-                             + "\",\"fermenting_end_time\":\"" + str(endTime)
-                             + "\",\"fermenting_duration\":\"" + str(fermentDuration)
-                             + "\",\"abv\":\"" + str(ABVLevel)
-                             + "\",\"number\":\"" + str(number)
-                             + "\",\"fermenting_quality_check\":\"true\"}"
-                             + "\",\"fermenting_reset/clean\":\"true\"}"
-                             + "\",\"second_fermentation\":\"true\"}")
-
+    response = requests.post(url, auth=(user, pwd), headers=headers ,data="{\"fermenting_start_time\":\""+str(startTime)+"\",\"fermenting_end_time\":\""+str(endTime)+"\",\"ferment_tempature\":\""+str(startTemp)+"\",\"fermenting_duration\":\""+str(fermentDuration)+"\",\"abv\":\""+str(ABVLevel)+"\",\"number\":\""+str(number)+"\",\"ferment_yeasts_1_name\":\"" + str(yeast1)+ "\",\"ferment_yeasts_2_name\":\"" + str(yeast2)+ "\",\"ferment_yeasts_3_name\":\"" + str(yeast3)+"\",\"fermenting_quality_check\":\"true\",\"fermenting_reset_clean\":\"true\",\"second_fermentation\":\"true\"}")
 
     # Check for HTTP codes other than 200
-    if response.status_code != 201: 
-        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
+    if response.status_code != 201:
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response)
         exit()
 
     # Decode the JSON response into a dictionary and use the data
-    data = response
-    print(data)
+    data = response.json()
+    #print(data)
+    print("Posted to Log Table.")
     
 #function to send to bottle
 def SendToBottle():
-    # Set the request parameters
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_brew_task?sysparm_display_value=rpi_to_executeSTARTSWITHBottlePi'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask/' + str(sysID)
     
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'kasper440'
     pwd = 'kasper440'
     
-    # Set proper headers
     headers = {"Content-Type":"application/json","Accept":"application/json"}
     
-    # Do the HTTP request
-    response = requests.post(url, auth=(user, pwd), headers=headers,
-                             data = "{\fermenting_start_time\":\"" + str(nextTeam))
+    response = requests.patch(url, auth=(user, pwd), headers=headers, data="{\"state\":\"3\"}")
     
-    # Check for HTTP codes other than 200
-    if response.status_code != 200: 
-        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
+    if response.status_code != 200:
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
         exit()
-    
+
     # Decode the JSON response into a dictionary and use the data
-    data = response.json()
-    print(data)
+    print("Sent " + beerName + "("+number+")" + " to Bottle Team. State set to pending.")
 
 
 # function to display temp n humidity
@@ -591,10 +578,23 @@ def Main(): # ledMartrix variables
     MotherBrewGet()
     BoilTempGet()
     TempCheck()
+    print()
     
     #getting times n duration
     global startTime, endTime, fermentDuration, nextTeam
-    now = datetime.datetime.now()
+    now = datetime.now()
+    print()
+    
+    #steps
+    print("Being moved to vessel.")
+    print("Vessel is cooled and airated.")
+    print(yeast1 + " is being added.")
+    print(yeast2 + " is being added.")
+    print(yeast3 + " is being added.")
+    print("Aperature is being tilted to 60 degrees.")
+    print("Doing quality check:")
+    print()
+    
     startTime = now.strftime("%H:%M:%S")
     print("Fermenting start time: " + str(startTime))
     
@@ -604,25 +604,35 @@ def Main(): # ledMartrix variables
         LEDMatrix(cascaded, block_orientation, rotate, msg)
     BuzzerDone(buzzerPin)
     fermentDuration = '2 weeks'
-        
-    SecondFerment()
     
-    #send to bottle
-    print("Sending to bottle.")
-    nextTeam = "BottlePi"
-    SendToBottle()
-    print("Sent to bottle.")
+    #after fermenting
+    print("Moved to conditioning tank.")
+    print("Flushing out extra yeast.")
+    print()
+    print("Checking for a second type of fermentation:")
+    
+    SecondFerment()
+    print("Fermenting compelte.")
     
     #end time
-    now = datetime.datetime.now()
+    now = datetime.now()
     endTime = now.strftime("%H:%M:%S")
     print("Fermenting end time: " + str(endTime))
 
     #checks a cleaning
+    print("Cleaning and resetting:")
+    print()
+    
+    #update log table
     print("Posting to log table: ")
     PostCRUD()
+    
+    #send to bottle
+    print("Sending to bottle:")
+    nextTeam = "BottlePi"
+    SendToBottle()
 
-    print("Ferment Completed.")
+    print("Ferment phase Completed.")
     CheckForRecipie()
     
 # run all the stuff
