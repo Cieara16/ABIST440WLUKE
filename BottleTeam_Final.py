@@ -1,8 +1,7 @@
-#IST 440
+# IST 440
 # Bottle Team
 # Author: Riken, Eduard, Wilmer, Muhammad
 import time
-import sys
 import Adafruit_DHT
 import Adafruit_CharLCD as LCD
 import RPi.GPIO as GPIO
@@ -42,7 +41,8 @@ lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
 # Turn backlight on
 lcd.set_backlight(0)
 
-global start_time, end_time, alcohol_input, Kegvolume, Kegquantity, Number
+global start_time, end_time, alcohol_input, Kegvolume, Kegquantity, Number, sysId
+
 
 def Get_Rpi_BottleTask():
     # Set the request parameters
@@ -64,13 +64,42 @@ def Get_Rpi_BottleTask():
         exit()
 
     # Decode the JSON response into a dictionary and use the data
-    data = response.json()
-    print(data)
+    global brewtask, shortDescription, sysId
+    #     mother_brew_record = response.json()['result']
+    brewtask = response.json()['result'][0]['number']
+    shortDescription = response.json()['result'][0]['short_description']
+    sysId = response.json()['result'][0]['sys_id']
+
+    print(brewtask + ': Following task will Run')
+    print('Task Description: ' + shortDescription)
+    print()
+    return brewtask, shortDescription, sysId
+
+
+def update():
+    global sysId, brewtask, shortDescription
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask/' + str(sysId)
+    user = 'rap5695'
+    pwd = 'Rp13595@'
+
+    # Set proper headers
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+
+    # Do the HTTP request and state with value 3 use to close task.
+    response = requests.patch(url, auth=(user, pwd), headers=headers, data="{\"state\":\"3\"}")
+
+    # Check for HTTP codes other than 200
+    if response.status_code != 200:
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+        exit()
+
+    # Decode the JSON response into a dictionary and use the data
+    print(brewtask + ': ' + shortDescription + ': Task is completed and Closed.')
 
 
 def GetVolume():
     # Set the request parameters
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=activeISNOTEMPTY%5EORDERBYDESCsys_created_on&sysparm_fields=keg_volume%2Ckeg_quantity%2Cnumber&sysparm_limit=1'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=activeISNOTEMPTY%5EORDERBYDESCsys_created_on&sysparm_fields=keg_volume%2Ckeg_quantity%2Cnumber%2Csys_id%2Cabv&sysparm_limit=1'
 
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'rap5695'
@@ -88,15 +117,42 @@ def GetVolume():
         exit()
 
     # Decode the JSON response into a dictionary and use the data
-    global Kegvolume, Kegquantity, Number
+    global Kegvolume, Kegquantity, Number, motherbrewsysID, variableName
     Kegvolume = response.json()['result'][0]['keg_volume']
     Kegquantity = response.json()['result'][0]['keg_quantity']
     Number = response.json()['result'][0]['number']
+    motherbrewsysID = response.json()['result'][0]['sys_id']
+    variableName = response.json()['result'][0]['abv']
     print('Keg Volume: ' + Kegvolume + ' Gallons')
     print('Keg Quantity: ' + Kegquantity + ' Kegs ')
     print('Number: ' + Number)
-    return Kegvolume, Kegquantity, Number
+    print('Alcohol Percentage: ' + variableName)
+    print('sys ID: ' + motherbrewsysID)
+    return Kegvolume, Kegquantity, Number, motherbrewsysID, variableName
 
+
+# def update_to_closeteam():
+#
+#     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2/' + str(motherbrewsysID)
+#
+#     # Eg. User name="admin", Password="admin" for this code sample.
+#     user = 'rap5695'
+#     pwd = 'Rp13595@'
+#
+#     # Set proper headers
+#     headers = {"Content-Type":"application/json","Accept":"application/json"}
+#
+#     # Do the HTTP request
+#     response = requests.patch(url, auth=(user, pwd), headers=headers ,data="{\"brew_phase\":\"Close\"}")
+#
+#     # Check for HTTP codes other than 200
+#     if response.status_code != 200:
+#         print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
+#         exit()
+#
+#     # Decode the JSON response into a dictionary and use the data
+#     data = response.json()
+#     print('Update Brew Phase to Close Team')
 
 def motion_detect_keg():
     # Turn backlight on
@@ -145,51 +201,41 @@ def Fill_keg():
 
 
 def Carbonation_temp():
-    global temperature
+    global temperature, humidity
+    temperature = 0
     humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
     # Might need to Record before and after temp and huminity
     try:
         for i in range(1):
-                if humidity is not None and temperature is not None:
-                    print('Before temperature:\n     Temp={0:0.1f} & Humidity={1:0.1f}%'.format(temperature, humidity))
-                    lcd.set_backlight(0)
-                    # Comment the line below to convert the temperature to Celcius.
-                    temperature = temperature * 9 / 5.0 + 32
-                    temperature -= 60
-                    humidity -= 15
-                    lcd.message('Temp={0:0.1f} & Humidity={1:0.1f}%'.format(temperature, humidity))
-                    # temp sensor will take reading after 2 second
-                    time.sleep(5)
-                    print('After adding Carbonation temperature:\n     Temp={0:0.1f} & Humidity={1:0.1f}%'.format(temperature, humidity))
-                else:
-                    lcd.message('Failed to get reading. Try again!')
-                    # In 5 seconds LCD will turn off
+            if humidity is not None and temperature is not None:
+                print('Before temperature:\n     Temp= %.1f F' % (temperature))
+                print('Before Humidity:\n     Humidity= ' + str(humidity) + ' %')
+                # Comment the line below to convert the temperature to Celcius.
+                temperature = temperature * 9 / 5.0 + 32
+                temperature -= 60
+                humidity -= 15
+                # lcd.message('Temp={0:0.1f} & Humidity={1:0.1f}%'.format(temperature, humidity))
+                # temp sensor will take reading after 2 second
                 time.sleep(5)
-                lcd.clear()
-                lcd.set_backlight(1)
-        return temperature
+                print('After adding Carbonation temperature:\n     Temp= %.1f F' % (temperature))
+                print('After adding Carbonation Humidity:\n     Humidity= ' + str(humidity) + ' %')
+            else:
+                lcd.message('Failed to get reading. Try again!')
+                # In 5 seconds LCD will turn off
+            time.sleep(5)
+            lcd.clear()
+            lcd.set_backlight(1)
+        return temperature, humidity
     except KeyboardInterrupt:
         print("Tempertaure sensor error")
 
 
 def alcohol_content_1():
-    global alcohol_input
-    # Enter Alcohol Content for Keg
-    alcohol_input = float(input("Enter alcohol percentage: "))
-    # Check alcohol content you enter is correct
-    doubleChecking = input("Are you sure you want to enter  " + str(alcohol_input) + "? (Y or N)").upper()
+    print('Adding ' + str(variableName) + '% of alcohol to keg')
+    print('Adding Alcohol to keg ..........')
+    time.sleep(8)
+    print('Alcohol Content is Added')
 
-    # Condition to check for alcohol content in range 2% to 15%
-    if doubleChecking == "Y":
-        while alcohol_input < 2 or alcohol_input > 15:
-            print("Please choose again, alcohol content has to be between 2 and 15")
-            alcohol_input = float(input("Enter alcohol percentage: "))
-        print("Alcohol percent selected is " + str(alcohol_input) + "%")
-    # Condition for entered incorrect alcohol content
-    if doubleChecking == "N":
-        alcohol_input = float(input("Enter alcohol percentage: "))
-        print(alcohol_input)
-        return alcohol_input
 
 def QC():
     print('Requested for \nQuality Check \n')
@@ -210,7 +256,8 @@ def Post():
     # Need to install requests package for python
     # easy_install requests
     # Set the request parameters
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?sysparm_fields=bottle_start_time%2Cbottle_end_time%2Cabv%2Ccarbonation%2Cu_bottle_quality_check%2Cnumber%2Cbottle_reset_clean'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table'
+    # ?sysparm_fields=bottle_start_time%2Cbottle_end_time%2Ccarbonation%2Cabv%2Cu_bottle_quality_check%2Cbottle_reset_clean%2Cbottle_after_humidity%2Cbottle_after_temp
 
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'rap5695'
@@ -223,11 +270,15 @@ def Post():
     response = requests.post(url, auth=(user, pwd), headers=headers,
                              data="{\"bottle_start_time\":\"" + str(
                                  start_time) + "\",\"bottle_end_time\":\"" + str(
-                                 end_time) + "\",\"abv\":\"" + str(alcohol_input) + "\",\"carbonation\":\"" + str(
-                                 temperature) + "\",\"u_bottle_quality_check\":\"true\", \"number\":\"" + str(Number) + "\", \"bottle_reset_clean\":\"true\"}")
+                                 end_time) + "\",\"abv\":\"" + str(
+                                 variableName) + "\",\"carbonation\":\"" + str(
+                                 temperature) + "\",\"bottle_after_temp\":\"" + str(
+                                 temperature) + "\",\"bottle_after_humidity\":\"" + str(
+                                 humidity) + "\",\"u_bottle_quality_check\":\"true\", \"number\":\"" + str(
+                                 Number) + "\", \"bottle_reset_clean\":\"true\", \"bottle_before_humidity\":\"48.0\", \"bottle_before_temp\":\"29.0\"}")
 
     # Check for HTTP codes other than 200
-    if response.status_code != 200:
+    if response.status_code != 201:
         print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
         exit()
 
@@ -243,7 +294,7 @@ def main():
     """
     global start_time, end_time, Kegquantity
 
-    Get_Rpi_BottleTask()
+    #     Get_Rpi_BottleTask()
     print()
     start_time = datetime.datetime.now()
     GetVolume()
@@ -252,31 +303,52 @@ def main():
         i += 1
         print('Keg Number: ' + str(i))
         print()
-        print('Check for Keg position:')
+        time.sleep(12)
+        Get_Rpi_BottleTask()  # get keg position
         print()
         motion_detect_keg()
         print()
-        print('Filling Keg Task:')
+        update()  # close complete get keg postion
+        time.sleep(12)
+        print()
+        Get_Rpi_BottleTask()
         print()
         Fill_keg()
         print()
-        print('Checking for Carbonation:')
+        update()
+        time.sleep(12)
+        print()
+        Get_Rpi_BottleTask()
         print()
         Carbonation_temp()
         print()
-        print('Checking Alcohol Content:')
+        update()
+        time.sleep(12)
+        print()
+        Get_Rpi_BottleTask()
         print()
         alcohol_content_1()
         print()
-        print('Checking Quality Check:')
+        update()
+        time.sleep(12)
+        print()
+        Get_Rpi_BottleTask()
         print()
         QC()
+        print()
+        update()
+        time.sleep(12)
     end_time = datetime.datetime.now()
     # return start_time, end_time
     print()
+    Get_Rpi_BottleTask()
+    print()
     Post()
     print()
+    update()
     print('Bottle Phase Complete for order')
+    #update_to_closeteam()
+    print('Change Brew Phase to Close team')
     # import GetFromMotherBrew()
 
 
