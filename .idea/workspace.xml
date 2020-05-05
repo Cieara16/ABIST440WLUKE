@@ -21,7 +21,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f4a4f702-7cb1-48ec-83c5-e5946928d9cf" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BottleTeam_Final.py" beforeDir="false" afterPath="$PROJECT_DIR$/BottleTeam_Final.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +58,7 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.github.ui.GithubSettingsConfigurable" />
   </component>
   <component name="RunManager" selected="Python.Receipt">
     <configuration name="Receipt" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -375,11 +374,12 @@
     <state x="700" y="244" key="MultipleFileMergeDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586724837761" />
     <state x="2620" y="244" key="MultipleFileMergeDialog/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587082376637" />
     <state x="525" y="214" width="443" height="252" key="MultipleFileMergeDialog/0.23.1440.814@0.23.1440.814" timestamp="1587594854024" />
-    <state x="540" y="109" width="900" height="722" key="SettingsEditor" timestamp="1587508191986">
-      <screen x="0" y="23" width="1440" height="808" />
+    <state x="443" y="109" width="900" height="722" key="SettingsEditor" timestamp="1588716171692">
+      <screen x="0" y="23" width="1440" height="812" />
     </state>
     <state x="1036" y="354" width="1396" height="937" key="SettingsEditor/0.0.2560.1440@0.0.2560.1440" timestamp="1585340361888" />
     <state x="540" y="109" width="900" height="722" key="SettingsEditor/0.23.1440.808@0.23.1440.808" timestamp="1587508191986" />
+    <state x="443" y="109" key="SettingsEditor/0.23.1440.812@0.23.1440.812" timestamp="1588716171692" />
     <state x="540" y="115" width="900" height="722" key="SettingsEditor/0.23.1440.814@0.23.1440.814" timestamp="1587441674445" />
     <state x="457" y="246" key="Vcs.Push.Dialog.v2" timestamp="1587692551829">
       <screen x="0" y="23" width="1440" height="811" />
