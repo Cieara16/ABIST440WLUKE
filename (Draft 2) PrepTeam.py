@@ -14,6 +14,11 @@ import subprocess
 import sys
 import requests
 from GetFromMotherBrew import Loop
+
+#Declare Global Variable
+global number, beername, beertype, Grainprice, Grainweight, GrainType1, GrainType2, GrainType3, start1, end1, elapsed1
+
+
 lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
 
 # Buzzer 1 
@@ -36,6 +41,7 @@ touch_pin = 17
 GPIO.setup(touch_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 GPIO.cleanup()
+
 
 
 # LED Matrix
@@ -176,30 +182,78 @@ data = response.json()
 
 #update confirm brew tasks to closed complete
 
-#post crud to post prep log in log table
-def Post_logtable():
-    # Set the request parameters
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?sysparm_fields=preperation_quality_check%2Cprep_time_start%2Cprep_time_end%2Cpreperation_rest_clean%2Csys_id'
 
+# Amrish
+# Get data from Mother Brew Table (Customer Table)
+def Getmotherbrew_tbl():
+
+    # Set the request parameters
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=%5EORDERBYDESCsys_created_on%5Eactive%3Dtrue&sysparm_fields=number%2Cbeer_name%2Cbeer_type%2Cgrain_type_1%2Cgrain_type_2%2Cgrain_type_3%2Cgrain_weight%2Cgrain_price&sysparm_limit=1'
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'Amp6826'
     pwd = 'Swami101'
 
     # Set proper headers
-    headers = {"Content-Type":"application/json","Accept":"application/json"}
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
 
     # Do the HTTP request
-    response = requests.post(url, auth=(user, pwd), headers=headers, data="{\"sys_id\":\"\",\"preperation_quality_check\":\""'''+bool(qualitycheck)+'''"\",\"prep_time_start\":\""+str(start1)+"\",\"prep_time_end\":\"" +str(
-                                 end1)+"\",\"preperation_rest_clean\":\"\"}" )
+    response = requests.get(url, auth=(user, pwd), headers=headers)
 
     # Check for HTTP codes other than 200
-    if response.status_code != 200 and response.status_code != 201:
-        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:',response.json())
+    if response.status_code != 200:
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
         exit()
 
     # Decode the JSON response into a dictionary and use the data
-    data = response
-    #print(data)
+    global number, beername, beertype, Grainprice, Grainweight, GrainType1, GrainType2, GrainType3
+
+    number = response.json()['result'][0]['number']
+    beername = response.json()['result'][0]['beer_name']
+    beertype = response.json()['result'][0]['beer_type']
+    Grainprice = response.json()['result'][0]['grain_price']
+    Grainweight = response.json()['result'][0]['grain_weight']
+    GrainType1 = response.json()['result'][0]['grain_type_1']
+    GrainType2 = response.json()['result'][0]['grain_type_2']
+    GrainType3 = response.json()['result'][0]['grain_type_3']
+
+    print('Number: ' + number)
+    print('Beer Name: ' + beername)
+    print('Beer Type: ' + beertype)
+    print('Grain Price: ' + Grainprice)
+    print('Grain Weight: ' + Grainweight)
+    print('Grain Type 1:' + GrainType1)
+    print('Grain Type 2:' + GrainType2)
+    print('Grain Type 3:' + GrainType3)
+
+    return number, beername, beertype, Grainprice, Grainweight, GrainType1, GrainType2, GrainType3
+
+# Amrish
+# Post curd process log to Log Table 
+def Post():
+
+    # Set the request parameters
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table?sysparm_fields=preperation_rest_clean%2Cprep_time_end%2Cpreperation_quality_check%2Cprep_time_start%2Cnumber'
+
+    # Eg. User name="admin", Password="admin" for this code sample.
+    user = 'amp6826'
+    pwd = 'Swami101'
+
+    # Set proper headers
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+
+    # Do the HTTP request
+    response = requests.post(url, auth=(user, pwd), headers=headers,
+                             data="{\"prep_time_start\":\"" + str(start1) + "\",\"prep_time_end\":\"" + str(end1) + "\",\"preperation_quality_check\":\"true\",\"preperation_rest_clean\":\"true\",\"number\":\"" + str(number) + "\"}")
+
+    # Check for HTTP codes other than 200
+    if response.status_code != 200:
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+        exit()
+
+    # Decode the JSON response into a dictionary and use the data
+    data = response.json()
+    print(data)
+
     
     
 # to get active prep task from service now to excute on crow pi
@@ -539,17 +593,14 @@ if __name__ == "__main__":
     data = response.json()
     print(data)
 
-    
-global start1, end1, elapsed1, number, beername, beertype, Grains, Grainweight
 
-def GetIngredient():
-    # Need to install requests package for python
+def Getmotherbrew():
+       # Need to install requests package for python
     # easy_install requests
     import requests
 
     # Set the request parameters
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=%5EORDERBYDESCsys_created_on&sysparm_fields=number%2Cbeer_type%2Cbeer_name%2Cgrains%2Cgrain_weight&sysparm_limit=1'
-
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=%5EORDERBYDESCsys_created_on%5Eactive%3Dtrue&sysparm_fields=number%2Cbeer_name%2Cbeer_type%2Cgrain_type_1%2Cgrain_type_2%2Cgrain_type_3%2Cgrain_weight%2Cgrain_price&sysparm_limit=1'
     # Eg. User name="admin", Password="admin" for this code sample.
     user = 'Amp6826'
     pwd = 'Swami101'
@@ -566,29 +617,29 @@ def GetIngredient():
         exit()
 
     # Decode the JSON response into a dictionary and use the data
-    global number, beername, beertype, Grains, Grainweight
+    global number, beername, beertype, Grainprice, Grainweight, GrainType1, GrainType2, GrainType3
+
     number = response.json()['result'][0]['number']
     beername = response.json()['result'][0]['beer_name']
     beertype = response.json()['result'][0]['beer_type']
-    Grains = response.json()['result'][0]['grains']
+    Grainprice = response.json()['result'][0]['grain_price']
     Grainweight = response.json()['result'][0]['grain_weight']
+    GrainType1 = response.json()['result'][0]['grain_type_1']
+    GrainType2 = response.json()['result'][0]['grain_type_2']
+    GrainType3 = response.json()['result'][0]['grain_type_3']
+
     print('Number: ' + number)
     print('Beer Name: ' + beername)
     print('Beer Type: ' + beertype)
-    print('Grains: ' + Grains)
-    print('Grainweight: ' + Grainweight)
-    return number, beername, beertype, Grains, Grainweight
+    print('Grain Price: ' + Grainprice)
+    print('Grain Weight: ' + Grainweight)
+    print('Grain Type 1:' + GrainType1)
+    print('Grain Type 2:' + GrainType2)
+    print('Grain Type 3:' + GrainType3)
+    
 
-def Grains1():
-    global Grains, Grainweight
-    if Grains == 'All':
-        print('Add the Grain: Pale(2-Row), Graizular, ..... '+ Grainweight + ' pounds')
-    elif Grains == 'Grainz':
-        print('Add the Grainz'+ Grainweight + ' pounds')
-    elif Grains == 'Pale (2-row)':
-        print('Add the Pale (2-rows)' + Grainweight + ' pounds')
-    elif Grains == '':
-        print('')
+    return number, beername, beertype, Grainprice, Grainweight, GrainType1, GrainType2, GrainType3
+
 
 def grainweight():
     #write your code here
@@ -626,7 +677,6 @@ def QualityCheck():
         # regular quality check using lcd screen
         Prep = True
         while Prep:
-            quality_check = False
             # Prep employee sets quality check
             if GPIO.input(Qc_empbutton_left) == 1:
                 # turn on LED
@@ -710,9 +760,9 @@ def main():
                 print('Weight measured')
                 lcd.clear()
                 lcd.message('Weight measured')
-                print('12lbs.')
+                print(Grainweight)
                 lcd.clear()
-                lcd.message('12lbs.')
+                lcd.message(Grainweight)
                 time.sleep(3)
                 lcd.clear()
                 lcd.set_backlight(1)
@@ -808,7 +858,7 @@ if response.status_code != 200:
 def main():
     global start1, end1, elapsed1
     start1 = datetime.datetime.now()
-    get_ingredients()
+    Getmotherbrew_tbl()
     #QualityCheck()
     end1 = datetime.datetime.now()
     # calculate process duration of prep
@@ -817,8 +867,8 @@ def main():
     Get_Task_for_CrowPi()
     
     print(elapsed1)
-    return start1, end1, elapsed1
-    Post_logtable()
+    #return start1, end1, elapsed1
+    Post()
     Loop()
     print('done')
 

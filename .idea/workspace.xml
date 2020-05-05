@@ -142,7 +142,6 @@
       <workItem from="1587691033077" duration="17000" />
       <workItem from="1587692511226" duration="52000" />
       <workItem from="1588193623772" duration="115000" />
-      <workItem from="1588715931756" duration="72000" />
     </task>
     <task id="LOCAL-00001" summary="Removed comments">
       <created>1586034772640</created>
@@ -270,14 +269,7 @@
       <option name="project" value="LOCAL" />
       <updated>1587692550000</updated>
     </task>
-    <task id="LOCAL-00019" summary="Fixed Number, Reset and Clean, and Keg Number">
-      <created>1588194106770</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1588194106770</updated>
-    </task>
-    <option name="localTasksCounter" value="20" />
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -349,17 +341,16 @@
     <MESSAGE value="Quality Check Post Issue Resloved" />
     <MESSAGE value="work in progress" />
     <MESSAGE value="Loop will run as many keg quantity" />
-    <MESSAGE value="Fixed Number, Reset and Clean, and Keg Number" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed Number, Reset and Clean, and Keg Number" />
+    <option name="LAST_COMMIT_MESSAGE" value="Loop will run as many keg quantity" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="482" y="23" width="854" height="811" key="CommitChangelistDialog2" timestamp="1588194106630">
+    <state x="482" y="23" width="854" height="811" key="CommitChangelistDialog2" timestamp="1587692549833">
       <screen x="0" y="23" width="1440" height="811" />
     </state>
     <state x="642" y="147" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586983363816" />
     <state x="2562" y="147" key="CommitChangelistDialog2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587082404431" />
     <state x="482" y="23" key="CommitChangelistDialog2/0.23.1440.808@0.23.1440.808" timestamp="1587508213160" />
-    <state x="482" y="23" width="854" height="811" key="CommitChangelistDialog2/0.23.1440.811@0.23.1440.811" timestamp="1588194106630" />
+    <state x="482" y="23" width="854" height="811" key="CommitChangelistDialog2/0.23.1440.811@0.23.1440.811" timestamp="1587692549833" />
     <state x="482" y="23" key="CommitChangelistDialog2/0.23.1440.814@0.23.1440.814" timestamp="1587595827967" />
     <state x="482" y="23" width="854" height="816" key="CommitChangelistDialog2/0.23.1440.816@0.23.1440.816" timestamp="1587442217363" />
     <state width="1653" height="318" key="GridCell.Tab.0.bottom" timestamp="1585338475733">
@@ -390,13 +381,13 @@
     <state x="1036" y="354" width="1396" height="937" key="SettingsEditor/0.0.2560.1440@0.0.2560.1440" timestamp="1585340361888" />
     <state x="540" y="109" width="900" height="722" key="SettingsEditor/0.23.1440.808@0.23.1440.808" timestamp="1587508191986" />
     <state x="540" y="115" width="900" height="722" key="SettingsEditor/0.23.1440.814@0.23.1440.814" timestamp="1587441674445" />
-    <state x="457" y="246" key="Vcs.Push.Dialog.v2" timestamp="1588194108355">
+    <state x="457" y="246" key="Vcs.Push.Dialog.v2" timestamp="1587692551829">
       <screen x="0" y="23" width="1440" height="811" />
     </state>
     <state x="609" y="286" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1586983367276" />
     <state x="2529" y="286" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1587082406923" />
     <state x="457" y="245" key="Vcs.Push.Dialog.v2/0.23.1440.808@0.23.1440.808" timestamp="1587508220010" />
-    <state x="457" y="246" key="Vcs.Push.Dialog.v2/0.23.1440.811@0.23.1440.811" timestamp="1588194108355" />
+    <state x="457" y="246" key="Vcs.Push.Dialog.v2/0.23.1440.811@0.23.1440.811" timestamp="1587692551829" />
     <state x="457" y="247" key="Vcs.Push.Dialog.v2/0.23.1440.814@0.23.1440.814" timestamp="1587595829762" />
     <state x="976" y="476" key="com.intellij.ide.util.TipDialog" timestamp="1585340377140">
       <screen x="0" y="0" width="2560" height="1440" />

@@ -1,13 +1,25 @@
 # Justin Hill - Team boil
 # Ryan Carey - Team Close
+
+# import system libraries
 import sys
-import Adafruit_DHT
+import math
 import time
+import datetime
+import requests
+# import CrowPi stuff
 import Adafruit_CharLCD as LCD
 import RPi.GPIO as GPIO
-import requests
+import Adafruit_DHT
 from datetime import datetime, date
 from Adafruit_LED_Backpack import SevenSegment
+# import LED Matrix stuff
+from luma.led_matrix.device import max7219
+from luma.core.interface.serial import spi, noop
+from luma.core.render import canvas
+from luma.core.virtual import viewport
+from luma.core.legacy import text, show_message
+from luma.core.legacy.font import proportional, CP437_FONT, TINY_FONT, SINCLAIR_FONT, LCD_FONT
 
 # dh11 sensor
 sensor = 11
@@ -19,6 +31,8 @@ lcd_rows = 2
 buzzerPin = 18
 # Define Segment Address
 segment = SevenSegment.SevenSegment(address=0x70)
+# Initialize the display. Must be called once before using the display.
+segment.begin()
 
 global temperature, humidity, start, end, duration
 
@@ -33,6 +47,13 @@ lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
 temperature = temperature * 9 / 5.0 + 32
 # added the line to get closer to designated temperature rather than room temperature
 temperature *= 2
+# defining username, password, and headers for servicenow
+user = 'kasper440'
+pwd = 'kasper440'
+headers = {"Content-Type": "application/json", "Accept": "application/json"}
+# Time variables to set time.sleep
+SNUpdate = 15
+SNGet = 10
 
 
 # identifying sensor and pin and returning the temp and humidity
@@ -50,31 +71,28 @@ def __init__(self, temperature, humidity):
 # retrieving most recent record from Mother Brew table and all necessary items from that record to run the program
 def GetFromMotherbrew():
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=active%3Dtrue%5EnumberISNOTEMPTY%5EORDERBYDESCsys_created_on&sysparm_limit=1'
-    user = 'kasper440'
-    pwd = 'kasper440'
-    # Servicenow Headers
-    headers = {"Content-Type": "application/json", "Accept": "application/json"}
-    # HTTP request
+    #     user = 'kasper440'
+    #     pwd = 'kasper440'
     response = requests.get(url, auth=(user, pwd), headers=headers)
-    # Check for HTTP codes other than 200
     if response.status_code != 200:
         print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
         exit()
-
-    # Decode the JSON response into a dictionary and use the data as local variables
-    global beerName, beerType, hops1, hops2, hops3, number, hops1Time, hops2Time, hops3Time, waterWeight, sysId
+    global beerName, beerType, hops1, hops2, hops3, number, hops1Time, hops2Time, hops3Time, kegVol, kegQty, sysId, boilId, hopNumber
     beerName = response.json()['result'][0]['beer_name']
     beerType = response.json()['result'][0]['beer_type']
     hops1 = response.json()['result'][0]['boil_hops1']
     hops2 = response.json()['result'][0]['boil_hops2']
     hops3 = response.json()['result'][0]['boil_hops3']
     number = response.json()['result'][0]['number']
+    boilId = response.json()['result'][0]['boil_id']
     hops1Time = response.json()['result'][0]['boil_hops_1_time']
     hops2Time = response.json()['result'][0]['boil_hops_2_time']
     hops3Time = response.json()['result'][0]['boil_hops_3_time']
-    waterWeight = response.json()['result'][0]['water_by_weight']
+    kegVol = response.json()['result'][0]['keg_volume']
+    kegQty = response.json()['result'][0]['keg_quantity']
     sysId = response.json()['result'][0]['sys_id']
     print('Ticket Number: ' + number)
+    print('Boil ID: ' + boilId)
     print('Beer Name: ' + beerName)
     print('Beer Type: ' + beerType)
     print('1st Hops: ' + hops1)
@@ -82,149 +100,140 @@ def GetFromMotherbrew():
     print('3rd Hops: ' + hops3)
     print('Record ID: ' + sysId)
     time.sleep(1)
+    hopNumber = 0
+    if (hops1 != ""):
+        hopNumber = 1
+    if (hops2 != ""):
+        hopNumber = 2
+    if (hops3 != ""):
+        hopNumber = 3
+    print('No. of hops: ' + str(hopNumber))
     # return the local variables
-    return beerName, beerType, hops1, hops2, hops3, number, hops1Time, hops2Time, hops3Time, waterWeight, sysId
+    return beerName, beerType, hops1, hops2, hops3, number, hops1Time, hops2Time, hops3Time, kegVol, kegQty, sysId, boilId, hopNumber
 
 
 # Function for retrieving BoilPi tasks from the LKBrewTasks table
 def GetFromBrewTasks():
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=active%3Dtrue%5Erpi_to_executeSTARTSWITHBoilPi%5Estate%3D-5&sysparm_limit=10'
-    user = 'kasper440'
-    pwd = 'kasper440'
-    # Set proper headers
-    headers = {"Content-Type": "application/json", "Accept": "application/json"}
-    # Do the HTTP request
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=rpi_to_execute%3DBoilPi%5Eassigned_to%3Db03e1893db2240506b4a9646db961931%5Estate%3D-5&sysparm_limit=1'
+    # url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask?sysparm_query=active%3Dtrue%5Erpi_to_executeSTARTSWITHBoilPi%5Estate%3D-5&sysparm_limit=10'
+    #     user = 'kasper440'
+    #     pwd = 'kasper440'
+    #     headers = {"Content-Type":"application/json","Accept":"application/json"}
     response = requests.get(url, auth=(user, pwd), headers=headers)
-    # Check for HTTP codes other than 200
     if response.status_code != 200:
         print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
         exit()
 
-    # Decode the JSON response into a dictionary and use the data as local variables
-    global boilWaterTask1, addHopsTask2, drainWortTask3, checkTempTask4
-    boilWaterTask1 = response.json()['result'][0]['number']
-    shortDescr1 = response.json()['result'][0]['short_description']
-    addHopsTask2 = response.json()['result'][1]['number']
-    shortDescr2 = response.json()['result'][1]['short_description']
-    drainWortTask3 = response.json()['result'][2]['number']
-    shortDescr3 = response.json()['result'][2]['short_description']
-    checkTempTask4 = response.json()['result'][3]['number']
-    shortDescr4 = response.json()['result'][3]['short_description']
-    data = response.json()['result']  # [0]['what do you want to get']
-    print('Task Number: ' + boilWaterTask1 + ' ' + shortDescr1)
-    print('Task Number: ' + addHopsTask2 + ' ' + shortDescr2)
-    print('Task Number: ' + drainWortTask3 + ' ' + shortDescr3)
-    print('Task Number: ' + checkTempTask4 + ' ' + shortDescr4)
-    time.sleep(1)
+    global task, shortDescTask, sysIdTask
+    task = response.json()['result'][0]['number']
+    shortDescTask = response.json()['result'][0]['short_description']
+    sysIdTask = response.json()['result'][0]['sys_id']
 
-    return boilWaterTask1, shortDescr1, addHopsTask2, shortDescr2, drainWortTask3, shortDescr3, checkTempTask4, shortDescr4
+    print(task + ': ' + shortDescTask)
+    return task, shortDescTask, sysIdTask
 
 
-# Function for GET request from ingredients table
-def GetFromIngredients():
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_ingredients?sysparm_limit=1'
-    user = 'kasper440'
-    pwd = 'kasper440'
-    # Set proper headers
-    headers = {"Content-Type": "application/json", "Accept": "application/json"}
-    # Do the HTTP request
-    response = requests.get(url, auth=(user, pwd), headers=headers)
-    # Check for HTTP codes other than 200
+def UpdateBrewTasks():
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_lkbrewtask/' + str(sysIdTask)
+    response = requests.patch(url, auth=(user, pwd), headers=headers, data="{\"state\":\"3\"}")
     if response.status_code != 200:
         print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
         exit()
-    # Decode the JSON response into a dictionary and use the data as local variables
-    data = response.json()
-    hops = response.json()['result'][0]['hops']
-    # print('Hops: ' + hops)
-    # print(data)
-    return hops
+
+    print(task + ': ' + shortDescTask + ': Updated to closed complete.')
 
 
 # Function for posting data to Servicenow. Can be changed..
 def Post():
-    # Set the request parameters
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_boil'
-    user = 'kasper440'
-    pwd = 'kasper440'
-    # Set proper headers
-    headers = {"Content-Type": "application/json", "Accept": "application/json"}
-    # Do the HTTP request
     response = requests.post(url, auth=(user, pwd), headers=headers,
                              data="{\"sys_id\":\"\",\"short_description\":\"Boiling\",\"current_temperature\":\"" + str(
                                  temperature) + "\",\"sys_updated_on\":\"\"}")
-    # Check for HTTP codes other than 200
     if response.status_code != 200 and response.status_code != 201:
         print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response)
         exit()
-    # Decode the JSON response into a dictionary and use the data
     data = response
-
     return data
 
 
 # Posting the final temperature after cooling the wort to Servicenow
 def PostFinalTemp():
-    # Set the request parameters
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_boil'
-    user = 'kasper440'
-    pwd = 'kasper440'
-    # Set proper headers
-    headers = {"Content-Type": "application/json", "Accept": "application/json"}
-    # Do the HTTP request
     response = requests.post(url, auth=(user, pwd), headers=headers,
                              data="{\"sys_id\":\"\",\"short_description\":\"Boiling\",\"current_temperature\":\"" + str(
                                  temperature) + "\",\"sys_updated_on\":\"\"}")
-    # Check for HTTP codes other than 200
     if response.status_code != 200 and response.status_code != 201:
         print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response)
         exit()
-    # Decode the JSON response into a dictionary and use the data
     data = response
     return data
 
 
-# used to check system functionality before continuing
-# if all is good, then pass
-# if there are problems, then throw error
-def systemCheck():
-    pass
+def displayBalrog(cascaded, block_orientation, rotate):
+    # create matrix device
+    serial = spi(port=0, device=1, gpio=noop())
+    device = max7219(serial, cascaded=cascaded or 1, block_orientation=block_orientation, rotate=rotate or 0)
+    # debugging purpose
+    print("[-] Matrix initialized")
+    msg = "Boil Phase"
+    show_message(device, msg, fill="blue", font=proportional(CP437_FONT), scroll_delay=0.1)
 
 
 # Function for adding water to the brew chamber
-# Amount of water requested by customer in Servicenow
 def AddWater():
-    print('Amount of water: ' + waterWeight + 'gal.')
-    print('Adding water to brew chamber...')
+    global sysIdTask
+    GetFromBrewTasks()  # Mash Liqued added
+    time.sleep(12)
+    UpdateBrewTasks()  # Mash Liquid Added - Closed Complete
     time.sleep(15)
+    GetFromBrewTasks()  # Volume of water selected
+    print('Keg Volume: ' + kegVol)
+    print('Keg Quantity: ' + kegQty)
+    global hopAmount
+    hopAmount = 0
+    # get grams of hops
+    if (int(kegVol) == 5):
+        hopAmount = int(kegQty) * 7 * hopNumber
+    if (int(kegVol) == 15):
+        hopAmount = int(kegQty) * 21 * hopNumber
+    # get total grams of hops
+    finalHopAmount = hopAmount * hopNumber
+    # get amount of water
+    final = int(kegVol) * int(kegQty)
+    print('Amount of water: ' + str(final) + ' gal.')
+    UpdateBrewTasks()  # Volume of water selected - Closed Complete
+    time.sleep(12)
+    GetFromBrewTasks()  # Water Added to brew chamber
+    print('Total grams of Hops: ' + str(finalHopAmount))
+    print('Adding water to brew chamber...')
+    time.sleep(12)
     print('Water added to brew chamber.')
-    time.sleep(1)
+    return hopAmount
 
 
 # Function for onboard segment clock to display current time
 def Clock():
-    segment.begin()
+    segment = SevenSegment.SevenSegment(address=0x70)
     # Continually update the time on a 4 char, 7-segment display
     try:
-        while (True):
-            now = datetime.now()
-            hour = now.hour
-            minute = now.minute
-            second = now.second
-            segment.clear()
-            # Set hours
-            segment.set_digit(0, int(hour / 10))  # Tens
-            segment.set_digit(1, hour % 10)  # Ones
-            # Set minutes
-            segment.set_digit(2, int(minute / 10))  # Tens
-            segment.set_digit(3, minute % 10)  # Ones
-            # Toggle colon
-            segment.set_colon(second % 2)  # Toggle colon at 1Hz
-            # Write the display buffer to the hardware.  This must be called to
-            # update the actual display LEDs.
-            segment.write_display()
-            # Wait a quarter second (less than 1 second to prevent colon blinking getting$
-            time.sleep(0.25)
+        now = datetime.now()
+        hour = now.hour
+        minute = now.minute
+        second = now.second
+        segment.clear()
+        # Set hours
+        segment.set_digit(0, int(hour / 10))  # Tens
+        segment.set_digit(1, hour % 10)  # Ones
+        # Set minutes
+        segment.set_digit(2, int(minute / 10))  # Tens
+        segment.set_digit(3, minute % 10)  # Ones
+        # Toggle colon
+        segment.set_colon(second % 2)  # Toggle colon at 1Hz
+        # Write the display buffer to the hardware.  This must be called to
+        # update the actual display LEDs.
+        segment.write_display()
+        # Wait a quarter second (less than 1 second to prevent colon blinking getting$
+        time.sleep(0.25)
     except KeyboardInterrupt:
         segment.clear()
         segment.write_display()
@@ -232,12 +241,40 @@ def Clock():
 
 # Reading temperature and humidity from the dh11 sensor and displaying it
 def tempDisplay():
+    GetFromBrewTasks()  # Set Default Boil Time
+    time.sleep(12)
+    UpdateBrewTasks()  # Set Default Boil Time - Closed Complete
+    time.sleep(12)
     print()
-    print('Beginning Task: ' + boilWaterTask1)
     print('Making Beer: ' + beerName)
     print()
     timeloop = True
-    count = 0
+    count = -1
+
+    GetFromBrewTasks()  # water and mash are boiled
+    time.sleep(15)
+    UpdateBrewTasks()  # water and mash are boiled - Closed Complete
+    time.sleep(20)
+
+    GetFromBrewTasks()  # Amount of hops1 selected
+    time.sleep(12)
+    UpdateBrewTasks()  # amount of hops 1 - Closed Complete
+    time.sleep(20)
+
+    GetFromBrewTasks()  # Check hops1 amount
+    time.sleep(12)
+    UpdateBrewTasks()  # check hops1 amount - Closed Complete
+    time.sleep(15)
+
+    GetFromBrewTasks()  # select hops1 boil time
+    time.sleep(12)
+    UpdateBrewTasks()  # select hops1 boil time - Closed Complete
+    time.sleep(15)
+
+    GetFromBrewTasks()  # check hop 1 boil time
+    time.sleep(12)
+    UpdateBrewTasks()  # check hop 1 boil time - Closed Complete
+    time.sleep(15)
 
     while (timeloop and count < 60):
         try:
@@ -248,14 +285,27 @@ def tempDisplay():
                 count += 1
                 time.sleep(1)
                 print(count)
-                if (count == int(hops1Time)):
-                    print('Beginning Task: ' + addHopsTask2)
-                    print('Adding ' + hops1 + ' hops.')
-                if (count == int(hops2Time)):
-                    print('Adding ' + hops2 + ' hops.')
-                if (count == int(hops3Time)):
-                    print('Adding ' + hops3 + ' hops.')
-
+                if (hops1Time is None):
+                    exit()
+                else:
+                    if (count == int(hops1Time)):
+                        print('Adding ' + str(hopAmount) + 'g of ' + hops1 + ' hops.')
+                        GetFromBrewTasks()  # hops 1 boiled
+                        time.sleep(12)
+                        UpdateBrewTasks()  # hops 1 boiled - Closed Complete
+                        time.sleep(12)
+                    if (hops2 != "" and count == int(hops2Time)):
+                        print('Adding ' + str(hopAmount) + 'g of ' + hops2 + ' hops.')
+                        GetFromBrewTasks()  # hops 2 boiled
+                        time.sleep(12)
+                        UpdateBrewTasks()  # hops 2 boiled - Closed Complete
+                        time.sleep(12)
+                    if (hops3 != "" and count == int(hops3Time)):
+                        print('Adding ' + str(hopAmount) + 'g of ' + hops3 + ' hops.')
+                        GetFromBrewTasks()  # hops 3 boiled
+                        time.sleep(12)
+                        UpdateBrewTasks()  # hops 3 boiled - Closed Complete
+                        time.sleep(12)
             else:
                 lcd.message('Failed to get reading. Try again!')
 
@@ -264,47 +314,53 @@ def tempDisplay():
             lcd.clear()
             lcd.set_backlight(1)
 
-    print(boilWaterTask1 + ' Boiling process complete')
-    print()
-    time.sleep(5)
+    time.sleep(12)
     Post()
+
+
+# Function to transfer wort to heat exchanger
+def WortDrained():
+    print()
+    GetFromBrewTasks()  # Solids separated
+    time.sleep(12)
+    UpdateBrewTasks()  # solid separated - Closed Complete
+    time.sleep(12)
+    GetFromBrewTasks()  # wort drained
+    time.sleep(12)
+    UpdateBrewTasks()  # wort drained - Closed Complete
+    print('Transferring wort to heat exchanger...')
+    time.sleep(12)
+    print('Wort has been transferred.')
+    print()
+    time.sleep(1)
 
 
 # Function for cooling the wort so the fermenting team can take over
 def WortCooled():
     global temperature
     print('Cooling Wort....')
-    temperature -= 40
     time.sleep(20)
     print('Wort has been cooled to ' + str(temperature) + ' degrees.')
     if (temperature >= 79):
         print('Wort still too hot... decreasing temperature')
-        temperature -= 30
-        time.sleep(20)
+    while (temperature > 79):
+        temperature -= 5
+        print(temperature)
+        time.sleep(0.5)
     print()
     print('Wort has been cooled to ' + str(temperature) + ' degrees.')
+    GetFromBrewTasks()  # wort cooled
+    time.sleep(12)
+    UpdateBrewTasks()  # wort cooled- Closed Complete
     print('Sending data to Servicenow...')
-    time.sleep(10)
+    time.sleep(5)
     print('Data sent.')
     PostFinalTemp()
-
-
-# Function to transfer wort to heat exchanger
-def WortDrained():
-    print()
-    print('Beginning ' + drainWortTask3)
-    print('Transferring wort to heat exchanger...')
-    time.sleep(10)
-    print('Wort has been transferred.')
-    print(drainWortTask3 + ' Complete.')
-    print()
-    time.sleep(1)
 
 
 # Function for quality check
 def QualityCheck():
     print('Beginning Quality Check')
-    print('Beginning ' + checkTempTask4)
     print('Checking temperature...')
     time.sleep(20)
     GPIO.setmode(GPIO.BCM)
@@ -316,64 +372,213 @@ def QualityCheck():
     GPIO.output(buzzerPin, GPIO.LOW)
     GPIO.cleanup()
     print('Quality Check Complete')
+    print()
+
+
+# Class for Stepmotor
+class Stepmotor:
+
+    def __init__(self):
+        # set GPIO mode
+        GPIO.setmode(GPIO.BCM)
+        # These are the pins which will be used on the Raspberry Pi
+        self.pin_A = 5
+        self.pin_B = 6
+        self.pin_C = 13
+        self.pin_D = 19
+        self.interval = 0.001
+
+        # Declare pins as output
+        GPIO.setup(self.pin_A, GPIO.OUT)
+        GPIO.setup(self.pin_B, GPIO.OUT)
+        GPIO.setup(self.pin_C, GPIO.OUT)
+        GPIO.setup(self.pin_D, GPIO.OUT)
+        GPIO.output(self.pin_A, False)
+        GPIO.output(self.pin_B, False)
+        GPIO.output(self.pin_C, False)
+        GPIO.output(self.pin_D, False)
+
+    def Step1(self):
+        GPIO.output(self.pin_D, True)
+        time.sleep(self.interval)
+        GPIO.output(self.pin_D, False)
+
+    def Step2(self):
+        GPIO.output(self.pin_D, True)
+        GPIO.output(self.pin_C, True)
+        time.sleep(self.interval)
+        GPIO.output(self.pin_D, False)
+        GPIO.output(self.pin_C, False)
+
+    def Step3(self):
+        GPIO.output(self.pin_C, True)
+        time.sleep(self.interval)
+        GPIO.output(self.pin_C, False)
+
+    def Step4(self):
+        GPIO.output(self.pin_B, True)
+        GPIO.output(self.pin_C, True)
+        time.sleep(self.interval)
+        GPIO.output(self.pin_B, False)
+        GPIO.output(self.pin_C, False)
+
+    def Step5(self):
+        GPIO.output(self.pin_B, True)
+        time.sleep(self.interval)
+        GPIO.output(self.pin_B, False)
+
+    def Step6(self):
+        GPIO.output(self.pin_A, True)
+        GPIO.output(self.pin_B, True)
+        time.sleep(self.interval)
+        GPIO.output(self.pin_A, False)
+        GPIO.output(self.pin_B, False)
+
+    def Step7(self):
+        GPIO.output(self.pin_A, True)
+        time.sleep(self.interval)
+        GPIO.output(self.pin_A, False)
+
+    def Step8(self):
+        GPIO.output(self.pin_D, True)
+        GPIO.output(self.pin_A, True)
+        time.sleep(self.interval)
+        GPIO.output(self.pin_D, False)
+        GPIO.output(self.pin_A, False)
+
+    def turn(self, count):
+        for i in range(int(count)):
+            self.Step1()
+            self.Step2()
+            self.Step3()
+            self.Step4()
+            self.Step5()
+            self.Step6()
+            self.Step7()
+            self.Step8()
+
+    def close(self):
+        GPIO.cleanup()
+
+    def turnSteps(self, count):
+        for i in range(count):
+            self.turn(1)
+
+    def turnDegrees(self, count):
+        self.turn(round(count * 512 / 360, 0))
+
+    def turnDistance(self, dist, rad):
+        self.turn(round(512 * dist / (2 * math.pi * rad), 0))
+
+
+# Servo Motor Class
+class sg90:
+
+    def __init__(self, direction):
+        self.pin = 25
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.pin, GPIO.OUT)
+        self.direction = int(direction)
+        self.servo = GPIO.PWM(self.pin, 50)
+        self.servo.start(0.0)
+
+    def cleanup(self):
+        self.servo.ChangeDutyCycle(self._henkan(0))
+        time.sleep(0.3)
+        self.servo.stop()
+        GPIO.cleanup()
+
+    def currentdirection(self):
+        return self.direction
+
+    def _henkan(self, value):
+        return 0.05 * value + 7.0
+
+    def setdirection(self, direction, speed):
+        for d in range(self.direction, direction, int(speed)):
+            self.servo.ChangeDutyCycle(self._henkan(d))
+            self.direction = d
+            time.sleep(0.1)
+        self.servo.ChangeDutyCycle(self._henkan(direction))
+        self.direction = direction
 
 
 def ResetClean():
-    motor = ' '
+    print('Begining Reset/Cleaning Process')
+    print()
+    time.sleep(12)
+    print("Stepmotor: moving started")
+    motor = Stepmotor()
+    motor.turnSteps(20)
+    time.sleep(0.5)
+    motor.turnSteps(20)
+    time.sleep(0.5)
+    motor.turnDegrees(720)
+    print("Stepmotor: moving stopped")
+    motor.close()
+    print('Beginning Cleaning...')
+    s = sg90(0)
+    try:
+        print("Servo: Turn left..")
+        s.setdirection(100, 10)
+        print("Servo: Turn right..")
+        s.setdirection(-100, -10)
+        print("Servo: Turn left..")
+        s.setdirection(100, 10)
+        print("Servo: Turn right..")
+        s.setdirection(-100, -10)
+        print("Servo: Turn left..")
+        s.setdirection(100, 10)
+        print("Servo: Turn right..")
+        s.setdirection(-100, -10)
+        time.sleep(2)
+    except KeyboardInterrupt:
+        s.cleanup()
+    print('Cleaning complete.')
 
-
-#     motor = Stepmotor()
-#     print('Beginning Quality Check')
-#     motor.turnSteps(1)
-#     print('One Step')
-#     time.sleep(1)
-#     motor.turnSteps(20)
-#     print('20 steps')
-#     print("quarter turn")
-#     motor.turnDegrees(90)
-#     print("moving stopped")
-#     motor.close()
 
 # Function for posting final data to the Log Table in Servicenow
 def PostToLogTable():
-    # Set the request parameters
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_log_table'
     user = 'kasper440'
     pwd = 'kasper440'
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
-    # Do the HTTP request
     response = requests.post(url, auth=(user, pwd), headers=headers,
                              data="{\"boiling_temperature\":\"" + str(temperature) + "\",\"boil_start_time\":\"" + str(
                                  start) + "\",\"boil_end_time\":\"" + str(end) + "\",\"boil_duration\":\"" + str(
-                                 duration) + "\",\"boil_quality_check\":\"True\",\"boil_reset_clean\":\"\",\"boil_errors\":\"\",\"number\":\"" + str(
-                                 number) + "\"}")
-    # Check for HTTP codes other than 200
+                                 duration) + "\",\"number\":\"" + str(number) + "\",\"boil_id\":\"" + str(
+                                 boilId) + "\",\"boil_quality_check\":\"true\",\"boil_reset_clean\":\"true\",\"boil_hops_1_name\":\"" + str(
+                                 hops1) + "\",\"boil_hops_1_amount\":\"" + str(
+                                 hopAmount) + "\",\"boil_hops_2_name\":\"" + str(
+                                 hops2) + "\",\"boil_hops_2_amount\":\"" + str(
+                                 hopAmount) + "\",\"boil_hops_3_name\":\"" + str(
+                                 hops3) + "\",\"boil_hops_3_amount\":\"" + str(hopAmount) + "\"}")
+    # response = requests.post(url, auth=(user, pwd), headers=headers ,data="{\"boiling_temperature\":\""+str(temperature)+"\",\"boil_start_time\":\""+str(start)+"\",\"boil_end_time\":\""+str(end)+"\",\"boil_duration\":\""+str(duration)+"\",\"number\":\""+str(number)+"\",\"boil_id\":\""+str(boilId)+"\",\"boil_quality_check\":\"Complete\",\"boil_reset_clean\":\"Complete\",\"boil_errors\":\"N/A\"}")
     if response.status_code != 201:
         print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
         exit()
-    # Decode the JSON response into a dictionary and use the data
     data = response.json()
-    print(data)
+    print('Data posted to Log Table')
+
 
 def main():
     global start, end, duration
     print('Beginning the Boiling Process')
-    # Clock()
+    Clock()
+    displayBalrog(cascaded=1, block_orientation=90, rotate=0)
     start = datetime.now()
     print(start)
     time.sleep(1)
     GetFromMotherbrew()
-    GetFromBrewTasks()
-    GetFromIngredients()
-    systemCheck()
     readTemperature(temperature, humidity)
     AddWater()
     tempDisplay()
-    WortCooled()
     WortDrained()
+    WortCooled()
     QualityCheck()
-    # ResetClean()
+    ResetClean()
     print("done")
+    Clock()
     end = datetime.now()
     print('End time: ')
     print(end)
@@ -387,5 +592,5 @@ def main():
 
 # Run the program
 main()
-import GetFromMotherBrew
+# import GetFromMotherBrew
 
