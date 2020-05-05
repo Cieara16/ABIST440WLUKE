@@ -1,4 +1,4 @@
-# Team Ferment - James Bee, Virginia Hoffman, Michaela Fox, and Samantha Scheer
+# Team Ferment - James Bee, Michaela Fox, and Samantha Scheer
 # IST 440 - Luke Kasper
 
 # imports
