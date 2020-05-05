@@ -647,8 +647,8 @@ def Main():  # ledMartrix variables
     # send to bottle
     print("Sending to bottle:")
     nextTeam = "BottlePi"
-    # SendToBottle()
-    print("Sent to bottle")
+    SendToBottle()
+    #print("Sent to bottle")
 
     print("Ferment phase Completed.")
     CheckForRecipie()
@@ -656,4 +656,3 @@ def Main():  # ledMartrix variables
 
 # run all the stuff
 Main()
-
