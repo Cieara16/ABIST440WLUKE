@@ -26,6 +26,7 @@ from luma.core.render import canvas
 from luma.core.virtual import viewport
 from luma.core.legacy import text, show_message
 from luma.core.legacy.font import proportional, CP437_FONT, TINY_FONT, SINCLAIR_FONT, LCD_FONT
+lcd = LCD.Adafruit_CharLCDBackpack(address=0x21)
 
 def Loop():
     url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=sys_created_onRELATIVEGT%40minute%40ago%401&sysparm_limit=1'
@@ -66,10 +67,8 @@ def Loop():
         time.sleep(25)
         if (result != emptyList):
         #import Your Main Program name here.
-            #import latest file
-            
-            #import PrepTeamX
-            import PrepTeamX7
+        #import latest file
+            import PrepTeamX
             #import PrepTeamX6
             
 
