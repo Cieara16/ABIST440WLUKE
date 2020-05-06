@@ -19,7 +19,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(buzzer_pin, GPIO.OUT)
 
 # Make buzzer sound
-GPIO.output(buzzer_pin, GPIO.LOW)
+GPIO.output(buzzer_pin, GPIO.HIGH)
 time.sleep(1)
 # Stop buzzer sound
 GPIO.output(buzzer_pin, GPIO.LOW)
@@ -144,7 +144,6 @@ def heat_HLT():
     print("\n")
     GetMashBrewTasks()
     time.sleep(2)
-    #print(Task6 + " :" + shortDesc6 )
     time.sleep(1)
     class Stepmotor:
 
@@ -285,7 +284,6 @@ heat_HLT()
 def addStrikeWater1():
     print("\n")
     GetMashBrewTasks()
-    #print(Task1 + " :" + shortDesc1 )
     time.sleep(1)
     print('Adding water to the mash tun.')
     # define vibration pin
@@ -317,7 +315,6 @@ def addMaltType1():
     time.sleep(5)
     print("\n")
     GetMashBrewTasks()
-    #print(Task8 + " :" + shortDesc8)
     time.sleep(5)
     print('Adding in Malt 1.')
     print('\n')
@@ -329,7 +326,6 @@ def addMaltType2():
     time.sleep(5)
     print("\n")
     GetMashBrewTasks()
-    #print(Task9 + " :" + shortDesc9)
     time.sleep(5)
     print('Adding in Malt 2.')
     print('\n')
@@ -341,7 +337,6 @@ def Sparging1():
     time.sleep(5)
     print("\n")
     GetMashBrewTasks()
-    #print(Task3 + " :" + shortDesc3 )
     time.sleep(5)
     print('Start Sparging')
     class sg90:
@@ -404,7 +399,6 @@ def addMaltType3():
     time.sleep(5)
     print("\n")
     GetMashBrewTasks()
-    #print(Task10 + " :" + shortDesc10)
     time.sleep(5)
     print('Adding in Malt 3')
     time.sleep(5)
@@ -417,7 +411,6 @@ def checkWaterVolume():
     time.sleep(5)
     print("\n")
     GetMashBrewTasks()
-    #print(Task4 + " :" + shortDesc4 )
     time.sleep(5)
     print('Check water volume')
     buzzer_pin = 18
@@ -426,7 +419,7 @@ def checkWaterVolume():
     GPIO.setup(buzzer_pin, GPIO.OUT)
 
     # Make buzzer sound
-    GPIO.output(buzzer_pin, GPIO.LOW)
+    GPIO.output(buzzer_pin, GPIO.HIGH)
     time.sleep(2)
     # Stop buzzer sound
     GPIO.output(buzzer_pin, GPIO.LOW)
@@ -452,7 +445,6 @@ time.sleep(3)
 def addStrikeWater2():
     print("\n")
     GetMashBrewTasks()
-    #print(Task1 + " :" + shortDesc1 )
     time.sleep(5)
     
     # define vibration pin
@@ -486,7 +478,6 @@ def Sparging2():
     time.sleep(5)
     print("\n")
     GetMashBrewTasks()
-    #print(Task2 + " :" + shortDesc2 )
     time.sleep(5)
     class sg90:
 
@@ -564,7 +555,7 @@ def Complete():
     GPIO.setup(buzzer_pin, GPIO.OUT)
 
     # Make buzzer sound
-    GPIO.output(buzzer_pin, GPIO.LOW)
+    GPIO.output(buzzer_pin, GPIO.HIGH)
     time.sleep(1)
     # Stop buzzer sound
     GPIO.output(buzzer_pin, GPIO.LOW)
@@ -629,5 +620,3 @@ def PostMashrecord():
 def main3():
     PostMashrecord()  
 main3()
-
-  
