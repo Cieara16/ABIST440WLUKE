@@ -1,4 +1,4 @@
-# Team Ferment - James Bee, Michaela Fox, and Samantha Scheer
+# Team Ferment - James Bee, Virginia Hoffman, Michaela Fox, and Samantha Scheer
 # IST 440 - Luke Kasper
 
 # imports
@@ -153,7 +153,6 @@ def BoilTempGet():
     # Decode the JSON response into a dictionary and use the data
     global boilTemp, startTemp
     boilTemp = response.json()['result'][0]['boiling_temperature']
-    print("Incoming temperature is: ", boilTemp)
 
     temperature, humidity = Adafruit_DHT.read(tempSensor, tempPin)
     time.sleep(1)
@@ -162,6 +161,7 @@ def BoilTempGet():
     # no incming temp
     try:
         startTemp = float(boilTemp) * 9 / 5.0 + 32
+        print("Incoming temperature is: " + boilTemp)
         lcd.set_backlight(0)
         print("Checking temperature.")
         lcd.message("Incoming temp:\n" + str(boilTemp))  # pulled from mother brew
@@ -173,6 +173,8 @@ def BoilTempGet():
     except ValueError:
         boilTemp = 35
         startTemp = boilTemp
+        print("Incoming temperature is: 35")
+        startTemp = float(boilTemp) * 9 / 5.0 + 32
 
     return boilTemp, startTemp
 
@@ -494,7 +496,9 @@ def SendToBottle():
         exit()
 
     # Decode the JSON response into a dictionary and use the data
-    print("Sent " + beerName + "(" + number + ")" + " to Bottle Team. State set to pending.")
+    data = response.json()['result']
+    print(data)
+    print("Sent " + beerName + " (" + number + ")" + " to Bottle Team. State set to pending.")
 
 
 # function to display temp n humidity
@@ -610,6 +614,7 @@ def Main():  # ledMartrix variables
 
     startTime = now.strftime("%H:%M:%S")
     print("Fermenting start time: " + str(startTime))
+    startTime = datetime.now()
 
     # 2nd ferment or normal ferment
     print("Fermenting:")
@@ -631,6 +636,7 @@ def Main():  # ledMartrix variables
     now = datetime.now()
     endTime = now.strftime("%H:%M:%S")
     print("Fermenting end time: " + str(endTime))
+    endTime = datetime.now()
 
     # checks a cleaning
     print("Cleaning and resetting:")
