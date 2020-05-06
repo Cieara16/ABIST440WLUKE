@@ -50,7 +50,7 @@ time.sleep(3)
 # LED Matrix
 # Represent machine status
 # Import all the modules 
-
+start1 = datetime.now()
 def displayBalrog(cascaded=1, block_orientation=90, rotate=0):
     
     # create matrix device
@@ -140,7 +140,7 @@ def Getmotherbrew_tbl():
     # Set the request parameters
     #(This work)url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=%5EORDERBYDESCsys_created_on%5Eactive%3Dtrue&sysparm_fields=number%2Cbeer_name%2Cbeer_type%2Corder_id%2Ccustomer_id%2Cgrain_type_1%2Cgrain_type_2%2Cgrain_type_3%2Cgrain_weight%2Cpayment_id%2Ckeg_quantity%2Ckeg_volume%2Ckeg_price%2Cgrain_price%2Csys_id&sysparm_limit=10'
     
-    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=%5EORDERBYDESCsys_created_on%5Eactive%3Dtrue&sysparm_fields=number%2Cbeer_name%2Cbeer_type%2Corder_id%2Ccustomer_id%2Cgrain_type_1%2Cgrain_type_2%2Cgrain_type_3%2Cgrain_weight%2Cpayment_id%2Ckeg_quantity%2Ckeg_volume%2Ckeg_price%2Cgrain_price%2Cmalt_price%2Cyeast_price%2Csys_id&sysparm_limit=10'
+    url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=%5EORDERBYDESCsys_created_on%5Eactive%3Dtrue&sysparm_fields=number%2Cbeer_name%2Cbeer_type%2Corder_id%2Ccustomer_id%2Cgrain_type_1%2Cgrain_type_2%2Cgrain_type_3%2Cgrain_weight%2Cmalt_type%2Cmalt_type_2%2Cmalt_type_3%2Cboil_hops_1_time%2Cboil_hops_2_time%2Cboil_hops_3_time%2Cyeast_type_1%2Cyeast_type_2%2Cyeast_type_3%2Cpayment_id%2Ckeg_quantity%2Ckeg_volume%2Ckeg_price%2Cgrain_price%2Cyeast_price%2Csys_id&sysparm_limit=10'
     
     #New one, show ID but doesn't pull the latest records
     #url = 'https://emplkasperpsu1.service-now.com/api/now/table/x_snc_beer_brewing_mother_brewv2?sysparm_query=active%3Dtrue%20and%20order%20by%20desc&sysparm_fields=number%2Cbeer_name%2Cbeer_type%2Corder_id%2Ccustomer_id%2Cgrain_type_1%2Cgrain_type_2%2Cgrain_type_3%2Cgrain_weight%2Cpayment_id%2Ckeg_quantity%2Ckeg_volume%2Cgrain_price%2Csys_id&sysparm_limit=10'
@@ -164,7 +164,7 @@ def Getmotherbrew_tbl():
         exit()
 
     # Decode the JSON response into a dictionary and use the data
-    global number, beername, beertype, Grainprice, Grainweight, GrainType1, GrainType2, GrainType3, customer_id, payment_id, order_id, keg_quantity, keg_volume, keg_price, malt_price, yeast_price  
+    global number, beername, beertype, Grainprice, Grainweight, GrainType1, GrainType2, GrainType3, customer_id, payment_id, order_id, keg_quantity, keg_volume, keg_price, malt_price, malt2, malt3, hops2, hops3, yeast2, yeast3  
 
     number = response.json()['result'][0]['number']
     order_id = response.json()['result'][0]['order_id']
@@ -182,66 +182,73 @@ def Getmotherbrew_tbl():
     keg_quantity = response.json()['result'][0]['keg_quantity']
     keg_volume = response.json()['result'][0]['keg_volume']
     keg_price = response.json()['result'][0]['keg_price']
-    malt_price = response.json()['result'][0]['malt_price']
     yeast_price = response.json()['result'][0]['yeast_price']
     
+    malt2 = response.json()['result'][0]['malt_type_2']
+    malt3 = response.json()['result'][0]['malt_type_3']
+    hops2 = response.json()['result'][0]['boil_hops_2_time']
+    hops3 = response.json()['result'][0]['boil_hops_3_time']
+    yeast2 = response.json()['result'][0]['yeast_type_2']
+    yeast3 = response.json()['result'][0]['yeast_type_3']
     
+    return number, beername, beertype, Grainprice, Grainweight, GrainType1, GrainType2, GrainType3, customer_id, payment_id, order_id, keg_quantity, keg_volume, keg_price, yeast_price, malt2, malt3, hops2, hops3, yeast2, yeast3  
 
-    print('\n')
-    print(Task1 + ": " + shortDescTask1)
-    time.sleep(1.5)
-    print('Number: ' + number)
-    time.sleep(1.5)
-    print('Order ID: ' + order_id)
-    time.sleep(1.5)
-    print('Payment ID: ' + payment_id)
-    time.sleep(1.5)
-    print('Customer ID: ' + customer_id)
-    time.sleep(1.5)
-    print('Beer Name: ' + beername)
-    time.sleep(1.5)
-    print('Beer Type: ' + beertype)
-    time.sleep(1.5)
-    print('Keg Volume: ' + keg_volume + ' gals')
-    time.sleep(1.5)
-    print('Keg Quantity: ' + keg_quantity)
-    time.sleep(3)
-
-    return number, beername, beertype, Grainprice, Grainweight, GrainType1, GrainType2, GrainType3, customer_id, payment_id, order_id, keg_quantity, keg_volume, keg_price, malt_price,yeast_price
 Getmotherbrew_tbl()
 
-keg_price = 145
-keg_volume = int(keg_volume)
-keg_quantity = 2
-total_price = (.15*3 + .15*3 + .04*3 + 2*3)*keg_quantity*keg_volume
-total_price = str(total_price)
-final_price = (f'$'+total_price)
-print('Total price: $' + total_price)
-
-#def Create_Price(test=4):
+total_price = 0
+def total():
+    global total_price
+    #total_price = (grains + malt + hops + yeast)*keg_volume * keg_quantity
+    Grain_count = 1
+    Grainprice = .15
+    if GrainType2 != 'null' or GrainType2:
+        Grain_count += 1
+    if GrainType3 != 'null' or GrainType3:
+        Grain_count += 1 
+    Grainprice = Grain_count * .15
     
-#     global Grainprice, malt_price, yeast_price, keg_quantity, keg_price, keg_volume
-#     #total_price = (keg_quantity*keg_cost)
-# #     print('===')
-# #     print(type(Grainprice))
-# #     print(type(malt_price))
-# #     print(type(yeast_price))
-# #     print(type(keg_quantity))
-# #     print(type(keg_price))
-# #     print('+++')
-#     Grainprice = float(Grainprice)
-#     malt_price = float(malt_price)
-#     yeast_price = float(yeast_price)
-#     keg_quantity = int(keg_quantity)
-#     keg_price = float(keg_price)
-#     #total_price = (Grainprice + malt_price + yeast_price)* keg_quantity * int(keg_volume) * keg_price
-#     total_price = (.15*3 + .15*3 + .04*3 + 2*3 ) * keg_quantity * int(keg_volume)
-#     print('Total price: $' + str(round(total_price, 2)))
-#     final_price = (f'$'+total_price)
+    Malt_count = 1
+    Maltprice = .15
+    if malt2 != 'null' or malt2:
+        Malt_count += 1
+    if malt3 != 'null' or malt3:
+        Malt_count += 1 
+    Maltprice = Malt_count * .15
+    
+    Hops_count = 1
+    Hopsprice = .04
+    if hops2 != 'null' or hops2:
+        Hops_count += 1
+    if hops3 != 'null' or hops3:
+        Hops_count += 1 
+    Hopsprice = Hops_count * .04
+    
+    Yeast_count = 1
+    Yeastprice = 2
+    if yeast2 != 'null' or yeast2:
+        Yeast_count += 1
+    if yeast3 != 'null' or yeast3:
+        Yeast_count += 1 
+    Yeastprice = Yeast_count * 2
+    
+    total_price = (Grainprice + Maltprice + Hopsprice + Yeastprice)*int(keg_quantity) * int(keg_volume) 
+    
+    print('\n')
+    print('Grains price:$', round(Grainprice,2))
+    time.sleep(.5)
+    print('Malt price:$', round(Maltprice,2))
+    time.sleep(.5)
+    print('Hops price:$', round(Hopsprice,2))
+    time.sleep(0.5)
+    print('Yeast price:$', round(Yeastprice,2))
+    time.sleep(1.5)
+    print('Total price: $' + str(round(total_price, 2)))
+    final_price = (f'$'+str(round(total_price, 2)))   
+
 for n in range(-1,1):
     if n == 0:
-        #break
-        #Create_Price()
+    
+        total()
         break
     
 #update confirm brew tasks to closed complete
@@ -372,7 +379,7 @@ def Test_Equipment(test=0):
     #time.sleep(4.0)
     lcd.clear()
     print("Moving started")
-    lcd.message('Testing mill')
+    lcd.message('Testing')
     motor = Stepmotor()
     motor.turnSteps(1)
     #time.sleep(0.5)
@@ -421,7 +428,12 @@ if btn == 1:
         # Turn backlight on
         lcd.clear()
         lcd.set_backlight(0)
-        lcd.message('Brewmaster has gathered')
+        lcd.message('Brewmaster')
+        time.sleep(4.0)
+        # Demo showing the cursor.
+        lcd.clear()
+        lcd.show_cursor(True)
+        lcd.message('has gathered')
         time.sleep(4.0)
         # Demo showing the cursor.
         lcd.clear()
@@ -614,18 +626,18 @@ if btn == 4:
 # Clean Up Task
 # Servo 
 #calculate process duration of prep
-def TimeDuration():
-    global start1, end1
-    start1 = datetime.now()
-    end1 = datetime.now()
-    elapsed1 = (end1 - start1).seconds
+# def TimeDuration():
+#     global start1, end1
+#     start1 = datetime.now()
+#     end1 = datetime.now()
+#     elapsed1 = (end1 - start1).seconds
+# 
+#     return start1, end1
 
-    return start1, end1
-
-def TimeDuration7():
-    TimeDuration()
-    time.sleep(4)  
-TimeDuration()
+# def TimeDuration7():
+#     TimeDuration()
+#     time.sleep(4)  
+#     TimeDuration()
 
 
 #Servo   
@@ -751,6 +763,7 @@ if btn == 5:
 
 #--------------------------------------------------------------------------------------------------------------------------
 #post crud to post prep log in log table
+end1 = datetime.now()
 def Post():
 
     # Set the request parameters
@@ -764,10 +777,10 @@ def Post():
 
     # Set proper headers
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
-
+    final_price = f'$'+ str(round(total_price, 2))
     # Do the HTTP request
     response = requests.post(url, auth=(user, pwd), headers=headers,
-                             data="{\"prep_time_start\":\"" + str(start1) + "\",\"prep_time_end\":\"" + str(end1) + "\",\"total_price\":\"" + str(final_price) + "\",\"preperation_quality_check\":\"true\",\"preperation_rest_clean\":\"true\",\"number\":\"" + str(number) + "\"}")
+                             data="{\"prep_time_start\":\"" + str(start1) + "\",\"prep_time_end\":\"" + str(end1) + "\",\"total_price\":\"" + final_price + "\",\"preperation_quality_check\":\"true\",\"preperation_rest_clean\":\"true\",\"number\":\"" + str(number) + "\"}")
 
     # Check for HTTP codes other than 200
     if response.status_code != 200:
